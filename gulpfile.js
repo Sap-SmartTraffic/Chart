@@ -11,16 +11,15 @@ gulp.task('start', function() {
   // })
  // var ls   = spawn("tsc",["-w"], {stdio : "inherit"});
   browserSync.init({server:{baseDir:"./",index:"dist/index.html"}});
-  gulp.watch("./*/*.js",function(e){
+  gulp.watch("./dist/*.*",function(e){
         browserSync.reload();
         console.log(e.path+"-------file changed")
         
     });
-     gulp.src('./src/**/*.html',{base:"src"}).pipe(gulp.dest('./dist/'))
-        gulp.watch("./src/**/*.html",function(e){
+  gulp.src('./src/**/*.html',{base:"src"}).pipe(gulp.dest('./dist/'))
+  gulp.watch("./src/**/*.html",function(e){
            gulp.src(e.path,{base:"src"}).pipe(gulp.dest('./dist/'))
-           browserSync.reload();
-            console.log(e.path+"-------file changed")
+            console.log(e.path+"-------file copy")
         })
   // gulp.watch("*.less",function(event){
   //   var file=event.path;
