@@ -1,0 +1,33 @@
+{
+  "name": "chart",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+     "start": " concurrently \"npm run tsc:w\" \"gulp start\" ",
+    "tsc": "tsc",
+    "tsc:w": "tsc -w"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sap-SmartTraffic/Chart.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Sap-SmartTraffic/Chart/issues"
+  },
+  "homepage": "https://github.com/Sap-SmartTraffic/Chart#readme",
+  "devDependencies": {
+    "@types/d3": "^4.7.0",
+    "@types/jquery": "^2.0.41",
+    "@types/underscore": "^1.8.0",
+    "bower": "^1.8.0",
+    "browser-sync": "^2.18.0",
+    "concurrently": "^3.4.0",
+    "gulp": "^3.9.1",
+    "gulp-less": "^3.3.0",
+    "typescript": "2.3.0"
+  }
+}
