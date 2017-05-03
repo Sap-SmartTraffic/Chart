@@ -8,15 +8,22 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "Chart"], function (require, exports, Chart_1) {
+define(["require", "exports", "BaseChart", "TitleLayer"], function (require, exports, BaseChart_1, TitleLayer_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var LineChart = (function (_super) {
         __extends(LineChart, _super);
-        function LineChart() {
-            return _super !== null && _super.apply(this, arguments) || this;
+        function LineChart(conf) {
+            var _this = _super.call(this, conf) || this;
+            _this.mainTitle = new TitleLayer_1.TitleLayer({ value: "hehe" });
+            _this.addLayer(_this.mainTitle);
+            _this.init();
+            return _this;
         }
+        LineChart.prototype.init = function () {
+            this.mainTitle.setStyle({ width: this.config.width, height: "30px" });
+        };
         return LineChart;
-    }(Chart_1.Chart));
+    }(BaseChart_1.BaseChart));
     exports.LineChart = LineChart;
 });

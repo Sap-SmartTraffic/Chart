@@ -2,12 +2,13 @@ import d3 =require("d3")
 import _=require("underscore")
 import {Evented} from "Evented"
 import {BaseLayer} from "BaseLayer"
-export class Chart extends Evented {
-    constructor(){
+export class BaseChart extends Evented {
+    constructor(conf?){
         super()
         if(!this.el){
             this.el=d3.select(document.createDocumentFragment()).append("xhtml:div").node()    
         }
+        this.setConfig(conf)
     }
     config={
         width:"300px",

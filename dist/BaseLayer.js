@@ -8,31 +8,42 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "d3", "Evented"], function (require, exports, d3, Evented_1) {
+define(["require", "exports", "d3", "underscore", "Evented"], function (require, exports, d3, _, Evented_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var BaseLayer = (function (_super) {
         __extends(BaseLayer, _super);
-        function BaseLayer() {
-            return _super.call(this) || this;
+        function BaseLayer(conf) {
+            var _this = _super.call(this) || this;
+            _this.setConfig(conf);
+            return _this;
         }
         BaseLayer.prototype.addTo = function (c) {
             this.chart = c;
             this.chart.addLayer(this);
             return this;
         };
+        BaseLayer.prototype.setConfig = function (c) {
+            var _this = this;
+            if (!this.config) {
+                this.config = {};
+            }
+            _.each(c, function (v, k) {
+                _this.config[k] = v;
+            });
+        };
         BaseLayer.prototype.setStyle = function (s) {
             this.style = s;
+        };
+        BaseLayer.prototype.calculateStyle = function () {
+            return this;
         };
         BaseLayer.prototype.updateStyle = function () {
             var el = d3.select(this.el).style("position", "relative");
             if (this.style) {
-                el.style("left", this.style.left);
-                el.style("right", this.style.right);
-                el.style("bottom", this.style.bottom);
-                el.style("top", this.style.top);
-                el.style("width", this.style.width);
-                el.style("height", this.style.height);
+                _.each(this.style, function (v, k) {
+                    el.style(k, v);
+                });
             }
         };
         BaseLayer.prototype.render = function () {
@@ -40,7 +51,7 @@ define(["require", "exports", "d3", "Evented"], function (require, exports, d3, 
                 this.el.parentNode.removeChild(this.el);
             }
             this.el = this.renderer();
-            this.updateStyle();
+            this.calculateStyle().updateStyle();
             d3.select(this.chart.getContainer()).node().appendChild(this.el);
             return this;
         };

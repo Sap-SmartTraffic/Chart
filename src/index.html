@@ -11,11 +11,8 @@
 
 </body>
 <script>
-    requirejs(['Chart',"TitleLayer"],function(c,t){
-        var chart=new c.Chart()
-        var title= new t.TitleLayer()
-        title.setStyle({left:"200px"})
-        chart.addLayer(title)
+    requirejs(['LineChart/LineChart'],function(l){
+        var chart=new l.LineChart()
         chart.setConfig({width:"1000px",height:"800px"})
         chart.render("body")
         

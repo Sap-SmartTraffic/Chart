@@ -1,15 +1,24 @@
 import d3 =require("d3")
 import _ =require("underscore")
 import {Evented} from "Evented"
-import {Chart} from "Chart"
+import {BaseChart} from "BaseChart"
 export class BaseLayer extends Evented{
-    constructor(){
+    constructor(conf?){
         super()
+        this.setConfig(conf)
     }
-    addTo(c:Chart){
+    addTo(c:BaseChart){
         this.chart=c
         this.chart.addLayer(this)
         return this
+    }
+    setConfig(c){
+        if(!this.config){
+            this.config={}
+        }
+        _.each(c,(v,k)=>{
+            this.config[k]=v
+        })
     }
     el:any
     id:string
@@ -22,15 +31,16 @@ export class BaseLayer extends Evented{
     config:{
         
     }
+    calculateStyle(){
+        return this
+    }
     updateStyle(){
         let el=d3.select(this.el).style("position","relative")
         if(this.style){
-             el.style("left",this.style.left)
-              el.style("right",this.style.right)
-               el.style("bottom",this.style.bottom)
-                el.style("top",this.style.top)
-                 el.style("width",this.style.width)
-                  el.style("height",this.style.height)
+            _.each(this.style,(v,k)=>{
+                el.style(k,v)
+            })
+
         }
     }
     render(){
@@ -38,11 +48,11 @@ export class BaseLayer extends Evented{
             this.el.parentNode.removeChild(this.el)
         }
         this.el=this.renderer()
-        this.updateStyle()
+        this.calculateStyle().updateStyle()
         d3.select(this.chart.getContainer()).node().appendChild(this.el)
         return this
     }
-    chart:Chart
+    chart:BaseChart
     renderer(){
         
     }

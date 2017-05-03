@@ -11,19 +11,22 @@ var __extends = (this && this.__extends) || (function () {
 define(["require", "exports", "d3", "BaseLayer"], function (require, exports, d3, BaseLayer_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    var TitleLayer = (function (_super) {
-        __extends(TitleLayer, _super);
-        function TitleLayer(conf) {
+    var LineLayer = (function (_super) {
+        __extends(LineLayer, _super);
+        function LineLayer(conf) {
             return _super.call(this, conf) || this;
         }
-        TitleLayer.prototype.init = function () {
+        LineLayer.prototype.init = function () {
         };
-        TitleLayer.prototype.renderer = function () {
+        LineLayer.prototype.renderer = function () {
+            var _this = this;
             var conf = this.chart.config;
             var fragment = document.createDocumentFragment();
-            return d3.select(fragment).append("xhtml:p").text(this.config.value).classed(this.config.className, true).node();
+            var svg = d3.select(fragment).append("svg").classed(this.config.className, function () { return !!_this.config.className; });
+            svg.append("svg:g");
+            return;
         };
-        return TitleLayer;
+        return LineLayer;
     }(BaseLayer_1.BaseLayer));
-    exports.TitleLayer = TitleLayer;
+    exports.LineLayer = LineLayer;
 });
