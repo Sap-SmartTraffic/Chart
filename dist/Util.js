@@ -33,8 +33,11 @@ define(["require", "exports", "underscore"], function (require, exports, _) {
             return matcher.test(s.toString());
         }
         Util.isContaint = isContaint;
-        function max(nums) {
+        function max(nums, key) {
             var n = Number.MIN_VALUE;
+            if (key) {
+                nums = nums.map(function (n) { return n[key]; });
+            }
             nums.forEach(function (num) {
                 n = isNaN(num) ? n : n > num ? n : num;
             });
@@ -42,8 +45,11 @@ define(["require", "exports", "underscore"], function (require, exports, _) {
             return n;
         }
         Util.max = max;
-        function min(ns) {
+        function min(ns, key) {
             var n = Number.MAX_VALUE;
+            if (key) {
+                ns = ns.map(function (n) { return n[key]; });
+            }
             ns.forEach(function (num) {
                 n = isNaN(num) ? n : n < num ? n : num;
             });

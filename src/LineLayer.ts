@@ -1,5 +1,6 @@
 import d3 = require("d3")
 import _ = require("underscore")
+import Util=require("Util")
 import {
     Evented
 } from "Evented"
@@ -21,16 +22,16 @@ export class LineLayer extends BaseLayer {
         let fragment = document.createDocumentFragment()
         let svg = d3.select(fragment).append("svg").classed(this.config.className, () => !!this.config.className)
         let ds = this.chart.measures
-        let maxX = Number.MIN_VALUE,
-            maxY = Number.MIN_VALUE,
-            minX = Number.MAX_VALUE,
-            minY = Number.MAX_VALUE
-        _.chain(ds).map((d)=>d.data).reduce((d1:any[],d2:any[]):any[]=>d1.concat(d2)).value().forEach(d=>{
-            maxX = Math.max(d.x, maxX)
-            maxY = Math.max(d.x, maxY)
-            minX = Math.min(d.x, minX)
-            minY = Math.min(d.x, minY)
-        })
+        let maxX = Util.max(_.chain(ds).map((d)=>d.data).reduce((d1:any[],d2:any[])=>d1.concat(d2)).value(),"x"),
+            maxY = Util.max(_.chain(ds).map((d)=>d.data).reduce((d1:any[],d2:any[])=>d1.concat(d2)).value(),"y"),
+            minX = Util.min(_.chain(ds).map((d)=>d.data).reduce((d1:any[],d2:any[])=>d1.concat(d2)).value(),"x"),
+            minY = Util.min(_.chain(ds).map((d)=>d.data).reduce((d1:any[],d2:any[])=>d1.concat(d2)).value(),"y")
+        // _.chain(ds).map((d)=>d.data).reduce((d1:any[],d2:any[]):any[]=>d1.concat(d2)).value().forEach(d=>{
+        //     maxX = Math.max(d.x, maxX)
+        //     maxY = Math.max(d.x, maxY)
+        //     minX = Math.min(d.x, minX)
+        //     minY = Math.min(d.x, minY)
+        // })
         // ds.map((d) => d.data).reduce((d1, d2) => d1.concat(d2)).forEach(d => {
         //     maxX = Math.max(d.x, maxX)
         //     maxY = Math.max(d.x, maxY)
@@ -39,8 +40,8 @@ export class LineLayer extends BaseLayer {
 
         // })
         let lines=svg.append("svg:g")
-        let xScale=d3.scaleLinear().domain([minX,maxX]).range([0,300])
-        let yScale =d3.scaleLinear().domain([minY,maxY]).range([300,0])
+        let xScale=d3.scaleLinear().domain([minX,maxX]).range([0,Util.toPixel(this.style.width)])
+        let yScale =d3.scaleLinear().domain([minY,maxY]).range([Util.toPixel(this.style.height),0])
         _.each(ds,(d,i)=>{
             let lGen=d3.line()
             lines.append("path").attr("d",this.smartLineGen(xScale,yScale,true,d.data)).attr("stroke",d.style.color||this.chart.getColorByIndex(i))

@@ -29,16 +29,22 @@ export function isContaint(s,ss){
     return matcher.test(s.toString());
   }
 
-export function max (nums:number []){
+export function max (nums:any [],key?){
        let n=Number.MIN_VALUE;
+       if(key){
+           nums=nums.map(n=>n[key])
+       }
        nums.forEach((num)=>{
             n=isNaN(num)?n: n>num? n:num;
        })
        n= n==Number.MIN_VALUE?0:n;
        return n;
     }
-export function min (ns:number []){
+export function min (ns:any [],key?){
        let n=Number.MAX_VALUE;
+       if(key){
+           ns=ns.map(n=>n[key])
+       }
        ns.forEach((num)=>{
             n=isNaN(num)?n: n<num? n:num;
        })

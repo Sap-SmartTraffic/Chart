@@ -25,7 +25,7 @@ export class BaseLayer extends Evented{
     el:any
     id:string
     style:{
-        left:number,right:number,top:number,bottom:number,width:number,height:number,zIndex:number
+        left:string,right:string,top:string,bottom:string,width:string,height:string,zIndex:string
     }
     setStyle(s){
         this.style=s
