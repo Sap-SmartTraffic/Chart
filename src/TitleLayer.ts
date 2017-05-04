@@ -3,8 +3,9 @@ import _ =require("underscore")
 import {Evented} from "Evented"
 import {BaseLayer} from "BaseLayer"
 export class TitleLayer extends BaseLayer{
-    constructor(conf?){
+    constructor(id?,conf?){
         super(conf)
+        this.setConfig(conf)
     }
     config:{
         value:string,

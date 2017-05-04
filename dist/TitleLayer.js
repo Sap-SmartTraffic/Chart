@@ -13,8 +13,10 @@ define(["require", "exports", "d3", "BaseLayer"], function (require, exports, d3
     Object.defineProperty(exports, "__esModule", { value: true });
     var TitleLayer = (function (_super) {
         __extends(TitleLayer, _super);
-        function TitleLayer(conf) {
-            return _super.call(this, conf) || this;
+        function TitleLayer(id, conf) {
+            var _this = _super.call(this, conf) || this;
+            _this.setConfig(conf);
+            return _this;
         }
         TitleLayer.prototype.init = function () {
         };

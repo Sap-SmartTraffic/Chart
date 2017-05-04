@@ -2,6 +2,7 @@ import d3 =require("d3")
 import _=require("underscore")
 import {Evented} from "Evented"
 import {BaseLayer} from "BaseLayer"
+import {Measure} from "Measure"
 export class BaseChart extends Evented {
     constructor(conf?){
         super()
@@ -14,6 +15,10 @@ export class BaseChart extends Evented {
         width:"300px",
         height:"300px"
     }
+    style={
+        width:"300px",
+        height:"300px"
+    }
     setConfig(c){
         _.each(c,(v,k)=>{
             this.config[k]=v
@@ -21,8 +26,11 @@ export class BaseChart extends Evented {
     }
     el:any
     isReady:boolean=false
-    measures:any[]=[]
+    measures:Measure[]=[]
     layers:BaseLayer[]=[]
+    addMeasure(m:Measure){
+        this.measures.push(m)
+    }
     addLayer(l:BaseLayer){
         let i =_.findIndex(this.layers,ll=>ll.id == l.id)
         if(i!=-1){
@@ -63,6 +71,9 @@ export class BaseChart extends Evented {
         d3.select(this.el).style("height",this.config.height)
                             .style("width",this.config.width)
     }
+    getColorByIndex(i){
+        return d3.scaleOrdinal(d3.schemeCategory10)(i)
+    }
     render(ref){
         _.invoke(this.layers,"render")
         let dom=d3.select(ref)
@@ -72,4 +83,5 @@ export class BaseChart extends Evented {
         this.updateStyle()
         return this
     }
+
 }

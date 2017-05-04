@@ -8,20 +8,23 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "BaseChart", "TitleLayer"], function (require, exports, BaseChart_1, TitleLayer_1) {
+define(["require", "exports", "BaseChart", "TitleLayer", "LineLayer"], function (require, exports, BaseChart_1, TitleLayer_1, LineLayer_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var LineChart = (function (_super) {
         __extends(LineChart, _super);
         function LineChart(conf) {
             var _this = _super.call(this, conf) || this;
-            _this.mainTitle = new TitleLayer_1.TitleLayer({ value: "hehe" });
+            _this.mainTitle = new TitleLayer_1.TitleLayer("title", { value: "hehe" });
+            _this.lineLayer = new LineLayer_1.LineLayer();
             _this.addLayer(_this.mainTitle);
+            _this.addLayer(_this.lineLayer);
             _this.init();
             return _this;
         }
         LineChart.prototype.init = function () {
-            this.mainTitle.setStyle({ width: this.config.width, height: "30px" });
+            this.mainTitle.setStyle({ width: this.style.width, height: "30px" });
+            this.lineLayer.setStyle({ top: "30px", width: this.style.width, height: "200px" });
         };
         return LineChart;
     }(BaseChart_1.BaseChart));

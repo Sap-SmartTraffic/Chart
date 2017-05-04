@@ -13,8 +13,9 @@ define(["require", "exports", "d3", "underscore", "Evented"], function (require,
     Object.defineProperty(exports, "__esModule", { value: true });
     var BaseLayer = (function (_super) {
         __extends(BaseLayer, _super);
-        function BaseLayer(conf) {
+        function BaseLayer(id, conf) {
             var _this = _super.call(this) || this;
+            _this.id = id || _.unique("layer");
             _this.setConfig(conf);
             return _this;
         }
@@ -39,7 +40,7 @@ define(["require", "exports", "d3", "underscore", "Evented"], function (require,
             return this;
         };
         BaseLayer.prototype.updateStyle = function () {
-            var el = d3.select(this.el).style("position", "relative");
+            var el = d3.select(this.el).style("position", "absolute");
             if (this.style) {
                 _.each(this.style, function (v, k) {
                     el.style(k, v);

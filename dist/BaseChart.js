@@ -19,6 +19,10 @@ define(["require", "exports", "d3", "underscore", "Evented"], function (require,
                 width: "300px",
                 height: "300px"
             };
+            _this.style = {
+                width: "300px",
+                height: "300px"
+            };
             _this.isReady = false;
             _this.measures = [];
             _this.layers = [];
@@ -33,6 +37,9 @@ define(["require", "exports", "d3", "underscore", "Evented"], function (require,
             _.each(c, function (v, k) {
                 _this.config[k] = v;
             });
+        };
+        BaseChart.prototype.addMeasure = function (m) {
+            this.measures.push(m);
         };
         BaseChart.prototype.addLayer = function (l) {
             var i = _.findIndex(this.layers, function (ll) { return ll.id == l.id; });
@@ -75,6 +82,9 @@ define(["require", "exports", "d3", "underscore", "Evented"], function (require,
         BaseChart.prototype.updateStyle = function () {
             d3.select(this.el).style("height", this.config.height)
                 .style("width", this.config.width);
+        };
+        BaseChart.prototype.getColorByIndex = function (i) {
+            return d3.scaleOrdinal(d3.schemeCategory10)(i);
         };
         BaseChart.prototype.render = function (ref) {
             _.invoke(this.layers, "render");

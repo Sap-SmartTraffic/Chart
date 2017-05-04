@@ -11,8 +11,10 @@
 
 </body>
 <script>
-    requirejs(['LineChart/LineChart'],function(l){
+    requirejs(['LineChart/LineChart',"Measure"],function(l,m){
         var chart=new l.LineChart()
+        var m=new m.Measure(1,[{x:10,y:10},{x:18,y:18}])
+        chart.addMeasure(m)
         chart.setConfig({width:"1000px",height:"800px"})
         chart.render("body")
         

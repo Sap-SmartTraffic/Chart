@@ -2,9 +2,11 @@ import d3 =require("d3")
 import _ =require("underscore")
 import {Evented} from "Evented"
 import {BaseChart} from "BaseChart"
+
 export class BaseLayer extends Evented{
-    constructor(conf?){
+    constructor(id?,conf?){
         super()
+        this.id=id||_.unique("layer")
         this.setConfig(conf)
     }
     addTo(c:BaseChart){
@@ -35,7 +37,7 @@ export class BaseLayer extends Evented{
         return this
     }
     updateStyle(){
-        let el=d3.select(this.el).style("position","relative")
+        let el=d3.select(this.el).style("position","absolute")
         if(this.style){
             _.each(this.style,(v,k)=>{
                 el.style(k,v)
