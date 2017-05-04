@@ -152,9 +152,9 @@ define(["require", "exports", "underscore"], function (require, exports, _) {
             var d2 = window.document.createElement("div");
             var d3 = window.document.createElement("div");
             d1.className = "autoResier";
-            d1.style = " position: absolute; left: 0; top: 0; right: 0; overflow:hidden; visibility: hidden; bottom: 0; z-index: -1";
-            d2.style = "position: absolute; left: 0; top: 0; right: 0; overflow:scroll; bottom: 0; z-index: -1";
-            d3.style = "position: absolute; left: 0; top: 0; transition: 0s ;height: 100000px;width:100000px";
+            d1.setAttribute("style", " position: absolute; left: 0; top: 0; right: 0; overflow:hidden; visibility: hidden; bottom: 0; z-index: -1");
+            d2.setAttribute("style", "position: absolute; left: 0; top: 0; right: 0; overflow:scroll; bottom: 0; z-index: -1");
+            d3.setAttribute("style", "position: absolute; left: 0; top: 0; transition: 0s ;height: 100000px;width:100000px");
             d2.appendChild(d3);
             d1.appendChild(d2);
             dom.appendChild(d1);
