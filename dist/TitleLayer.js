@@ -18,12 +18,18 @@ define(["require", "exports", "d3", "BaseLayer"], function (require, exports, d3
             _this.setConfig(conf);
             return _this;
         }
-        TitleLayer.prototype.init = function () {
-        };
         TitleLayer.prototype.renderer = function () {
+            var _this = this;
             var conf = this.chart.config;
             var fragment = document.createDocumentFragment();
-            return d3.select(fragment).append("xhtml:p").text(this.config.value).classed(this.config.className, true).node();
+            return d3.select(fragment).append("xhtml:p").text(this.config.value).classed(this.config.className, function () { return !!_this.config.className; }).node();
+        };
+        TitleLayer.prototype.updateDom = function () {
+            var _this = this;
+            d3.select(this.el).text(this.config.value).classed(this.config.className, function () { return !!_this.config.className; });
+        };
+        TitleLayer.prototype.getTitleRect = function () {
+            return this.chart.getStringRect(this.config.value, this.config.className);
         };
         return TitleLayer;
     }(BaseLayer_1.BaseLayer));

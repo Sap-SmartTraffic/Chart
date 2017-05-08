@@ -4,6 +4,7 @@ import {Evented} from "Evented"
 import {BaseChart} from "BaseChart"
 import{TitleLayer}from "TitleLayer"
 import{LineLayer} from"LineLayer"
+import Util=require("Util")
 export class LineChart extends BaseChart{
     constructor(conf?){
         super(conf)
@@ -11,20 +12,13 @@ export class LineChart extends BaseChart{
         this.lineLayer=new LineLayer()
         this.addLayer(this.mainTitle)
         this.addLayer(this.lineLayer)
-        this.init()
+        this.initHook()
     }
-    layoutData:any
-    init(){
-        
-        this.on("calculateStyleDone",()=>{
-            this.mainTitle.setStyle({width:this.style.width,height:"30px"})
-            this.lineLayer.setStyle({top:"30px",width:this.layoutData.lineLayerWidth,height:"200px"})
+    initHook(){ 
+        this.on("chartStyleChange",()=>{
+            this.mainTitle.setLayout({width:"100%",height:this.mainTitle.getTitleRect().height+"px"})
+            this.lineLayer.setLayout({top:"30px",width:this.style.width,height:Util.toPixel(this.style.height)-this.mainTitle.getTitleRect().height+"px"})
         })
-    }
-    calculateStyle(){
-        this.layoutData={lineLayerWidth:"500px"}
-        this.fire("calculateStyleDone")
-        return this
     }
     mainTitle:TitleLayer
     lineLayer:LineLayer

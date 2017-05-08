@@ -8,7 +8,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "BaseChart", "TitleLayer", "LineLayer"], function (require, exports, BaseChart_1, TitleLayer_1, LineLayer_1) {
+define(["require", "exports", "BaseChart", "TitleLayer", "LineLayer", "Util"], function (require, exports, BaseChart_1, TitleLayer_1, LineLayer_1, Util) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var LineChart = (function (_super) {
@@ -19,20 +19,15 @@ define(["require", "exports", "BaseChart", "TitleLayer", "LineLayer"], function 
             _this.lineLayer = new LineLayer_1.LineLayer();
             _this.addLayer(_this.mainTitle);
             _this.addLayer(_this.lineLayer);
-            _this.init();
+            _this.initHook();
             return _this;
         }
-        LineChart.prototype.init = function () {
+        LineChart.prototype.initHook = function () {
             var _this = this;
-            this.on("calculateStyleDone", function () {
-                _this.mainTitle.setStyle({ width: _this.style.width, height: "30px" });
-                _this.lineLayer.setStyle({ top: "30px", width: _this.layoutData.lineLayerWidth, height: "200px" });
+            this.on("chartStyleChange", function () {
+                _this.mainTitle.setLayout({ width: "100%", height: _this.mainTitle.getTitleRect().height + "px" });
+                _this.lineLayer.setLayout({ top: "30px", width: _this.style.width, height: Util.toPixel(_this.style.height) - _this.mainTitle.getTitleRect().height + "px" });
             });
-        };
-        LineChart.prototype.calculateStyle = function () {
-            this.layoutData = { lineLayerWidth: "500px" };
-            this.fire("calculateStyleDone");
-            return this;
         };
         return LineChart;
     }(BaseChart_1.BaseChart));

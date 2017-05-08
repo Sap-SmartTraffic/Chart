@@ -11,13 +11,17 @@ export class TitleLayer extends BaseLayer{
         value:string,
         className:string
     }
-    init(){
-        
-    }
     renderer(){
        let conf=this.chart.config
        let fragment=document.createDocumentFragment()
-       return  d3.select(fragment).append("xhtml:p").text(this.config.value).classed(this.config.className,true).node()
+       return  d3.select(fragment).append("xhtml:p").text(this.config.value).classed(this.config.className,()=>!!this.config.className).node()
+    }
+    updateDom(){
+        d3.select(this.el).text(this.config.value).classed(this.config.className,()=>!!this.config.className)
+    }
+    getTitleRect(){
+        return this.chart.getStringRect(this.config.value,this.config.className)
+        
     }
 
 }

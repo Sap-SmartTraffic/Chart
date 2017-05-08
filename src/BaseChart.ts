@@ -3,6 +3,7 @@ import _=require("underscore")
 import {Evented} from "Evented"
 import {BaseLayer} from "BaseLayer"
 import {Measure} from "Measure"
+import Util=require("Util")
 export class BaseChart extends Evented {
     constructor(conf?){
         super()
@@ -10,7 +11,6 @@ export class BaseChart extends Evented {
             this.el=d3.select(document.createDocumentFragment()).append("xhtml:div").node()    
         }
         this.setConfig(conf)
-       
     }
     config={
     }
@@ -19,7 +19,7 @@ export class BaseChart extends Evented {
     }
     setStyle(s){
         this.style=s
-        this.reRender()
+        //this.reRender()
       
     }
     setConfig(c){
@@ -27,9 +27,11 @@ export class BaseChart extends Evented {
             this.config[k]=v
         })
     }
-    calculateStyle(){
-        this.fire("calculateStyleDone")
-        return this
+    stringRectCache:any=Util.CacheAble(Util.getStringRect,(s,cls,fontSize)=>s.toString().length+" "+cls+fontSize)
+    getStringRect(s,cls?,fontSize?){
+        
+        let rect=this.stringRectCache(s,cls,fontSize)
+        return {width:rect.width,height:rect.height}
     }
     el:any
     isReady:boolean=false
@@ -77,14 +79,13 @@ export class BaseChart extends Evented {
     updateStyle(){
         d3.select(this.el).style("height",this.style.height)
                             .style("width",this.style.width)
-          _.invoke(this.layers,"updateStyle")
+        this.fire("chartStyleChange",{width:this.style.width,height:this.style.height})
+
     }
     getColorByIndex(i){
         return d3.scaleOrdinal(d3.schemeCategory10)(i)
     }
     render(ref){
-        this.calculateStyle()
-        
         _.invoke(this.layers,"render")
         let dom=d3.select(ref)
         if(!dom.empty()){
@@ -93,12 +94,4 @@ export class BaseChart extends Evented {
         this.updateStyle()
         return this
     }
-    ref:any
-    reRender(){
-        if(this.el){
-           d3.select(this.el).selectAll("*").remove()
-        }
-    }
-
-
 }

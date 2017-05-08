@@ -8,7 +8,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "d3", "underscore", "Evented"], function (require, exports, d3, _, Evented_1) {
+define(["require", "exports", "d3", "underscore", "Evented", "Util"], function (require, exports, d3, _, Evented_1, Util) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var BaseChart = (function (_super) {
@@ -19,6 +19,7 @@ define(["require", "exports", "d3", "underscore", "Evented"], function (require,
             _this.style = {
                 left: "0px", right: "0px", top: "0px", bottom: "0px", width: "300px", height: "300px", zIndex: 1
             };
+            _this.stringRectCache = Util.CacheAble(Util.getStringRect, function (s, cls, fontSize) { return s.toString().length + " " + cls + fontSize; });
             _this.isReady = false;
             _this.measures = [];
             _this.layers = [];
@@ -30,7 +31,7 @@ define(["require", "exports", "d3", "underscore", "Evented"], function (require,
         }
         BaseChart.prototype.setStyle = function (s) {
             this.style = s;
-            this.reRender();
+            //this.reRender()
         };
         BaseChart.prototype.setConfig = function (c) {
             var _this = this;
@@ -38,9 +39,9 @@ define(["require", "exports", "d3", "underscore", "Evented"], function (require,
                 _this.config[k] = v;
             });
         };
-        BaseChart.prototype.calculateStyle = function () {
-            this.fire("calculateStyleDone");
-            return this;
+        BaseChart.prototype.getStringRect = function (s, cls, fontSize) {
+            var rect = this.stringRectCache(s, cls, fontSize);
+            return { width: rect.width, height: rect.height };
         };
         BaseChart.prototype.addMeasure = function (m) {
             this.measures.push(m);
@@ -86,13 +87,12 @@ define(["require", "exports", "d3", "underscore", "Evented"], function (require,
         BaseChart.prototype.updateStyle = function () {
             d3.select(this.el).style("height", this.style.height)
                 .style("width", this.style.width);
-            _.invoke(this.layers, "updateStyle");
+            this.fire("chartStyleChange", { width: this.style.width, height: this.style.height });
         };
         BaseChart.prototype.getColorByIndex = function (i) {
             return d3.scaleOrdinal(d3.schemeCategory10)(i);
         };
         BaseChart.prototype.render = function (ref) {
-            this.calculateStyle();
             _.invoke(this.layers, "render");
             var dom = d3.select(ref);
             if (!dom.empty()) {
@@ -100,11 +100,6 @@ define(["require", "exports", "d3", "underscore", "Evented"], function (require,
             }
             this.updateStyle();
             return this;
-        };
-        BaseChart.prototype.reRender = function () {
-            if (this.el) {
-                d3.select(this.el).selectAll("*").remove();
-            }
         };
         return BaseChart;
     }(Evented_1.Evented));
