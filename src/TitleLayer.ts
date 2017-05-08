@@ -4,7 +4,7 @@ import {Evented} from "Evented"
 import {BaseLayer} from "BaseLayer"
 export class TitleLayer extends BaseLayer{
     constructor(id?,conf?){
-        super(conf)
+        super(id,conf)
         this.setConfig(conf)
     }
     config:{

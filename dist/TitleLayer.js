@@ -14,7 +14,7 @@ define(["require", "exports", "d3", "BaseLayer"], function (require, exports, d3
     var TitleLayer = (function (_super) {
         __extends(TitleLayer, _super);
         function TitleLayer(id, conf) {
-            var _this = _super.call(this, conf) || this;
+            var _this = _super.call(this, id, conf) || this;
             _this.setConfig(conf);
             return _this;
         }

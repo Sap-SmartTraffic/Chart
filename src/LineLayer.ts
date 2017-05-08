@@ -15,7 +15,7 @@ export class LineLayer extends BaseLayer {
         className: string
     }
     init() {
-
+       
     }
     renderer() {
         let conf = this.chart.config
@@ -26,19 +26,7 @@ export class LineLayer extends BaseLayer {
             maxY = Util.max(_.chain(ds).map((d)=>d.data).reduce((d1:any[],d2:any[])=>d1.concat(d2)).value(),"y"),
             minX = Util.min(_.chain(ds).map((d)=>d.data).reduce((d1:any[],d2:any[])=>d1.concat(d2)).value(),"x"),
             minY = Util.min(_.chain(ds).map((d)=>d.data).reduce((d1:any[],d2:any[])=>d1.concat(d2)).value(),"y")
-        // _.chain(ds).map((d)=>d.data).reduce((d1:any[],d2:any[]):any[]=>d1.concat(d2)).value().forEach(d=>{
-        //     maxX = Math.max(d.x, maxX)
-        //     maxY = Math.max(d.x, maxY)
-        //     minX = Math.min(d.x, minX)
-        //     minY = Math.min(d.x, minY)
-        // })
-        // ds.map((d) => d.data).reduce((d1, d2) => d1.concat(d2)).forEach(d => {
-        //     maxX = Math.max(d.x, maxX)
-        //     maxY = Math.max(d.x, maxY)
-        //     minX = Math.min(d.x, minX)
-        //     minY = Math.min(d.x, minY)
 
-        // })
         let lines=svg.append("svg:g")
         let xScale=d3.scaleLinear().domain([minX,maxX]).range([0,Util.toPixel(this.style.width)])
         let yScale =d3.scaleLinear().domain([minY,maxY]).range([Util.toPixel(this.style.height),0])

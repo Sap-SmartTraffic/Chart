@@ -23,8 +23,16 @@ define(["require", "exports", "BaseChart", "TitleLayer", "LineLayer"], function 
             return _this;
         }
         LineChart.prototype.init = function () {
-            this.mainTitle.setStyle({ width: this.style.width, height: "30px" });
-            this.lineLayer.setStyle({ top: "30px", width: this.style.width, height: "200px" });
+            var _this = this;
+            this.on("calculateStyleDone", function () {
+                _this.mainTitle.setStyle({ width: _this.style.width, height: "30px" });
+                _this.lineLayer.setStyle({ top: "30px", width: _this.layoutData.lineLayerWidth, height: "200px" });
+            });
+        };
+        LineChart.prototype.calculateStyle = function () {
+            this.layoutData = { lineLayerWidth: "500px" };
+            this.fire("calculateStyleDone");
+            return this;
         };
         return LineChart;
     }(BaseChart_1.BaseChart));

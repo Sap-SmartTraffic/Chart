@@ -10,19 +10,26 @@ export class BaseChart extends Evented {
             this.el=d3.select(document.createDocumentFragment()).append("xhtml:div").node()    
         }
         this.setConfig(conf)
+       
     }
     config={
-        width:"300px",
-        height:"300px"
     }
     style={
-        width:"300px",
-        height:"300px"
+        left:"0px",right:"0px",top:"0px",bottom:"0px",width:"300px",height:"300px",zIndex:1
+    }
+    setStyle(s){
+        this.style=s
+        this.reRender()
+      
     }
     setConfig(c){
         _.each(c,(v,k)=>{
             this.config[k]=v
         })
+    }
+    calculateStyle(){
+        this.fire("calculateStyleDone")
+        return this
     }
     el:any
     isReady:boolean=false
@@ -68,13 +75,16 @@ export class BaseChart extends Evented {
         return this
     }
     updateStyle(){
-        d3.select(this.el).style("height",this.config.height)
-                            .style("width",this.config.width)
+        d3.select(this.el).style("height",this.style.height)
+                            .style("width",this.style.width)
+          _.invoke(this.layers,"updateStyle")
     }
     getColorByIndex(i){
         return d3.scaleOrdinal(d3.schemeCategory10)(i)
     }
     render(ref){
+        this.calculateStyle()
+        
         _.invoke(this.layers,"render")
         let dom=d3.select(ref)
         if(!dom.empty()){
@@ -83,5 +93,12 @@ export class BaseChart extends Evented {
         this.updateStyle()
         return this
     }
+    ref:any
+    reRender(){
+        if(this.el){
+           d3.select(this.el).selectAll("*").remove()
+        }
+    }
+
 
 }

@@ -25,18 +25,6 @@ define(["require", "exports", "d3", "underscore", "Util", "BaseLayer"], function
             var svg = d3.select(fragment).append("svg").classed(this.config.className, function () { return !!_this.config.className; });
             var ds = this.chart.measures;
             var maxX = Util.max(_.chain(ds).map(function (d) { return d.data; }).reduce(function (d1, d2) { return d1.concat(d2); }).value(), "x"), maxY = Util.max(_.chain(ds).map(function (d) { return d.data; }).reduce(function (d1, d2) { return d1.concat(d2); }).value(), "y"), minX = Util.min(_.chain(ds).map(function (d) { return d.data; }).reduce(function (d1, d2) { return d1.concat(d2); }).value(), "x"), minY = Util.min(_.chain(ds).map(function (d) { return d.data; }).reduce(function (d1, d2) { return d1.concat(d2); }).value(), "y");
-            // _.chain(ds).map((d)=>d.data).reduce((d1:any[],d2:any[]):any[]=>d1.concat(d2)).value().forEach(d=>{
-            //     maxX = Math.max(d.x, maxX)
-            //     maxY = Math.max(d.x, maxY)
-            //     minX = Math.min(d.x, minX)
-            //     minY = Math.min(d.x, minY)
-            // })
-            // ds.map((d) => d.data).reduce((d1, d2) => d1.concat(d2)).forEach(d => {
-            //     maxX = Math.max(d.x, maxX)
-            //     maxY = Math.max(d.x, maxY)
-            //     minX = Math.min(d.x, minX)
-            //     minY = Math.min(d.x, minY)
-            // })
             var lines = svg.append("svg:g");
             var xScale = d3.scaleLinear().domain([minX, maxX]).range([0, Util.toPixel(this.style.width)]);
             var yScale = d3.scaleLinear().domain([minY, maxY]).range([Util.toPixel(this.style.height), 0]);

@@ -15,13 +15,14 @@ define(["require", "exports", "d3", "underscore", "Evented"], function (require,
         __extends(BaseLayer, _super);
         function BaseLayer(id, conf) {
             var _this = _super.call(this) || this;
-            _this.id = id || _.unique("layer");
+            _this.id = id || _.uniqueId("layer");
             _this.setConfig(conf);
             return _this;
         }
         BaseLayer.prototype.addTo = function (c) {
             this.chart = c;
             this.chart.addLayer(this);
+            this.chart.on("calculateStyleDone", this.updateStyle.bind(this));
             return this;
         };
         BaseLayer.prototype.setConfig = function (c) {
@@ -35,8 +36,6 @@ define(["require", "exports", "d3", "underscore", "Evented"], function (require,
         };
         BaseLayer.prototype.setStyle = function (s) {
             this.style = s;
-        };
-        BaseLayer.prototype.calculateStyle = function () {
             return this;
         };
         BaseLayer.prototype.updateStyle = function () {
@@ -52,7 +51,6 @@ define(["require", "exports", "d3", "underscore", "Evented"], function (require,
                 this.el.parentNode.removeChild(this.el);
             }
             this.el = this.renderer();
-            this.calculateStyle().updateStyle();
             d3.select(this.chart.getContainer()).node().appendChild(this.el);
             return this;
         };

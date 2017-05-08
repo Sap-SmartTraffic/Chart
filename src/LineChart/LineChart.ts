@@ -13,9 +13,18 @@ export class LineChart extends BaseChart{
         this.addLayer(this.lineLayer)
         this.init()
     }
+    layoutData:any
     init(){
-        this.mainTitle.setStyle({width:this.style.width,height:"30px"})
-        this.lineLayer.setStyle({top:"30px",width:this.style.width,height:"200px"})
+        
+        this.on("calculateStyleDone",()=>{
+            this.mainTitle.setStyle({width:this.style.width,height:"30px"})
+            this.lineLayer.setStyle({top:"30px",width:this.layoutData.lineLayerWidth,height:"200px"})
+        })
+    }
+    calculateStyle(){
+        this.layoutData={lineLayerWidth:"500px"}
+        this.fire("calculateStyleDone")
+        return this
     }
     mainTitle:TitleLayer
     lineLayer:LineLayer

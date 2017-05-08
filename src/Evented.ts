@@ -56,7 +56,10 @@ export class Evented {
             this.events[t].forEach((o) => o.fn.call(o.ctx, obj));
         }
         let p = this.parent
-        p.fire(t, obj)
+        if(p){
+            p.fire(t, obj)
+        }
+       
         return this
     }
     listenTo(e: Evented) {

@@ -15,13 +15,9 @@ define(["require", "exports", "d3", "underscore", "Evented"], function (require,
         __extends(BaseChart, _super);
         function BaseChart(conf) {
             var _this = _super.call(this) || this;
-            _this.config = {
-                width: "300px",
-                height: "300px"
-            };
+            _this.config = {};
             _this.style = {
-                width: "300px",
-                height: "300px"
+                left: "0px", right: "0px", top: "0px", bottom: "0px", width: "300px", height: "300px", zIndex: 1
             };
             _this.isReady = false;
             _this.measures = [];
@@ -32,11 +28,19 @@ define(["require", "exports", "d3", "underscore", "Evented"], function (require,
             _this.setConfig(conf);
             return _this;
         }
+        BaseChart.prototype.setStyle = function (s) {
+            this.style = s;
+            this.reRender();
+        };
         BaseChart.prototype.setConfig = function (c) {
             var _this = this;
             _.each(c, function (v, k) {
                 _this.config[k] = v;
             });
+        };
+        BaseChart.prototype.calculateStyle = function () {
+            this.fire("calculateStyleDone");
+            return this;
         };
         BaseChart.prototype.addMeasure = function (m) {
             this.measures.push(m);
@@ -80,13 +84,15 @@ define(["require", "exports", "d3", "underscore", "Evented"], function (require,
             return this;
         };
         BaseChart.prototype.updateStyle = function () {
-            d3.select(this.el).style("height", this.config.height)
-                .style("width", this.config.width);
+            d3.select(this.el).style("height", this.style.height)
+                .style("width", this.style.width);
+            _.invoke(this.layers, "updateStyle");
         };
         BaseChart.prototype.getColorByIndex = function (i) {
             return d3.scaleOrdinal(d3.schemeCategory10)(i);
         };
         BaseChart.prototype.render = function (ref) {
+            this.calculateStyle();
             _.invoke(this.layers, "render");
             var dom = d3.select(ref);
             if (!dom.empty()) {
@@ -94,6 +100,11 @@ define(["require", "exports", "d3", "underscore", "Evented"], function (require,
             }
             this.updateStyle();
             return this;
+        };
+        BaseChart.prototype.reRender = function () {
+            if (this.el) {
+                d3.select(this.el).selectAll("*").remove();
+            }
         };
         return BaseChart;
     }(Evented_1.Evented));

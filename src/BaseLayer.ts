@@ -6,12 +6,13 @@ import {BaseChart} from "BaseChart"
 export class BaseLayer extends Evented{
     constructor(id?,conf?){
         super()
-        this.id=id||_.unique("layer")
+        this.id=id||_.uniqueId("layer")
         this.setConfig(conf)
     }
     addTo(c:BaseChart){
         this.chart=c
         this.chart.addLayer(this)
+        this.chart.on("calculateStyleDone",this.updateStyle.bind(this))
         return this
     }
     setConfig(c){
@@ -29,13 +30,12 @@ export class BaseLayer extends Evented{
     }
     setStyle(s){
         this.style=s
+        return this
     }
     config:{
         
     }
-    calculateStyle(){
-        return this
-    }
+
     updateStyle(){
         let el=d3.select(this.el).style("position","absolute")
         if(this.style){
@@ -50,7 +50,6 @@ export class BaseLayer extends Evented{
             this.el.parentNode.removeChild(this.el)
         }
         this.el=this.renderer()
-        this.calculateStyle().updateStyle()
         d3.select(this.chart.getContainer()).node().appendChild(this.el)
         return this
     }

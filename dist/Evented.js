@@ -60,7 +60,9 @@ define(["require", "exports", "underscore"], function (require, exports, _) {
                 this.events[t].forEach(function (o) { return o.fn.call(o.ctx, obj); });
             }
             var p = this.parent;
-            p.fire(t, obj);
+            if (p) {
+                p.fire(t, obj);
+            }
             return this;
         };
         Evented.prototype.listenTo = function (e) {
