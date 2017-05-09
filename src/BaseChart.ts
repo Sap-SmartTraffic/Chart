@@ -13,19 +13,15 @@ export class BaseChart extends Evented {
         this.setConfig(conf)
     }
     config={
-    }
-    style={
-        left:"0px",right:"0px",top:"0px",bottom:"0px",width:"300px",height:"300px",zIndex:1
-    }
-    setStyle(s){
-        this.style=s
-        //this.reRender()
-      
+        width:"300px",
+        height:"300px"
     }
     setConfig(c){
         _.each(c,(v,k)=>{
             this.config[k]=v
         })
+        this.update()
+
     }
     stringRectCache:any=Util.CacheAble(Util.getStringRect,(s,cls,fontSize)=>s.toString().length+" "+cls+fontSize)
     getStringRect(s,cls?,fontSize?){
@@ -76,22 +72,23 @@ export class BaseChart extends Evented {
     _clearLayer(l:BaseLayer){
         return this
     }
-    updateStyle(){
-        d3.select(this.el).style("height",this.style.height)
-                            .style("width",this.style.width)
-        this.fire("chartStyleChange",{width:this.style.width,height:this.style.height})
+    update(){
+        d3.select(this.el).style("height",this.config.height)
+                            .style("width",this.config.width)
+        this.fire("chartUpdate",{width:this.config.width,height:this.config.height})
 
     }
     getColorByIndex(i){
         return d3.scaleOrdinal(d3.schemeCategory10)(i)
     }
     render(ref){
+        this.update()
         _.invoke(this.layers,"render")
         let dom=d3.select(ref)
         if(!dom.empty()){
             dom.node().appendChild(this.el)
         }
-        this.updateStyle()
+        //this.updateStyle()
         return this
     }
 }

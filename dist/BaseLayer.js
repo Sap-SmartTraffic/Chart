@@ -17,7 +17,7 @@ define(["require", "exports", "d3", "underscore", "Evented"], function (require,
             var _this = _super.call(this) || this;
             _this.isInit = false;
             _this.layout = {
-                left: "0px", right: "", top: "0px", bottom: "", width: "300px", height: "300px", zIndex: 10
+                left: "0px", right: "", top: "0px", bottom: "", width: "0px", height: "0px", zIndex: 10
             };
             _this.id = id || _.uniqueId("layer");
             _this.setConfig(conf);
@@ -64,9 +64,6 @@ define(["require", "exports", "d3", "underscore", "Evented"], function (require,
             this.update();
             return this;
         };
-        BaseLayer.prototype.calculateLayout = function () {
-            return this;
-        };
         BaseLayer.prototype.updateLayout = function () {
             var el = d3.select(this.el).style("position", "absolute");
             if (this.layout) {
@@ -78,7 +75,6 @@ define(["require", "exports", "d3", "underscore", "Evented"], function (require,
         BaseLayer.prototype.updateDom = function () { };
         BaseLayer.prototype.update = function () {
             if (this.el) {
-                this.calculateLayout();
                 this.updateLayout();
                 this.updateDom();
             }
@@ -88,10 +84,9 @@ define(["require", "exports", "d3", "underscore", "Evented"], function (require,
                 d3.select(this.chart.getContainer()).node().appendChild(this.el);
             }
             else {
-                this.calculateLayout();
-                this.updateLayout();
                 this.el = this.renderer();
                 d3.select(this.chart.getContainer()).node().appendChild(this.el);
+                this.updateLayout();
             }
             return this;
         };

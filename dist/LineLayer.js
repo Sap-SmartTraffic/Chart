@@ -23,8 +23,8 @@ define(["require", "exports", "d3", "underscore", "Util", "BaseLayer"], function
             var ds = this.chart.measures;
             var maxX = Util.max(_.chain(ds).map(function (d) { return d.data; }).reduce(function (d1, d2) { return d1.concat(d2); }).value(), "x"), maxY = Util.max(_.chain(ds).map(function (d) { return d.data; }).reduce(function (d1, d2) { return d1.concat(d2); }).value(), "y"), minX = Util.min(_.chain(ds).map(function (d) { return d.data; }).reduce(function (d1, d2) { return d1.concat(d2); }).value(), "x"), minY = Util.min(_.chain(ds).map(function (d) { return d.data; }).reduce(function (d1, d2) { return d1.concat(d2); }).value(), "y");
             var lines = svgNode.append("svg:g");
-            var xScale = d3.scaleLinear().domain([minX, maxX]).range([0, Util.toPixel(this.layout.width, this.chart.style.width)]);
-            var yScale = d3.scaleLinear().domain([minY, maxY]).range([Util.toPixel(this.layout.height, this.chart.style.height), 0]);
+            var xScale = d3.scaleLinear().domain([minX, maxX]).range([0, Util.toPixel(this.layout.width, this.layout.width)]);
+            var yScale = d3.scaleLinear().domain([minY, maxY]).range([Util.toPixel(this.layout.height, this.layout.height), 0]);
             _.each(ds, function (d, i) {
                 var lGen = d3.line();
                 lines.append("path").attr("d", _this.smartLineGen(xScale, yScale, true, d.data)).attr("stroke", d.style.color || _this.chart.getColorByIndex(i));

@@ -15,18 +15,19 @@ define(["require", "exports", "BaseChart", "TitleLayer", "LineLayer", "Util"], f
         __extends(LineChart, _super);
         function LineChart(conf) {
             var _this = _super.call(this, conf) || this;
-            _this.mainTitle = new TitleLayer_1.TitleLayer("title", { value: "hehe" });
+            _this.mainTitle = new TitleLayer_1.TitleLayer("title", { value: "hehe", className: "mainTitle" });
             _this.lineLayer = new LineLayer_1.LineLayer();
             _this.addLayer(_this.mainTitle);
             _this.addLayer(_this.lineLayer);
-            _this.initHook();
+            _this.init();
             return _this;
         }
-        LineChart.prototype.initHook = function () {
+        LineChart.prototype.init = function () {
             var _this = this;
-            this.on("chartStyleChange", function () {
+            this.on("chartUpdate", function () {
+                ///calculate layout
                 _this.mainTitle.setLayout({ width: "100%", height: _this.mainTitle.getTitleRect().height + "px" });
-                _this.lineLayer.setLayout({ top: "30px", width: _this.style.width, height: Util.toPixel(_this.style.height) - _this.mainTitle.getTitleRect().height + "px" });
+                _this.lineLayer.setLayout({ top: _this.mainTitle.getTitleRect().height + "px", width: _this.config.width, height: Util.toPixel(_this.config.height) - _this.mainTitle.getTitleRect().height + "px" });
             });
         };
         return LineChart;

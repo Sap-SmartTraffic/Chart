@@ -25,8 +25,8 @@ export class LineLayer extends BaseLayer {
             minY = Util.min(_.chain(ds).map((d)=>d.data).reduce((d1:any[],d2:any[])=>d1.concat(d2)).value(),"y")
         
         let lines=svgNode.append("svg:g")
-        let xScale=d3.scaleLinear().domain([minX,maxX]).range([0,Util.toPixel(this.layout.width,this.chart.style.width)])
-        let yScale =d3.scaleLinear().domain([minY,maxY]).range([Util.toPixel(this.layout.height,this.chart.style.height),0])
+        let xScale=d3.scaleLinear().domain([minX,maxX]).range([0,Util.toPixel(this.layout.width,this.layout.width)])
+        let yScale =d3.scaleLinear().domain([minY,maxY]).range([Util.toPixel(this.layout.height,this.layout.height),0])
         _.each(ds,(d,i)=>{
             let lGen=d3.line()
             lines.append("path").attr("d",this.smartLineGen(xScale,yScale,true,d.data)).attr("stroke",d.style.color||this.chart.getColorByIndex(i))

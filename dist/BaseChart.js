@@ -15,9 +15,9 @@ define(["require", "exports", "d3", "underscore", "Evented", "Util"], function (
         __extends(BaseChart, _super);
         function BaseChart(conf) {
             var _this = _super.call(this) || this;
-            _this.config = {};
-            _this.style = {
-                left: "0px", right: "0px", top: "0px", bottom: "0px", width: "300px", height: "300px", zIndex: 1
+            _this.config = {
+                width: "300px",
+                height: "300px"
             };
             _this.stringRectCache = Util.CacheAble(Util.getStringRect, function (s, cls, fontSize) { return s.toString().length + " " + cls + fontSize; });
             _this.isReady = false;
@@ -29,15 +29,12 @@ define(["require", "exports", "d3", "underscore", "Evented", "Util"], function (
             _this.setConfig(conf);
             return _this;
         }
-        BaseChart.prototype.setStyle = function (s) {
-            this.style = s;
-            //this.reRender()
-        };
         BaseChart.prototype.setConfig = function (c) {
             var _this = this;
             _.each(c, function (v, k) {
                 _this.config[k] = v;
             });
+            this.update();
         };
         BaseChart.prototype.getStringRect = function (s, cls, fontSize) {
             var rect = this.stringRectCache(s, cls, fontSize);
@@ -84,21 +81,22 @@ define(["require", "exports", "d3", "underscore", "Evented", "Util"], function (
         BaseChart.prototype._clearLayer = function (l) {
             return this;
         };
-        BaseChart.prototype.updateStyle = function () {
-            d3.select(this.el).style("height", this.style.height)
-                .style("width", this.style.width);
-            this.fire("chartStyleChange", { width: this.style.width, height: this.style.height });
+        BaseChart.prototype.update = function () {
+            d3.select(this.el).style("height", this.config.height)
+                .style("width", this.config.width);
+            this.fire("chartUpdate", { width: this.config.width, height: this.config.height });
         };
         BaseChart.prototype.getColorByIndex = function (i) {
             return d3.scaleOrdinal(d3.schemeCategory10)(i);
         };
         BaseChart.prototype.render = function (ref) {
+            this.update();
             _.invoke(this.layers, "render");
             var dom = d3.select(ref);
             if (!dom.empty()) {
                 dom.node().appendChild(this.el);
             }
-            this.updateStyle();
+            //this.updateStyle()
             return this;
         };
         return BaseChart;

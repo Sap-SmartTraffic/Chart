@@ -8,16 +8,17 @@ import Util=require("Util")
 export class LineChart extends BaseChart{
     constructor(conf?){
         super(conf)
-        this.mainTitle=new TitleLayer("title",{value:"hehe"})
+        this.mainTitle=new TitleLayer("title",{value:"hehe",className:"mainTitle"})
         this.lineLayer=new LineLayer()
         this.addLayer(this.mainTitle)
         this.addLayer(this.lineLayer)
-        this.initHook()
+        this.init()
     }
-    initHook(){ 
-        this.on("chartStyleChange",()=>{
+    init(){ 
+        this.on("chartUpdate",()=>{
+            ///calculate layout
             this.mainTitle.setLayout({width:"100%",height:this.mainTitle.getTitleRect().height+"px"})
-            this.lineLayer.setLayout({top:"30px",width:this.style.width,height:Util.toPixel(this.style.height)-this.mainTitle.getTitleRect().height+"px"})
+            this.lineLayer.setLayout({top:this.mainTitle.getTitleRect().height+"px",width:this.config.width,height:Util.toPixel(this.config.height)-this.mainTitle.getTitleRect().height+"px"})
         })
     }
     mainTitle:TitleLayer

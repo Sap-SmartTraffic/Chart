@@ -28,7 +28,7 @@ export class BaseLayer extends Evented{
     id:string
     isInit:boolean = false
     layout={
-        left:"0px",right:"",top:"0px",bottom:"",width:"300px",height:"300px",zIndex:10
+        left:"0px",right:"",top:"0px",bottom:"",width:"0px",height:"0px",zIndex:10
     }
     setLayout(s){
         _.each(s,(v,k)=>{
@@ -56,10 +56,6 @@ export class BaseLayer extends Evented{
         return this
     }
     config:any
-    calculateLayout(){
-        
-        return this
-    }
     updateLayout(){
         let el=d3.select(this.el).style("position","absolute")
         if(this.layout){
@@ -72,7 +68,6 @@ export class BaseLayer extends Evented{
     updateDom(){}
     update(){
         if(this.el){
-            this.calculateLayout()
             this.updateLayout()
             this.updateDom()
         }
@@ -82,10 +77,9 @@ export class BaseLayer extends Evented{
             d3.select(this.chart.getContainer()).node().appendChild(this.el)
 
         }else{
-            this.calculateLayout()
-            this.updateLayout()
             this.el=this.renderer()
             d3.select(this.chart.getContainer()).node().appendChild(this.el)
+            this.updateLayout()
         }
         return this
     }
