@@ -5,6 +5,16 @@ import {BaseLayer} from "BaseLayer"
 import {Measure} from "Measure"
 import Util=require("Util")
 export class BaseChart extends Evented {
+    el:any
+    isReady:boolean=false
+    measures:Measure[]=[]
+    layers:BaseLayer[]=[]
+    config={
+        width:"600px",
+        height:"400px",
+        position:"absolute"
+    }
+
     constructor(conf?){
         super()
         if(!this.el){
@@ -12,27 +22,29 @@ export class BaseChart extends Evented {
         }
         this.setConfig(conf)
     }
-    config={
-        width:"300px",
-        height:"300px"
-    }
+
     setConfig(c){
         _.each(c,(v,k)=>{
             this.config[k]=v
         })
         this.update()
+    }
+
+    update(){
+        d3.select(this.el).style("width",this.config.width)
+                          .style("height",this.config.height)
+                          .style("position",this.config.position)
+        this.fire("chartUpdate",{width:this.config.width,height:this.config.height})
 
     }
+
     stringRectCache:any=Util.CacheAble(Util.getStringRect,(s,cls,fontSize)=>s.toString().length+" "+cls+fontSize)
+    
     getStringRect(s,cls?,fontSize?){
-        
         let rect=this.stringRectCache(s,cls,fontSize)
         return {width:rect.width,height:rect.height}
     }
-    el:any
-    isReady:boolean=false
-    measures:Measure[]=[]
-    layers:BaseLayer[]=[]
+    
     addMeasure(m:Measure){
         this.measures.push(m)
     }
@@ -72,12 +84,7 @@ export class BaseChart extends Evented {
     _clearLayer(l:BaseLayer){
         return this
     }
-    update(){
-        d3.select(this.el).style("height",this.config.height)
-                            .style("width",this.config.width)
-        this.fire("chartUpdate",{width:this.config.width,height:this.config.height})
-
-    }
+    
     getColorByIndex(i){
         return d3.scaleOrdinal(d3.schemeCategory10)(i)
     }

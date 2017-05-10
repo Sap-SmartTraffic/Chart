@@ -4,18 +4,21 @@ import {Evented} from "Evented"
 import {BaseChart} from "BaseChart"
 import Util=require("Util")
 export class BaseLayer extends Evented{
+    el:any
+    id:string
+    isInit:boolean = false
+    chart:BaseChart
+    config:any
+    layout={
+        top:"0px",right:"",bottom:"",left:"0px",width:"0px",height:"0px",zIndex:10
+    }
+    
     constructor(id?,conf?){
         super()
         this.id=id||_.uniqueId("layer")
         this.setConfig(conf)
     }
     
-    addTo(c:BaseChart){
-        this.chart=c
-        this.chart.addLayer(this)
-        //this.chart.on("calculateStyleDone",this.updateStyle.bind(this))
-        return this
-    }
     setConfig(c){
         if(!this.config){
             this.config={}
@@ -24,12 +27,7 @@ export class BaseLayer extends Evented{
             this.config[k]=v
         })
     }
-    el:any
-    id:string
-    isInit:boolean = false
-    layout={
-        left:"0px",right:"",top:"0px",bottom:"",width:"0px",height:"0px",zIndex:10
-    }
+    
     setLayout(s){
         _.each(s,(v,k)=>{
             this.layout[k]=v
@@ -55,27 +53,39 @@ export class BaseLayer extends Evented{
         this.update()
         return this
     }
-    config:any
-    updateLayout(){
-        let el=d3.select(this.el).style("position","absolute")
-        if(this.layout){
-            _.each(this.layout,(v,k)=>{
-                el.style(k,v)
-            })
 
-        }
-    }
-    updateDom(){}
     update(){
         if(this.el){
             this.updateLayout()
             this.updateDom()
         }
     }
+    
+    updateLayout(){
+        let el=d3.select(this.el).style("position","absolute")
+        if(this.layout){
+            _.each(this.layout,(v,k)=>{
+                el.style(k,v)
+            })
+        }
+    }
+
+    updateDom(){}
+
+    calculateLayout() {
+        
+    }
+
+    addTo(c:BaseChart){
+        this.chart=c
+        this.chart.addLayer(this)
+        //this.chart.on("calculateStyleDone",this.updateStyle.bind(this))
+        return this
+    }
+
     render(){
         if(this.el){
             d3.select(this.chart.getContainer()).node().appendChild(this.el)
-
         }else{
             this.el=this.renderer()
             d3.select(this.chart.getContainer()).node().appendChild(this.el)
@@ -83,6 +93,6 @@ export class BaseLayer extends Evented{
         }
         return this
     }
-    chart:BaseChart
+    
     renderer(){}
 }

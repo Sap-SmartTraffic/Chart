@@ -17,18 +17,12 @@ define(["require", "exports", "d3", "underscore", "Evented"], function (require,
             var _this = _super.call(this) || this;
             _this.isInit = false;
             _this.layout = {
-                left: "0px", right: "", top: "0px", bottom: "", width: "0px", height: "0px", zIndex: 10
+                top: "0px", right: "", bottom: "", left: "0px", width: "0px", height: "0px", zIndex: 10
             };
             _this.id = id || _.uniqueId("layer");
             _this.setConfig(conf);
             return _this;
         }
-        BaseLayer.prototype.addTo = function (c) {
-            this.chart = c;
-            this.chart.addLayer(this);
-            //this.chart.on("calculateStyleDone",this.updateStyle.bind(this))
-            return this;
-        };
         BaseLayer.prototype.setConfig = function (c) {
             var _this = this;
             if (!this.config) {
@@ -64,6 +58,12 @@ define(["require", "exports", "d3", "underscore", "Evented"], function (require,
             this.update();
             return this;
         };
+        BaseLayer.prototype.update = function () {
+            if (this.el) {
+                this.updateLayout();
+                this.updateDom();
+            }
+        };
         BaseLayer.prototype.updateLayout = function () {
             var el = d3.select(this.el).style("position", "absolute");
             if (this.layout) {
@@ -73,11 +73,13 @@ define(["require", "exports", "d3", "underscore", "Evented"], function (require,
             }
         };
         BaseLayer.prototype.updateDom = function () { };
-        BaseLayer.prototype.update = function () {
-            if (this.el) {
-                this.updateLayout();
-                this.updateDom();
-            }
+        BaseLayer.prototype.calculateLayout = function () {
+        };
+        BaseLayer.prototype.addTo = function (c) {
+            this.chart = c;
+            this.chart.addLayer(this);
+            //this.chart.on("calculateStyleDone",this.updateStyle.bind(this))
+            return this;
         };
         BaseLayer.prototype.render = function () {
             if (this.el) {

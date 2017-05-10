@@ -15,14 +15,15 @@ define(["require", "exports", "d3", "underscore", "Evented", "Util"], function (
         __extends(BaseChart, _super);
         function BaseChart(conf) {
             var _this = _super.call(this) || this;
-            _this.config = {
-                width: "300px",
-                height: "300px"
-            };
-            _this.stringRectCache = Util.CacheAble(Util.getStringRect, function (s, cls, fontSize) { return s.toString().length + " " + cls + fontSize; });
             _this.isReady = false;
             _this.measures = [];
             _this.layers = [];
+            _this.config = {
+                width: "600px",
+                height: "400px",
+                position: "absolute"
+            };
+            _this.stringRectCache = Util.CacheAble(Util.getStringRect, function (s, cls, fontSize) { return s.toString().length + " " + cls + fontSize; });
             if (!_this.el) {
                 _this.el = d3.select(document.createDocumentFragment()).append("xhtml:div").node();
             }
@@ -35,6 +36,12 @@ define(["require", "exports", "d3", "underscore", "Evented", "Util"], function (
                 _this.config[k] = v;
             });
             this.update();
+        };
+        BaseChart.prototype.update = function () {
+            d3.select(this.el).style("width", this.config.width)
+                .style("height", this.config.height)
+                .style("position", this.config.position);
+            this.fire("chartUpdate", { width: this.config.width, height: this.config.height });
         };
         BaseChart.prototype.getStringRect = function (s, cls, fontSize) {
             var rect = this.stringRectCache(s, cls, fontSize);
@@ -80,11 +87,6 @@ define(["require", "exports", "d3", "underscore", "Evented", "Util"], function (
         };
         BaseChart.prototype._clearLayer = function (l) {
             return this;
-        };
-        BaseChart.prototype.update = function () {
-            d3.select(this.el).style("height", this.config.height)
-                .style("width", this.config.width);
-            this.fire("chartUpdate", { width: this.config.width, height: this.config.height });
         };
         BaseChart.prototype.getColorByIndex = function (i) {
             return d3.scaleOrdinal(d3.schemeCategory10)(i);

@@ -13,8 +13,10 @@ define(["require", "exports", "d3", "underscore", "Util", "BaseLayer"], function
     Object.defineProperty(exports, "__esModule", { value: true });
     var LineLayer = (function (_super) {
         __extends(LineLayer, _super);
-        function LineLayer(conf) {
-            return _super.call(this, conf) || this;
+        function LineLayer(id, conf) {
+            var _this = _super.call(this, conf) || this;
+            _this.setConfig(conf);
+            return _this;
         }
         LineLayer.prototype.init = function () {
         };
@@ -22,12 +24,12 @@ define(["require", "exports", "d3", "underscore", "Util", "BaseLayer"], function
             var _this = this;
             var ds = this.chart.measures;
             var maxX = Util.max(_.chain(ds).map(function (d) { return d.data; }).reduce(function (d1, d2) { return d1.concat(d2); }).value(), "x"), maxY = Util.max(_.chain(ds).map(function (d) { return d.data; }).reduce(function (d1, d2) { return d1.concat(d2); }).value(), "y"), minX = Util.min(_.chain(ds).map(function (d) { return d.data; }).reduce(function (d1, d2) { return d1.concat(d2); }).value(), "x"), minY = Util.min(_.chain(ds).map(function (d) { return d.data; }).reduce(function (d1, d2) { return d1.concat(d2); }).value(), "y");
+            var xScale = d3.scaleLinear().domain([0, maxX]).range([0, Util.toPixel(this.layout.width)]);
+            var yScale = d3.scaleLinear().domain([0, maxY]).range([Util.toPixel(this.layout.height), 0]);
             var lines = svgNode.append("svg:g");
-            var xScale = d3.scaleLinear().domain([minX, maxX]).range([0, Util.toPixel(this.layout.width, this.layout.width)]);
-            var yScale = d3.scaleLinear().domain([minY, maxY]).range([Util.toPixel(this.layout.height, this.layout.height), 0]);
             _.each(ds, function (d, i) {
                 var lGen = d3.line();
-                lines.append("path").attr("d", _this.smartLineGen(xScale, yScale, true, d.data)).attr("stroke", d.style.color || _this.chart.getColorByIndex(i));
+                lines.append("path").attr("d", _this.smartLineGen(xScale, yScale, true, d.data)).attr("stroke", d.style.color || _this.chart.getColorByIndex(i)).attr("fill", "none");
             });
             return this;
         };
