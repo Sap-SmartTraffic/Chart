@@ -54,7 +54,10 @@ export function min (ns:any [],key?){
 export let d3Invoke = curry((method?,obj?)=>{
     return (d3Selection)=>{
         _.each(obj,(v,k)=>{
-            d3Selection[method](k,v)
+            if(v!=undefined){
+                 d3Selection[method](k,v)
+            }
+          
         })
         return d3Selection
     }

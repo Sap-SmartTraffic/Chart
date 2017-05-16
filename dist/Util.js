@@ -60,7 +60,9 @@ define(["require", "exports", "underscore"], function (require, exports, _) {
         Util.d3Invoke = curry(function (method, obj) {
             return function (d3Selection) {
                 _.each(obj, function (v, k) {
-                    d3Selection[method](k, v);
+                    if (v != undefined) {
+                        d3Selection[method](k, v);
+                    }
                 });
                 return d3Selection;
             };
