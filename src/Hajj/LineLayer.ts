@@ -31,12 +31,15 @@ export class LineLayer extends BaseLayer {
         let xScale=d3.scaleLinear().domain([minX,maxX]).range([this.axisLayout.yWidth,Util.toPixel(this.layout.width,this.layout.width)-5])
         let yScale =d3.scaleLinear().domain([minY,maxY]).range([Util.toPixel(this.layout.height,this.layout.height)-this.axisLayout.xHidth,5])
         let xAxis=d3.axisBottom(xScale)
-        svgNode.append("g").style("transform","translate(0px,"+(Util.toPixel(this.layout.height,this.layout.height)-this.axisLayout.xHidth)+"px").call(xAxis)
+        svgNode.append("g").classed("xAxis",true).style("transform","translate(0px,"+(Util.toPixel(this.layout.height,this.layout.height)-this.axisLayout.xHidth)+"px").call(xAxis)
         let yAxis=d3.axisLeft(yScale)
-        svgNode.append("g").style("transform","translate(25px,0)").call(yAxis)
+        svgNode.append("g").classed("yAxis",true).style("transform","translate(25px,0)").call(yAxis)
         
+
+
         let lines=svgNode.append("svg:g")
         let areas=svgNode.append("svg:g")
+        let bars= svgNode.append("svg:g")
         // _.chain(ds).filter((d:any)=>d.type=="area").each(d=>{
         //     areas.append("path").attr("d",this.smartLineGen(xScale,yScale,true,d.data)).call(attrs({
         //         "stroke":d.style.color||this.chart.getColorByIndex(i)
@@ -46,14 +49,27 @@ export class LineLayer extends BaseLayer {
             let lGen=d3.line()
            if(d.type=="line"){
                 lines.append("path").attr("d",this.smartLineGen(xScale,yScale,true,d.data)).call(attrs({
-                "stroke":d.style.color||this.chart.getColorByIndex(i)
+                    "stroke":d.style.color||this.chart.getColorByIndex(i)
                 })).call(attrs(d.style)).attr("fill","none")
            }
             if(d.type=="area"){
                  areas.append("path").attr("d",this.areaGen(xScale,yScale,d.data,Util.toPixel(this.layout.height,this.layout.height)-this.axisLayout.xHidth)).call(attrs({
-                "fill":d.style.color||this.chart.getColorByIndex(i)
-            })).call(attrs(d.style))
+                     "fill":d.style.color||this.chart.getColorByIndex(i)
+                })).call(attrs(d.style))
             }
+            if(d.type=="bar"){
+                let width=Math.max(Util.toPixel(this.layout.width)/24-1,1)
+                _.each(d.data,(dd:any,ii)=>{
+                    bars.append("svg:rect").call(attrs({
+                        height:Util.toPixel(this.layout.height)- yScale(dd.y)-this.axisLayout.xHidth,
+                        width,
+                        fill:d.style.color||this.chart.getColorByIndex(i),
+                        x:xScale(dd.x)-width/2,
+                        y:yScale(dd.y)
+                    }))
+                })
+            }
+        
         })
         return this
     }

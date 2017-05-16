@@ -31,11 +31,12 @@ define(["require", "exports", "d3", "underscore", "Util", "BaseLayer"], function
             var xScale = d3.scaleLinear().domain([minX, maxX]).range([this.axisLayout.yWidth, Util.toPixel(this.layout.width, this.layout.width) - 5]);
             var yScale = d3.scaleLinear().domain([minY, maxY]).range([Util.toPixel(this.layout.height, this.layout.height) - this.axisLayout.xHidth, 5]);
             var xAxis = d3.axisBottom(xScale);
-            svgNode.append("g").style("transform", "translate(0px," + (Util.toPixel(this.layout.height, this.layout.height) - this.axisLayout.xHidth) + "px").call(xAxis);
+            svgNode.append("g").classed("xAxis", true).style("transform", "translate(0px," + (Util.toPixel(this.layout.height, this.layout.height) - this.axisLayout.xHidth) + "px").call(xAxis);
             var yAxis = d3.axisLeft(yScale);
-            svgNode.append("g").style("transform", "translate(25px,0)").call(yAxis);
+            svgNode.append("g").classed("yAxis", true).style("transform", "translate(25px,0)").call(yAxis);
             var lines = svgNode.append("svg:g");
             var areas = svgNode.append("svg:g");
+            var bars = svgNode.append("svg:g");
             // _.chain(ds).filter((d:any)=>d.type=="area").each(d=>{
             //     areas.append("path").attr("d",this.smartLineGen(xScale,yScale,true,d.data)).call(attrs({
             //         "stroke":d.style.color||this.chart.getColorByIndex(i)
@@ -52,6 +53,18 @@ define(["require", "exports", "d3", "underscore", "Util", "BaseLayer"], function
                     areas.append("path").attr("d", _this.areaGen(xScale, yScale, d.data, Util.toPixel(_this.layout.height, _this.layout.height) - _this.axisLayout.xHidth)).call(attrs({
                         "fill": d.style.color || _this.chart.getColorByIndex(i)
                     })).call(attrs(d.style));
+                }
+                if (d.type == "bar") {
+                    var width_1 = Math.max(Util.toPixel(_this.layout.width) / 24 - 1, 1);
+                    _.each(d.data, function (dd, ii) {
+                        bars.append("svg:rect").call(attrs({
+                            height: Util.toPixel(_this.layout.height) - yScale(dd.y) - _this.axisLayout.xHidth,
+                            width: width_1,
+                            fill: d.style.color || _this.chart.getColorByIndex(i),
+                            x: xScale(dd.x) - width_1 / 2,
+                            y: yScale(dd.y)
+                        }));
+                    });
                 }
             });
             return this;

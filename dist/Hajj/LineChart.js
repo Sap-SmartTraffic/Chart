@@ -27,7 +27,9 @@ define(["require", "exports", "BaseChart", "TitleLayer", "./LineLayer", "Util"],
             this.on("chartUpdate", function () {
                 ///calculate layout
                 _this.mainTitle.setLayout({ width: "100%", height: _this.mainTitle.getTitleRect().height + "px" });
-                _this.lineLayer.setLayout({ top: _this.mainTitle.getTitleRect().height + "px", width: _this.config.width, height: Util.toPixel(_this.config.height) - _this.mainTitle.getTitleRect().height + "px" });
+                _this.lineLayer.setLayout({ top: _this.mainTitle.getTitleRect().height + "px",
+                    width: _this.config.width,
+                    height: Util.toPixel(_this.config.height) - _this.mainTitle.getTitleRect().height + "px" });
             });
         };
         return LineChart;
