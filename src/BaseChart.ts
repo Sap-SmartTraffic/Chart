@@ -9,6 +9,7 @@ export class BaseChart extends Evented {
     isReady:boolean=false
     measures:Measure[]=[]
     layers:BaseLayer[]=[]
+
     config={
         width:"600px",
         height:"400px",
@@ -38,16 +39,21 @@ export class BaseChart extends Evented {
 
     }
 
-    stringRectCache:any=Util.CacheAble(Util.getStringRect,(s,cls,fontSize)=>s.toString().length+" "+cls+fontSize)
-    
-    getStringRect(s,cls?,fontSize?){
-        let rect=this.stringRectCache(s,cls,fontSize)
-        return {width:rect.width,height:rect.height}
+    getContainer(){
+        return this.el
+    }
+
+    loadMeasures(measures:any[]) {
+        _.each(measures, (d)=>{
+            let measure = new Measure(d.id, d.data)
+            this.addMeasure(measure)
+        })
     }
     
     addMeasure(m:Measure){
         this.measures.push(m)
     }
+
     addLayer(l:BaseLayer){
         let i =_.findIndex(this.layers,ll=>ll.id == l.id)
         if(i!=-1){
@@ -62,9 +68,7 @@ export class BaseChart extends Evented {
         l.chart=this
         return this
     }
-    getContainer(){
-        return this.el
-    }
+    
     removeLayer(id){
         if(_.isObject(id)){
             let i =_.findIndex(this.layers,ll=>ll.id == id.id)
@@ -84,18 +88,25 @@ export class BaseChart extends Evented {
     _clearLayer(l:BaseLayer){
         return this
     }
+
+    stringRectCache:any=Util.CacheAble(Util.getStringRect,(s,cls,fontSize)=>s.toString().length+" "+cls+fontSize)
     
-    getColorByIndex(i){
-        return d3.scaleOrdinal(d3.schemeCategory10)(i)
+    getStringRect(s,cls?,fontSize?){
+        let rect=this.stringRectCache(s,cls,fontSize)
+        return {width:rect.width,height:rect.height}
     }
+
+    getColorByIndex(i){
+        return d3.schemeCategory10[i]
+    }
+
     render(ref){
         this.update()
         _.invoke(this.layers,"render")
-        let dom=d3.select(ref)
+        let dom = d3.select(ref)
         if(!dom.empty()){
             dom.node().appendChild(this.el)
         }
-        //this.updateStyle()
         return this
     }
 }

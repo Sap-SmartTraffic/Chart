@@ -105,7 +105,6 @@ define(["require", "exports", "underscore"], function (require, exports, _) {
                     return cache[_key.apply(null, args)];
                 }
                 else {
-                    console.log("not cached", args);
                     return cache[_key.apply(null, args)] = fn.apply(null, args);
                 }
             };

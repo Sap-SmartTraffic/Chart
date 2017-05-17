@@ -72,7 +72,8 @@ define(["require", "exports", "d3", "underscore", "Evented"], function (require,
                 });
             }
         };
-        BaseLayer.prototype.updateDom = function () { };
+        BaseLayer.prototype.updateDom = function () {
+        };
         BaseLayer.prototype.calculateLayout = function () {
         };
         BaseLayer.prototype.addTo = function (c) {

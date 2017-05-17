@@ -18,6 +18,7 @@ define(["require", "exports", "d3", "underscore", "Util", "BaseLayer"], function
             _this.config = {
                 tickSize: "6px",
                 tickPadding: "3px",
+                smallPadding: "10px",
                 xAxisTitle: "",
                 yAxisTitle: "",
                 className: ""
@@ -42,10 +43,10 @@ define(["require", "exports", "d3", "underscore", "Util", "BaseLayer"], function
             return Util.getStringRect(value);
         };
         AxisLayer.prototype.calculatePaddingLeft = function () {
-            return this.calculateYaxisWidth() + this.calculateAxisTitle(this.config.yAxisTitle).height;
+            return this.calculateYaxisWidth() + this.calculateAxisTitle(this.config.yAxisTitle).height + Util.toPixel(this.config.smallPadding);
         };
         AxisLayer.prototype.calculatePaddingBottom = function () {
-            return this.calculateXaxisHeight() + this.calculateAxisTitle(this.config.xAxisTitle).height;
+            return this.calculateXaxisHeight() + this.calculateAxisTitle(this.config.xAxisTitle).height + Util.toPixel(this.config.smallPadding);
         };
         AxisLayer.prototype.drawer = function (svgNode) {
             var maxX = this.calculateExtremum().maxX;
@@ -56,12 +57,12 @@ define(["require", "exports", "d3", "underscore", "Util", "BaseLayer"], function
             var xAxisTitleHeight = this.calculateAxisTitle(this.config.xAxisTitle).height;
             var yAxisTitleWidth = this.calculateAxisTitle(this.config.yAxisTitle).width;
             var xAxisTitleWidth = this.calculateAxisTitle(this.config.xAxisTitle).width;
-            var xScale = d3.scaleLinear().domain([0, maxX]).range([0, Util.toPixel(this.layout.width) - this.calculatePaddingLeft()]);
-            var yScale = d3.scaleLinear().domain([0, maxY]).range([Util.toPixel(this.layout.height) - this.calculatePaddingBottom(), 0]);
+            var xScale = d3.scaleLinear().domain([0, maxX]).range([0, Util.toPixel(this.layout.width) - this.calculatePaddingLeft() - Util.toPixel(this.config.smallPadding)]);
+            var yScale = d3.scaleLinear().domain([0, maxY]).range([Util.toPixel(this.layout.height) - this.calculatePaddingBottom() - Util.toPixel(this.config.smallPadding), 0]);
             var xAxis = d3.axisBottom(xScale);
             var yAxis = d3.axisLeft(yScale);
             var gXAxis = svgNode.append("svg:g").attr("id", "xAxis").call(xAxis).attr("transform", "translate(" + this.calculatePaddingLeft() + "," + (Util.toPixel(this.layout.height) - this.calculatePaddingBottom()) + ")");
-            var gYAxis = svgNode.append("svg:g").attr("id", "yAxis").call(yAxis).attr("transform", "translate(" + this.calculatePaddingLeft() + ",0)");
+            var gYAxis = svgNode.append("svg:g").attr("id", "yAxis").call(yAxis).attr("transform", "translate(" + this.calculatePaddingLeft() + "," + Util.toPixel(this.config.smallPadding) + ")");
             var xAxisTitle = svgNode.append("svg:text").attr("class", "AxisTitle").attr("id", "xAxisTitle").text(this.config.xAxisTitle).attr("transform", "translate(" + (Util.toPixel(this.layout.width) + this.calculatePaddingLeft() - xAxisTitleWidth) / 2 + "," + (Util.toPixel(this.layout.height) - xAxisTitleHeight) + ")");
             var yAxisTitle = svgNode.append("svg:text").attr("class", "AxisTitle").attr("id", "yAxisTitle").text(this.config.yAxisTitle).attr("transform", "rotate(-90),translate(" + (0 - (Util.toPixel(this.layout.height) - this.calculatePaddingBottom() + yAxisTitleWidth) / 2 + "," + yAxisTitleHeight + ")"));
             return this;

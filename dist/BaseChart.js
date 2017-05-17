@@ -8,7 +8,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "d3", "underscore", "Evented", "Util"], function (require, exports, d3, _, Evented_1, Util) {
+define(["require", "exports", "d3", "underscore", "Evented", "Measure", "Util"], function (require, exports, d3, _, Evented_1, Measure_1, Util) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var BaseChart = (function (_super) {
@@ -43,9 +43,15 @@ define(["require", "exports", "d3", "underscore", "Evented", "Util"], function (
                 .style("position", this.config.position);
             this.fire("chartUpdate", { width: this.config.width, height: this.config.height });
         };
-        BaseChart.prototype.getStringRect = function (s, cls, fontSize) {
-            var rect = this.stringRectCache(s, cls, fontSize);
-            return { width: rect.width, height: rect.height };
+        BaseChart.prototype.getContainer = function () {
+            return this.el;
+        };
+        BaseChart.prototype.loadMeasures = function (measures) {
+            var _this = this;
+            _.each(measures, function (d) {
+                var measure = new Measure_1.Measure(d.id, d.data);
+                _this.addMeasure(measure);
+            });
         };
         BaseChart.prototype.addMeasure = function (m) {
             this.measures.push(m);
@@ -64,9 +70,6 @@ define(["require", "exports", "d3", "underscore", "Evented", "Util"], function (
             }
             l.chart = this;
             return this;
-        };
-        BaseChart.prototype.getContainer = function () {
-            return this.el;
         };
         BaseChart.prototype.removeLayer = function (id) {
             if (_.isObject(id)) {
@@ -88,8 +91,12 @@ define(["require", "exports", "d3", "underscore", "Evented", "Util"], function (
         BaseChart.prototype._clearLayer = function (l) {
             return this;
         };
+        BaseChart.prototype.getStringRect = function (s, cls, fontSize) {
+            var rect = this.stringRectCache(s, cls, fontSize);
+            return { width: rect.width, height: rect.height };
+        };
         BaseChart.prototype.getColorByIndex = function (i) {
-            return d3.scaleOrdinal(d3.schemeCategory10)(i);
+            return d3.schemeCategory10[i];
         };
         BaseChart.prototype.render = function (ref) {
             this.update();
@@ -98,7 +105,6 @@ define(["require", "exports", "d3", "underscore", "Evented", "Util"], function (
             if (!dom.empty()) {
                 dom.node().appendChild(this.el);
             }
-            //this.updateStyle()
             return this;
         };
         return BaseChart;

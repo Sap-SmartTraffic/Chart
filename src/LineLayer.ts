@@ -8,7 +8,9 @@ export class LineLayer extends BaseLayer {
         super(conf)
         this.setConfig(conf)
     }
+    
     config: {
+        lines:any[]
         className: string
     }
 
@@ -18,23 +20,17 @@ export class LineLayer extends BaseLayer {
 
     drawer(svgNode){
         let ds = this.chart.measures
-        let maxX = Util.max(_.chain(ds).map((d)=>d.data).reduce((d1:any[],d2:any[])=>d1.concat(d2)).value(),"x"),
-            maxY = Util.max(_.chain(ds).map((d)=>d.data).reduce((d1:any[],d2:any[])=>d1.concat(d2)).value(),"y"),
-            minX = Util.min(_.chain(ds).map((d)=>d.data).reduce((d1:any[],d2:any[])=>d1.concat(d2)).value(),"x"),
-            minY = Util.min(_.chain(ds).map((d)=>d.data).reduce((d1:any[],d2:any[])=>d1.concat(d2)).value(),"y")
-        
-        let xScale=d3.scaleLinear().domain([0,maxX]).range([0,Util.toPixel(this.layout.width)])
-        let yScale =d3.scaleLinear().domain([0,maxY]).range([Util.toPixel(this.layout.height),0])
-        let lines=svgNode.append("svg:g")
         _.each(ds,(d,i)=>{
-            let lGen=d3.line()
-            lines.append("path").attr("d",this.smartLineGen(xScale,yScale,true,d.data)).attr("stroke",d.style.color||this.chart.getColorByIndex(i)).attr("fill","none")
+        let maxX = Util.max(d.data, "x")
+        let maxY = Util.max(d.data, "y")
+        let xScale = d3.scaleLinear().domain([0, maxX]).range([0, Util.toPixel(this.layout.width)])
+        let yScale = d3.scaleLinear().domain([0,maxY]).range([Util.toPixel(this.layout.height),0])
+        svgNode.append("svg:g").append("path").attr("d",this.smartLineGen(xScale,yScale,true,d.data)).attr("stroke",d.style.color||this.chart.getColorByIndex(i)).attr("fill","none")
         })
         return this
     }
 
     renderer() {
-        let conf = this.chart.config
         let fragment = document.createDocumentFragment()
         let svg = d3.select(fragment).append("svg").classed(this.config.className, () => !!this.config.className)
         this.drawer(svg)

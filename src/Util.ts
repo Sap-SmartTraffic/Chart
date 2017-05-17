@@ -99,7 +99,6 @@ export function CacheAble(fn:any,keyFn?){
         if(cache[_key.apply(null,args)]){
             return cache[_key.apply(null,args)]
         }else{
-             console.log("not cached",args)
              return cache[_key.apply(null,args)]=fn.apply(null,args)  
         }
     }

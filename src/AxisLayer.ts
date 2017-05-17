@@ -7,6 +7,7 @@ export class AxisLayer extends BaseLayer {
     config={
         tickSize: "6px",
         tickPadding: "3px",
+        smallPadding: "10px",
         xAxisTitle: "",
         yAxisTitle: "",
         className: ""
@@ -43,11 +44,11 @@ export class AxisLayer extends BaseLayer {
     }
 
     calculatePaddingLeft() {
-        return this.calculateYaxisWidth() + this.calculateAxisTitle(this.config.yAxisTitle).height
+        return this.calculateYaxisWidth() + this.calculateAxisTitle(this.config.yAxisTitle).height + Util.toPixel(this.config.smallPadding)
     }
 
     calculatePaddingBottom() {
-        return this.calculateXaxisHeight() + this.calculateAxisTitle(this.config.xAxisTitle).height
+        return this.calculateXaxisHeight() + this.calculateAxisTitle(this.config.xAxisTitle).height + Util.toPixel(this.config.smallPadding)
     }
 
 
@@ -61,14 +62,14 @@ export class AxisLayer extends BaseLayer {
         let yAxisTitleWidth = this.calculateAxisTitle(this.config.yAxisTitle).width
         let xAxisTitleWidth = this.calculateAxisTitle(this.config.xAxisTitle).width
         
-        let xScale = d3.scaleLinear().domain([0,maxX]).range([0,Util.toPixel(this.layout.width) - this.calculatePaddingLeft()])
-        let yScale = d3.scaleLinear().domain([0,maxY]).range([Util.toPixel(this.layout.height) - this.calculatePaddingBottom(),0])
+        let xScale = d3.scaleLinear().domain([0,maxX]).range([0,Util.toPixel(this.layout.width) - this.calculatePaddingLeft() - Util.toPixel(this.config.smallPadding)])
+        let yScale = d3.scaleLinear().domain([0,maxY]).range([Util.toPixel(this.layout.height) - this.calculatePaddingBottom() - Util.toPixel(this.config.smallPadding),0])
         
         let xAxis = d3.axisBottom(xScale)
         let yAxis = d3.axisLeft(yScale)
         
         let gXAxis = svgNode.append("svg:g").attr("id","xAxis").call(xAxis).attr("transform", "translate(" + this.calculatePaddingLeft() + "," + (Util.toPixel(this.layout.height) - this.calculatePaddingBottom()) + ")")
-        let gYAxis = svgNode.append("svg:g").attr("id","yAxis").call(yAxis).attr("transform", "translate(" + this.calculatePaddingLeft() + ",0)")
+        let gYAxis = svgNode.append("svg:g").attr("id","yAxis").call(yAxis).attr("transform", "translate(" + this.calculatePaddingLeft() + "," + Util.toPixel(this.config.smallPadding) + ")")
         
         let xAxisTitle = svgNode.append("svg:text").attr("class", "AxisTitle").attr("id", "xAxisTitle").text(this.config.xAxisTitle).attr("transform","translate(" + (Util.toPixel(this.layout.width) + this.calculatePaddingLeft() - xAxisTitleWidth ) / 2 + "," + (Util.toPixel(this.layout.height) - xAxisTitleHeight) + ")")
         let yAxisTitle = svgNode.append("svg:text").attr("class", "AxisTitle").attr("id", "yAxisTitle").text(this.config.yAxisTitle).attr("transform","rotate(-90),translate(" + (0 - (Util.toPixel(this.layout.height) - this.calculatePaddingBottom() + yAxisTitleWidth) /2 + "," + yAxisTitleHeight + ")"))

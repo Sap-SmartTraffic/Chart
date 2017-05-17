@@ -23,19 +23,17 @@ define(["require", "exports", "d3", "underscore", "Util", "BaseLayer"], function
         LineLayer.prototype.drawer = function (svgNode) {
             var _this = this;
             var ds = this.chart.measures;
-            var maxX = Util.max(_.chain(ds).map(function (d) { return d.data; }).reduce(function (d1, d2) { return d1.concat(d2); }).value(), "x"), maxY = Util.max(_.chain(ds).map(function (d) { return d.data; }).reduce(function (d1, d2) { return d1.concat(d2); }).value(), "y"), minX = Util.min(_.chain(ds).map(function (d) { return d.data; }).reduce(function (d1, d2) { return d1.concat(d2); }).value(), "x"), minY = Util.min(_.chain(ds).map(function (d) { return d.data; }).reduce(function (d1, d2) { return d1.concat(d2); }).value(), "y");
-            var xScale = d3.scaleLinear().domain([0, maxX]).range([0, Util.toPixel(this.layout.width)]);
-            var yScale = d3.scaleLinear().domain([0, maxY]).range([Util.toPixel(this.layout.height), 0]);
-            var lines = svgNode.append("svg:g");
             _.each(ds, function (d, i) {
-                var lGen = d3.line();
-                lines.append("path").attr("d", _this.smartLineGen(xScale, yScale, true, d.data)).attr("stroke", d.style.color || _this.chart.getColorByIndex(i)).attr("fill", "none");
+                var maxX = Util.max(d.data, "x");
+                var maxY = Util.max(d.data, "y");
+                var xScale = d3.scaleLinear().domain([0, maxX]).range([0, Util.toPixel(_this.layout.width)]);
+                var yScale = d3.scaleLinear().domain([0, maxY]).range([Util.toPixel(_this.layout.height), 0]);
+                svgNode.append("svg:g").append("path").attr("d", _this.smartLineGen(xScale, yScale, true, d.data)).attr("stroke", d.style.color || _this.chart.getColorByIndex(i)).attr("fill", "none");
             });
             return this;
         };
         LineLayer.prototype.renderer = function () {
             var _this = this;
-            var conf = this.chart.config;
             var fragment = document.createDocumentFragment();
             var svg = d3.select(fragment).append("svg").classed(this.config.className, function () { return !!_this.config.className; });
             this.drawer(svg);

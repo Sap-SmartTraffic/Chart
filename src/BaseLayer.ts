@@ -70,10 +70,12 @@ export class BaseLayer extends Evented{
         }
     }
 
-    updateDom(){}
+    updateDom() {
+        
+    }
 
     calculateLayout() {
-        
+
     }
 
     addTo(c:BaseChart){
