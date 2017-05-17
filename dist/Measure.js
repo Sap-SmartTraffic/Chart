@@ -13,11 +13,12 @@ define(["require", "exports", "Evented"], function (require, exports, Evented_1)
     Object.defineProperty(exports, "__esModule", { value: true });
     var Measure = (function (_super) {
         __extends(Measure, _super);
-        function Measure(id, data, style) {
+        function Measure(id, data, type, style) {
             var _this = _super.call(this) || this;
             _this.id = id || 0;
             _this.data = data || [];
             _this.style = style || {};
+            _this.type = type || "line";
             return _this;
         }
         return Measure;

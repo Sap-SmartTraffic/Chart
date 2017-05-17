@@ -35,24 +35,28 @@ define(["require", "exports", "underscore"], function (require, exports, _) {
         Util.isContaint = isContaint;
         function max(nums, key) {
             var n = Number.MIN_VALUE;
-            if (key) {
+            if (key && nums) {
                 nums = nums.map(function (n) { return n[key]; });
             }
-            nums.forEach(function (num) {
-                n = isNaN(num) ? n : n > num ? n : num;
-            });
+            if (nums) {
+                nums.forEach(function (num) {
+                    n = isNaN(num) ? n : n > num ? n : num;
+                });
+            }
             n = n == Number.MIN_VALUE ? 0 : n;
             return n;
         }
         Util.max = max;
         function min(ns, key) {
             var n = Number.MAX_VALUE;
-            if (key) {
+            if (key && ns) {
                 ns = ns.map(function (n) { return n[key]; });
             }
-            ns.forEach(function (num) {
-                n = isNaN(num) ? n : n < num ? n : num;
-            });
+            if (ns) {
+                ns.forEach(function (num) {
+                    n = isNaN(num) ? n : n < num ? n : num;
+                });
+            }
             n = n == Number.MAX_VALUE ? 0 : n;
             return n;
         }
@@ -60,7 +64,9 @@ define(["require", "exports", "underscore"], function (require, exports, _) {
         Util.d3Invoke = curry(function (method, obj) {
             return function (d3Selection) {
                 _.each(obj, function (v, k) {
-                    d3Selection[method](k, v);
+                    if (v != undefined) {
+                        d3Selection[method](k, v);
+                    }
                 });
                 return d3Selection;
             };

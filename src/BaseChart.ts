@@ -51,7 +51,13 @@ export class BaseChart extends Evented {
     }
     
     addMeasure(m:Measure){
-        this.measures.push(m)
+        let i=_.findIndex(this.measures,(mm)=>mm.id==m.id)
+        if(i!=-1){
+            this.measures[i]=m
+        }else{
+            this.measures.push(m)
+        }
+        this.fire("measure-change")
     }
 
     addLayer(l:BaseLayer){
