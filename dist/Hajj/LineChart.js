@@ -15,6 +15,15 @@ define(["require", "exports", "BaseChart", "./LineLayer", "Util"], function (req
         __extends(LineChart, _super);
         function LineChart(conf) {
             var _this = _super.call(this, conf) || this;
+            _this.config = {
+                width: "600px",
+                height: "400px",
+                position: "absolute",
+                showLegend: false,
+                showPredict: false,
+                yLabel: ""
+            };
+            _this.setConfig(conf);
             // this.mainTitle=new TitleLayer("title",{value:"hehe",className:"mainTitle"})
             _this.lineLayer = new LineLayer_1.LineLayer();
             // this.addLayer(this.mainTitle)
@@ -34,6 +43,8 @@ define(["require", "exports", "BaseChart", "./LineLayer", "Util"], function (req
             this.on("measure-change", function () {
                 _this.lineLayer.updateDom();
             });
+        };
+        LineChart.prototype.showLegend = function () {
         };
         return LineChart;
     }(BaseChart_1.BaseChart));

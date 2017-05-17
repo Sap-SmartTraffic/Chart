@@ -2,27 +2,28 @@ import d3 = require("d3")
 import _ = require("underscore")
 import Util=require("Util")
 let attrs=Util.d3Invoke("attr")
-import {
-    Evented
-} from "Evented"
-import {
-    BaseLayer
-} from "BaseLayer"
+import {Evented} from "Evented"
+import {BaseLayer} from "BaseLayer"
+import {LineChart} from "./LineChart"
 export class LineLayer extends BaseLayer {
     constructor(conf ? ) {
         super(conf)
+        this.setConfig(conf)
     }
     config: {
-        className: string
+        className: string,
+        showPredict:boolean
     }
     init() {
        
     }
+    chart:LineChart
     axisLayout={
         xHidth:20,
         yWidth:25
     }
     drawer(svg){
+        let legendHeight= this.chart.config.showLegend==true?20:5
         let svgNode=d3.select(svg)
         let ds = this.chart.measures
         let maxX =24,
@@ -30,12 +31,32 @@ export class LineLayer extends BaseLayer {
             minX =0,
             minY = 0
         let xScale=d3.scaleLinear().domain([minX,maxX]).range([this.axisLayout.yWidth,Util.toPixel(this.layout.width,this.layout.width)-5])
-        let yScale =d3.scaleLinear().domain([minY,maxY]).range([Util.toPixel(this.layout.height,this.layout.height)-this.axisLayout.xHidth,5])
+        let yScale =d3.scaleLinear().domain([minY,maxY]).range([Util.toPixel(this.layout.height,this.layout.height)-this.axisLayout.xHidth,legendHeight])
         let xAxis=d3.axisBottom(xScale)
         svgNode.append("g").classed("xAxis",true).style("transform","translate(0px,"+(Util.toPixel(this.layout.height,this.layout.height)-this.axisLayout.xHidth)+"px").call(xAxis)
         let yAxis=d3.axisLeft(yScale)
         svgNode.append("g").classed("yAxis",true).style("transform","translate(25px,0)").call(yAxis)
         
+       if(this.chart.config.showLegend){
+            let legend=svgNode.append("g").classed("legend",true)
+             legend.append("svg:text").text(this.chart.config.yLabel||"").call(attrs({x:this.axisLayout.yWidth+2,y:legendHeight,"font-size":"12px"}))
+            if(this.chart.config.showPredict){
+                    let text="Predict",xOffset=Util.toPixel(this.layout.width)-Util.getStringRect(text,null,12).width
+                    legend.append("line").call(attrs({x1:xOffset-25,
+                                                            y1:legendHeight/2+4,
+                                                            x2:xOffset-5,
+                                                            y2:legendHeight/2+4,
+                                                            stroke:"black",
+                                                            "stroke-width":"1px",
+                                                        
+                                                            "stroke-dasharray":"1,2"}))
+                    legend.append("svg:text").text(text).call(attrs({
+                        x:xOffset,
+                        y:legendHeight,
+                        "font-size":"12px",
+                    }))
+                }
+            }
 
 
         let lines=svgNode.append("svg:g")

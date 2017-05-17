@@ -20,21 +20,42 @@ define(["require", "exports", "d3", "underscore", "Util", "BaseLayer"], function
                 xHidth: 20,
                 yWidth: 25
             };
+            _this.setConfig(conf);
             return _this;
         }
         LineLayer.prototype.init = function () {
         };
         LineLayer.prototype.drawer = function (svg) {
             var _this = this;
+            var legendHeight = this.chart.config.showLegend == true ? 20 : 5;
             var svgNode = d3.select(svg);
             var ds = this.chart.measures;
             var maxX = 24, maxY = Util.max(_.chain(ds).map(function (d) { return d.data; }).reduce(function (d1, d2) { return d1.concat(d2); }).value(), "y"), minX = 0, minY = 0;
             var xScale = d3.scaleLinear().domain([minX, maxX]).range([this.axisLayout.yWidth, Util.toPixel(this.layout.width, this.layout.width) - 5]);
-            var yScale = d3.scaleLinear().domain([minY, maxY]).range([Util.toPixel(this.layout.height, this.layout.height) - this.axisLayout.xHidth, 5]);
+            var yScale = d3.scaleLinear().domain([minY, maxY]).range([Util.toPixel(this.layout.height, this.layout.height) - this.axisLayout.xHidth, legendHeight]);
             var xAxis = d3.axisBottom(xScale);
             svgNode.append("g").classed("xAxis", true).style("transform", "translate(0px," + (Util.toPixel(this.layout.height, this.layout.height) - this.axisLayout.xHidth) + "px").call(xAxis);
             var yAxis = d3.axisLeft(yScale);
             svgNode.append("g").classed("yAxis", true).style("transform", "translate(25px,0)").call(yAxis);
+            if (this.chart.config.showLegend) {
+                var legend = svgNode.append("g").classed("legend", true);
+                legend.append("svg:text").text(this.chart.config.yLabel || "").call(attrs({ x: this.axisLayout.yWidth + 2, y: legendHeight, "font-size": "12px" }));
+                if (this.chart.config.showPredict) {
+                    var text = "Predict", xOffset = Util.toPixel(this.layout.width) - Util.getStringRect(text, null, 12).width;
+                    legend.append("line").call(attrs({ x1: xOffset - 25,
+                        y1: legendHeight / 2 + 4,
+                        x2: xOffset - 5,
+                        y2: legendHeight / 2 + 4,
+                        stroke: "black",
+                        "stroke-width": "1px",
+                        "stroke-dasharray": "1,2" }));
+                    legend.append("svg:text").text(text).call(attrs({
+                        x: xOffset,
+                        y: legendHeight,
+                        "font-size": "12px",
+                    }));
+                }
+            }
             var lines = svgNode.append("svg:g");
             var areas = svgNode.append("svg:g");
             var bars = svgNode.append("svg:g");
