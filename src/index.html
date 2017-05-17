@@ -12,7 +12,7 @@
 <script>
     requirejs(['PieChart/PieChart'],function(p){
         var chart = new p.PieChart({})
-        let measures = [{"id":"ShangHai", "data":[{time:"1:00",value:15},{time:"2:00",value:58},{time:"3:00",value:28},{time:"4:00",value:99},{time:"5:00",value:34},{time:"6:00",value:65},{time:"7:00",value:41},{time:"8:00",value:88},{time:"9:00",value:55},{time:"10:00",value:50},{time:"11:00",value:32},{time:"12:00",value:60}]}]
+        let measures = [{"id":"ShangHai", "data":[{time:"1:00",value:15},{time:"1:30",value:15},{time:"2:00",value:58},{time:"3:00",value:28},{time:"4:00",value:99},{time:"5:00",value:34},{time:"6:00",value:65},{time:"7:00",value:41},{time:"8:00",value:88},{time:"9:00",value:55},{time:"10:00",value:50},{time:"11:00",value:32},{time:"12:00",value:60}]}]
         chart.loadMeasures(measures)
         chart.render("body")
     })

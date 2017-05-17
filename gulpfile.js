@@ -21,6 +21,11 @@ gulp.task('start', function() {
            gulp.src(e.path,{base:"src"}).pipe(gulp.dest('./dist/'))
             console.log(e.path+"-------file copy")
         })
+      gulp.watch("./src/**/*.less",function(e){
+        gulp.src(e.path,{base:"src"})
+            .pipe(less())
+            .pipe(gulp.dest("./dist/"))
+      })
   // gulp.watch("*.less",function(event){
   //   var file=event.path;
   //   if(event.type==="changed"|| event.type==="added"){
@@ -32,6 +37,7 @@ gulp.task('start', function() {
    
   // })
 });
+    
 
 gulp.task("copyHTML",function(){
         gulp.src('./src/**/*.html',{base:"src"}).pipe(gulp.dest('./dist/'))

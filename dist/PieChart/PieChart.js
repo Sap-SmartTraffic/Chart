@@ -8,16 +8,15 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "Util", "BaseChart", "TitleLayer", "PieLayer"], function (require, exports, Util, BaseChart_1, TitleLayer_1, PieLayer_1) {
+define(["require", "exports", "Util", "BaseChart", "PieLayer"], function (require, exports, Util, BaseChart_1, PieLayer_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var PieChart = (function (_super) {
         __extends(PieChart, _super);
         function PieChart(conf) {
             var _this = _super.call(this, conf) || this;
-            _this.mainTitle = new TitleLayer_1.TitleLayer("title", { value: "hehe", className: "mainTitle", textAlign: "center" });
+            //this.mainTitle=new TitleLayer("title",{value:"hehe",className:"mainTitle",textAlign:"center"})
             _this.pieLayer = new PieLayer_1.PieLayer("pie", { className: "pieChart" });
-            _this.addLayer(_this.mainTitle);
             _this.addLayer(_this.pieLayer);
             _this.init();
             return _this;
@@ -26,8 +25,11 @@ define(["require", "exports", "Util", "BaseChart", "TitleLayer", "PieLayer"], fu
             var _this = this;
             this.on("chartUpdate", function () {
                 ///calculate layout
-                _this.mainTitle.setLayout({ width: "100%", height: _this.mainTitle.getTitleRect().height + "px" });
-                _this.pieLayer.setLayout({ top: _this.mainTitle.getTitleRect().height + "px", width: Util.toPixel(_this.config.width) + "px", height: (Util.toPixel(_this.config.height) - _this.mainTitle.getTitleRect().height) + "px" });
+                //this.mainTitle.setLayout({width:"100%", height:this.mainTitle.getTitleRect().height+"px"})
+                _this.pieLayer.setLayout({ top: "0px", width: Util.toPixel(_this.config.width) + "px", height: (Util.toPixel(_this.config.height)) + "px" });
+            });
+            this.on("measure-change", function () {
+                _this.pieLayer.updateDom();
             });
         };
         return PieChart;

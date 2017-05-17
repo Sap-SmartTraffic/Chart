@@ -29,6 +29,7 @@ export class BaseChart extends Evented {
             this.config[k]=v
         })
         this.update()
+        return this
     }
 
     update(){

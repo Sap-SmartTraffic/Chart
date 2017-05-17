@@ -36,6 +36,7 @@ define(["require", "exports", "d3", "underscore", "Evented", "Measure", "Util"],
                 _this.config[k] = v;
             });
             this.update();
+            return this;
         };
         BaseChart.prototype.update = function () {
             d3.select(this.el).style("width", this.config.width)
