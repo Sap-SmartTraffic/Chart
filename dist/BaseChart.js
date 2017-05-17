@@ -41,7 +41,14 @@ define(["require", "exports", "d3", "underscore", "Evented", "Util"], function (
             return { width: rect.width, height: rect.height };
         };
         BaseChart.prototype.addMeasure = function (m) {
-            this.measures.push(m);
+            var i = _.findIndex(this.measures, function (mm) { return mm.id == m.id; });
+            if (i != -1) {
+                this.measures[i] = m;
+            }
+            else {
+                this.measures.push(m);
+            }
+            this.fire("measure-change");
         };
         BaseChart.prototype.addLayer = function (l) {
             var i = _.findIndex(this.layers, function (ll) { return ll.id == l.id; });

@@ -24,8 +24,9 @@ define(["require", "exports", "d3", "underscore", "Util", "BaseLayer"], function
         }
         LineLayer.prototype.init = function () {
         };
-        LineLayer.prototype.drawer = function (svgNode) {
+        LineLayer.prototype.drawer = function (svg) {
             var _this = this;
+            var svgNode = d3.select(svg);
             var ds = this.chart.measures;
             var maxX = 24, maxY = Util.max(_.chain(ds).map(function (d) { return d.data; }).reduce(function (d1, d2) { return d1.concat(d2); }).value(), "y"), minX = 0, minY = 0;
             var xScale = d3.scaleLinear().domain([minX, maxX]).range([this.axisLayout.yWidth, Util.toPixel(this.layout.width, this.layout.width) - 5]);
@@ -50,20 +51,26 @@ define(["require", "exports", "d3", "underscore", "Util", "BaseLayer"], function
                     })).call(attrs(d.style)).attr("fill", "none");
                 }
                 if (d.type == "area") {
+                    lines.append("path").attr("d", _this.smartLineGen(xScale, yScale, true, d.data)).call(attrs({
+                        "stroke": d.style.color || _this.chart.getColorByIndex(i)
+                    })).call(attrs(d.style)).attr("fill", "none");
                     areas.append("path").attr("d", _this.areaGen(xScale, yScale, d.data, Util.toPixel(_this.layout.height, _this.layout.height) - _this.axisLayout.xHidth)).call(attrs({
-                        "fill": d.style.color || _this.chart.getColorByIndex(i)
-                    })).call(attrs(d.style));
+                        "fill": d.style.fill || _this.chart.getColorByIndex(i),
+                        "opacity": d.style.opacity || 0.5
+                    }));
                 }
                 if (d.type == "bar") {
                     var width_1 = Math.max(Util.toPixel(_this.layout.width) / 24 - 1, 1);
                     _.each(d.data, function (dd, ii) {
-                        bars.append("svg:rect").call(attrs({
-                            height: Util.toPixel(_this.layout.height) - yScale(dd.y) - _this.axisLayout.xHidth,
+                        var bar = bars.append("svg:rect");
+                        bar.call(attrs({
+                            height: 0,
                             width: width_1,
                             fill: d.style.color || _this.chart.getColorByIndex(i),
                             x: xScale(dd.x) - width_1 / 2,
-                            y: yScale(dd.y)
+                            y: Util.toPixel(_this.layout.height) - _this.axisLayout.xHidth
                         }));
+                        bar.transition().delay(ii * 100).duration(500).attr("y", yScale(dd.y)).attr("height", Util.toPixel(_this.layout.height) - yScale(dd.y) - _this.axisLayout.xHidth);
                     });
                 }
             });
@@ -76,13 +83,13 @@ define(["require", "exports", "d3", "underscore", "Util", "BaseLayer"], function
             var conf = this.chart.config;
             var fragment = document.createDocumentFragment();
             var svg = d3.select(fragment).append("svg").classed(this.config.className, function () { return !!_this.config.className; });
-            this.drawer(svg);
+            this.drawer(svg.node());
             return svg.node();
         };
         LineLayer.prototype.updateDom = function () {
             var svg = d3.select(this.el);
             svg.selectAll("*").remove();
-            this.drawer(svg);
+            this.drawer(svg.node());
             return this;
         };
         LineLayer.prototype.smartLineGen = function (xScale, yScale, isHandleNaN, ds) {

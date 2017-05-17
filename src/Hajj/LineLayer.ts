@@ -22,7 +22,8 @@ export class LineLayer extends BaseLayer {
         xHidth:20,
         yWidth:25
     }
-    drawer(svgNode){
+    drawer(svg){
+        let svgNode=d3.select(svg)
         let ds = this.chart.measures
         let maxX =24,
             maxY =  Util.max(_.chain(ds).map((d)=>d.data).reduce((d1:any[],d2:any[])=>d1.concat(d2)).value(),"y"),
@@ -53,20 +54,26 @@ export class LineLayer extends BaseLayer {
                 })).call(attrs(d.style)).attr("fill","none")
            }
             if(d.type=="area"){
+                lines.append("path").attr("d",this.smartLineGen(xScale,yScale,true,d.data)).call(attrs({
+                    "stroke":d.style.color||this.chart.getColorByIndex(i)
+                })).call(attrs(d.style)).attr("fill","none")
                  areas.append("path").attr("d",this.areaGen(xScale,yScale,d.data,Util.toPixel(this.layout.height,this.layout.height)-this.axisLayout.xHidth)).call(attrs({
-                     "fill":d.style.color||this.chart.getColorByIndex(i)
-                })).call(attrs(d.style))
+                     "fill":d.style.fill||this.chart.getColorByIndex(i),
+                     "opacity":d.style.opacity||0.5
+                }))
             }
             if(d.type=="bar"){
                 let width=Math.max(Util.toPixel(this.layout.width)/24-1,1)
                 _.each(d.data,(dd:any,ii)=>{
-                    bars.append("svg:rect").call(attrs({
-                        height:Util.toPixel(this.layout.height)- yScale(dd.y)-this.axisLayout.xHidth,
+                   let bar= bars.append("svg:rect")
+                    bar.call(attrs({
+                        height:0,
                         width,
                         fill:d.style.color||this.chart.getColorByIndex(i),
                         x:xScale(dd.x)-width/2,
-                        y:yScale(dd.y)
+                        y:Util.toPixel(this.layout.height)-this.axisLayout.xHidth
                     }))
+                   bar.transition().delay(ii*100).duration(500).attr("y",yScale(dd.y)).attr("height",Util.toPixel(this.layout.height)- yScale(dd.y)-this.axisLayout.xHidth)
                 })
             }
         
@@ -80,13 +87,13 @@ export class LineLayer extends BaseLayer {
         let conf = this.chart.config
         let fragment = document.createDocumentFragment()
         let svg = d3.select(fragment).append("svg").classed(this.config.className, () => !!this.config.className)
-        this.drawer(svg)
+        this.drawer(svg.node())
         return svg.node()
     }
     updateDom(){
         let svg=d3.select(this.el)
         svg.selectAll("*").remove()
-        this.drawer(svg)
+        this.drawer(svg.node())
         return this
     }
     smartLineGen(xScale, yScale, isHandleNaN, ds) {
