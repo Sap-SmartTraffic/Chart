@@ -8,11 +8,21 @@ import Util=require("Util")
 export class LineChart extends BaseChart{
     constructor(conf?){
         super(conf)
+        this.setConfig(conf)
         // this.mainTitle=new TitleLayer("title",{value:"hehe",className:"mainTitle"})
         this.lineLayer=new LineLayer()
        // this.addLayer(this.mainTitle)
         this.addLayer(this.lineLayer)
         this.init()
+
+    }
+   config={
+        width:"600px",
+        height:"400px",
+        position:"absolute",
+        showLegend:false,
+        showPredict:false,
+        yLabel:""
     }
     init(){ 
         this.on("chartUpdate",()=>{
@@ -25,6 +35,9 @@ export class LineChart extends BaseChart{
         this.on("measure-change",()=>{
             this.lineLayer.updateDom()
         })
+    }
+    showLegend(){
+        
     }
     // mainTitle:TitleLayer
     lineLayer:LineLayer
