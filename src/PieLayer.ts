@@ -12,6 +12,7 @@ export class PieLayer extends BaseLayer {
     config: {
         className: string
     }
+
     updateDom(){
         if(this.el){
              let parent=this.el.parentNode
@@ -28,18 +29,9 @@ export class PieLayer extends BaseLayer {
        
         return this
     }
-    renderer() {
-        let root = this.chart.el
-        let PI = Math.PI,
-            cos = Math.cos,
-            sin = Math.sin,
-            sqrt = Math.sqrt
-        let outerRadius =Math.min( Util.toPixel(this.layout.height),Util.toPixel(this.layout.width)) / 2-10,
-            innerRadius = Util.toPixel(this.layout.height) / 6,
-            innerestRadius = Util.toPixel(this.layout.height) / 9,
-            centerX = Util.toPixel(this.layout.width) / 2,
-            centerY = Util.toPixel(this.layout.height) / 2
 
+    renderer() {
+        //the method of painting arc
         let smartArcGen = function(startAngle, endAngle, innerRadius, outerRadius) {
             let largeArc = ((endAngle - startAngle) % (PI * 2)) > PI ? 1 : 0,
             startX = centerX + cos(startAngle) * outerRadius,
@@ -59,76 +51,141 @@ export class PieLayer extends BaseLayer {
             ]
             return cmd.join(' ')
         }
-
+        
+        //Calculate toolTip data and text
+        let getToolTipText = function(data) {
+            let sum1 = 0, sum2=0, sum3=0
+            let border1 = 10, border2 = 20
+            let percentage1="", percentage2="", percentage3=""
+            if(data.value != null) {
+                for(let i = 0; i < 4 ; i++){
+                if(data.value[i] < border1)
+                    sum1++
+                else if(data.value[i] > border2)
+                    sum3++
+                else
+                    sum2++
+                }
+                percentage1 = d3.format(".0%")(sum1/4),
+                percentage2 = d3.format(".0%")(sum2/4),
+                percentage3 = d3.format(".0%")(sum3/4)
+            }
+        
+            return "<div class='tipTitle'><p>"+data.time+":00"+"-"+(data.time+1)+":00"+"</p></div>"+
+                   "<div class='tipItem'><p>0-"+border1+":</p><p>"+border1+"-"+border2+":</p><p>>"+border2+":</p></div>"+
+                   "<div class='tipValue'><p>"+percentage1+"</p><p>"+percentage2+"</p><p>"+percentage3+"</p></div>"
+        }
+        
+        //doughnut painting config
+        let root = this.chart.el
+        let PI = Math.PI,
+            cos = Math.cos,
+            sin = Math.sin,
+            sqrt = Math.sqrt
+        let outerRadius =Math.min( Util.toPixel(this.layout.height),Util.toPixel(this.layout.width)) / 2-10,
+            middleRadius = Util.toPixel(this.layout.height) / 6,
+            innerRadius = Util.toPixel(this.layout.height) / 9,
+            centerX = Util.toPixel(this.layout.width) / 2,
+            centerY = Util.toPixel(this.layout.height) / 2,
+            innerSegmentAngle = 2 * PI / 12,
+            outerSegmentAngle = innerSegmentAngle / 4,
+            innerDurationTime = 1000,
+            outerDurationTime = 1000
+        
+        //data pre-process
+        let dataset = _.sortBy(this.chart.measure.data,"time")
+        let valueset = []
+        for(let i = 0; i<dataset.length; i++) {
+            valueset = _.union(valueset, dataset[i].value)
+        }
+        let max = _.max(valueset)
+        let min = _.min(valueset)
+        if(dataset.length < 12) {
+            for(let i = 0; i < 12; i++) {
+                if(dataset[i].time != i){
+                    dataset.splice(i,0,{"time":i})
+                }
+            }
+        }
+        
+        //toolTip and title dom
+        let toolTip = d3.select(root).append("div").attr("class","toolTip")
+        let doughnutTip = d3.select(root).append("div").attr("class","doughnutTip")
+                            .style("width",innerRadius * sqrt(2) +"px").style("height",innerRadius * sqrt(2) +"px")
+                            .style("top",centerY  - innerRadius * sin(PI/4) +"px").style("left",centerX - innerRadius * sin(PI/4) +"px")
+        let doughnutTitle = d3.select(doughnutTip.node()).append("p").text("AM").attr("class","doughnutTitle").style("line-height", innerRadius * sqrt(2) + "px")
+            .style("opacity",0).transition().duration(innerDurationTime+outerDurationTime).styleTween("opacity",()=>{return d3.interpolate("0","1")})
+        
+        //doughnut painting
         let fragment = document.createDocumentFragment()
         let svg = d3.select(fragment).append("svg").attr("class","pie")
-        let ds = this.chart.measures
-        _.each(ds, (d,i)=>{
-            let max = Util.max(d.data,"value")
-            let min = Util.min(d.data,"value")
-            let scale = d3.scaleLinear().domain([min,max]).range([-1,1])
-            let segmentAngle = 2 * PI / 24
-            let toolTip = d3.select(root).append("div").attr("class","toolTip")
-            let doughnutTip = d3.select(root).append("div").attr("class","doughnutTip")
-                                .style("width",innerestRadius * sqrt(2) +"px").style("height",innerestRadius * sqrt(2) +"px")
-                                .style("top",centerY  - innerestRadius * sin(PI/4) +"px").style("left",centerX - innerestRadius * sin(PI/4) +"px")
-            let doughnutTitle = d3.select(doughnutTip.node()).append("p").text("AM").attr("class","doughnutTitle").style("line-height", innerestRadius * sqrt(2) + "px")
-                .style("opacity",0).transition().duration(1000).styleTween("opacity",()=>{return d3.interpolate("0","1")})
-            let innerDoughnut = svg.append("g"),
-                outerDoughnut = svg.append("g")
-            d.data.forEach((v,n) => {
-                let startAngle = -PI/2 + segmentAngle * n
-                let endAngle = startAngle + segmentAngle
-                let midAngle = (startAngle + endAngle) / 2
-                outerDoughnut.append("path")
-                   .attr("class","outerDoughnut").attr("id","arc"+n).attr("fill", v.value==null? "none":d3.scaleLinear().domain([-1, 0, 1]).range(["red", "yellow", "green"])(scale(v.value)))
-                   .attr("d",smartArcGen(startAngle, startAngle, innerRadius, outerRadius))
-                   .attr("stroke","gray")
-                   .attr("stroke-width","0px")
-                   .on("mouseenter",function(e){
-                       d3.selectAll(".outerDoughnut").style("opacity","0.5")
-                       toolTip.text("时间: "+v.time + " " + "数量: " + v.value).style("display","block")
-                       d3.select(this).transition().duration(200)
-                         .attr("transform", "translate(" + (10 * cos(midAngle)) + "," + (10 * sin(midAngle)) + ")")
-                         .style("opacity","1")
+        let scale = d3.scaleLinear().domain([min,max]).range([-1,1])
+        let innerDoughnut = svg.append("g").attr("class","innerDoughnut"),
+            outerDoughnut = svg.append("g").attr("class","outerDoughnut")
+        //innerDoughnut paingting
+        dataset.forEach((d,i) => {
+            let innerStartAngle = -PI/2 + innerSegmentAngle * i
+            let innerEndAngle = innerStartAngle + innerSegmentAngle
+            innerDoughnut.append("path").attr("class","doughnut doughnut"+i).attr("fill","#d6d6d6")
+                .attr("d",smartArcGen(innerStartAngle,innerStartAngle,innerRadius,middleRadius))
+                .attr("stroke","#000000").attr("stroke-width","0px")
+                .on("mouseenter",function(e){
+                  d3.selectAll(".doughnut").style("opacity","0.5")
+                    toolTip.html(getToolTipText(d)).style("display","block")
+                    d3.selectAll(".doughnut"+i).transition().duration(200).style("opacity","1")
+                })
+                .on("mousemove",function(e){
+                    toolTip.style("top",d3.event.layerY - Util.getStringRect(toolTip.text()).height - 16 +"px")
+                           .style("left",d3.event.layerX - Util.getStringRect(toolTip.text()).width/2 - 35 + "px")
                    })
-                   .on("mousemove",function(e){
-                       console.log(d3.event)
-                       toolTip.style("top",d3.event.layerY - Util.getStringRect(toolTip.text()).height - 16 +"px")
-                              .style("left",d3.event.layerX - Util.getStringRect(toolTip.text()).width/2 - 35 + "px")
-                   })
-                   .on("mouseout",function(){
-                       d3.selectAll(".outerDoughnut").style("opacity","1")
-                       d3.select(this).transition().duration(200).attr("transform","translate(0)")
-                       toolTip.style("display","none")
-                   })
-                   .transition().duration(50).ease(d3.easeLinear).delay(960+50*n)
-                   .attrTween("d", function(a){
-                       return function(t){
-                           let interpolate = d3.interpolate(startAngle,endAngle)
-                           return smartArcGen(startAngle,interpolate(t),innerRadius,outerRadius)
-                       }
-                   }) 
-                   .attr("stroke-width","0.5px")
-                   .style("pointer-events","none").transition().style("pointer-events","auto")
-
-               
-            })
-            for(let i=0;i<24;++i){
-                  let startAngle = -PI/2 + segmentAngle * i
-                let endAngle = startAngle + segmentAngle
-                let midAngle = (startAngle + endAngle) / 2
-                 innerDoughnut.append("path").attr("class","innerDoughnut").attr("fill","#d6d6d6")
-                   .attr("d",smartArcGen(startAngle,startAngle,innerestRadius,innerRadius))
-                   .transition().duration(40).ease(d3.easeLinear).delay(40*i)
-                   .attrTween("d", function(a){
-                       return function(t){
-                           let interpolate = d3.interpolate(startAngle,endAngle)
-                           return smartArcGen(startAngle,interpolate(t),innerestRadius,innerRadius)
-                       }
-                   })
+                .on("mouseout",function(){
+                    d3.selectAll(".doughnut").style("opacity","1")
+                    toolTip.style("display","none")
+                })
+                .transition().duration(innerDurationTime/12).ease(d3.easeLinear).delay(innerDurationTime/12*i)
+                .attrTween("d", function(a){
+                    return function(t){
+                        let interpolate = d3.interpolate(innerStartAngle,innerEndAngle)
+                        return smartArcGen(innerStartAngle,interpolate(t),innerRadius,middleRadius)
+                    }
+                })
+                .attr("stroke-width","0.5px")
+            //outerDoughnut painting
+            if(d.value != null) {
+                d.value.forEach((v,n) => {
+                    let outerStartAngle = innerStartAngle + outerSegmentAngle * n
+                    let outerEndAngle = outerStartAngle + outerSegmentAngle
+                    outerDoughnut.append("path")
+                    .attr("class","doughnut doughnut"+i).attr("fill", v==null? "none":d3.scaleLinear().domain([-1, 0, 1]).range(["red", "yellow", "green"])(scale(v)))
+                    .attr("d",smartArcGen(outerStartAngle, outerStartAngle, middleRadius, outerRadius))
+                    .attr("stroke","gray")
+                    .attr("stroke-width","0px")
+                    .on("mouseenter",function(e){
+                    d3.selectAll(".doughnut").style("opacity","0.5")
+                        toolTip.html(getToolTipText(d)).style("display","block")
+                        d3.selectAll(".doughnut"+i).transition().duration(200).style("opacity","1")
+                    })
+                    .on("mousemove",function(e){
+                        toolTip.style("top",d3.event.layerY - Util.getStringRect(toolTip.text()).height - 16 +"px")
+                           .style("left",d3.event.layerX - Util.getStringRect(toolTip.text()).width/2 - 35 + "px")
+                    })
+                    .on("mouseout",function(){
+                        d3.selectAll(".doughnut").style("opacity","1")
+                        toolTip.style("display","none")
+                    })
+                    .transition().duration(outerDurationTime/48).ease(d3.easeLinear).delay(innerDurationTime + outerDurationTime/48*n + 4*outerDurationTime/48*i)
+                    .attrTween("d", function(a){
+                        return function(t){
+                            let interpolate = d3.interpolate(outerStartAngle, outerEndAngle)
+                            return smartArcGen(outerStartAngle,interpolate(t),middleRadius,outerRadius)
+                        }
+                    }) 
+                    .attr("stroke-width","0.5px")
+                    .style("pointer-events","none").transition().duration(innerDurationTime+outerDurationTime).style("pointer-events","auto")
+                })
             }
         })
+
         return svg.node()
     }
  }

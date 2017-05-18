@@ -17,8 +17,8 @@ define(["require", "exports", "Evented"], function (require, exports, Evented_1)
             var _this = _super.call(this) || this;
             _this.id = id || 0;
             _this.data = data || [];
-            _this.style = style || {};
             _this.type = type || "line";
+            _this.style = style || {};
             return _this;
         }
         return Measure;

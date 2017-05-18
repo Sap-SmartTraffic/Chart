@@ -7,6 +7,7 @@ import Util=require("Util")
 export class BaseChart extends Evented {
     el:any
     isReady:boolean=false
+    measure:Measure
     measures:Measure[]=[]
     layers:BaseLayer[]=[]
 
@@ -42,6 +43,10 @@ export class BaseChart extends Evented {
 
     getContainer(){
         return this.el
+    }
+
+    loadMeasure(measure) {
+        this.measure = measure
     }
 
     loadMeasures(measures:any[]) {

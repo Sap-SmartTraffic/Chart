@@ -47,6 +47,9 @@ define(["require", "exports", "d3", "underscore", "Evented", "Measure", "Util"],
         BaseChart.prototype.getContainer = function () {
             return this.el;
         };
+        BaseChart.prototype.loadMeasure = function (measure) {
+            this.measure = measure;
+        };
         BaseChart.prototype.loadMeasures = function (measures) {
             var _this = this;
             _.each(measures, function (d) {

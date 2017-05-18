@@ -12,8 +12,23 @@
 <script>
     requirejs(['PieChart/PieChart'],function(p){
         var chart = new p.PieChart({})
-        let measures = [{"id":"ShangHai", "data":[{time:"1:00",value:15},{time:"1:30",value:15},{time:"2:00",value:58},{time:"3:00",value:28},{time:"4:00",value:99},{time:"5:00",value:34},{time:"6:00",value:65},{time:"7:00",value:41},{time:"8:00",value:88},{time:"9:00",value:55},{time:"10:00",value:50},{time:"11:00",value:32},{time:"12:00",value:60}]}]
-        chart.loadMeasures(measures)
+        let measure = {"id":1, 
+        "data":[
+            {"time":1,"value":[1,2,3,7]},
+            {"time":2,"value":[10,20,30,40]},
+            {"time":3,"value":[1,2,3,4]},
+            //{"time":4,"value":[1,2,3,9]},
+            {"time":9,"value":[1,2,3,10]},
+            {"time":11,"value":[1,2,3,11]},
+            {"time":0,"value":[1,2,3,12]},
+            {"time":8,"value":[1,2,3,4]},
+            {"time":5,"value":[1,2,3,4]},
+            {"time":10,"value":[1,2,3,4]},
+            //{"time":6,"value":[1,2,3,4]},
+            {"time":7,"value":[1,2,3,4]}
+            ]
+        }
+        chart.loadMeasure(measure)
         chart.render("body")
     })
     
@@ -38,34 +53,52 @@
     }
 
     .toolTip {
+        width: 150px;
+        height:100px;
         display: none;
         position: absolute;
-        padding: 5px 15px;
-        border-radius: 1px;
-        background: rgba(0,0,0,.8);
+        border-radius: 3px;
+        background: rgba(80,100,147,0.8);
         color: #ddd;
-        font-size: 17px;
+        font-size: 16px;
         text-shadow: 0 1px 0 #000;
         text-transform: uppercase;
-        text-align: center;
         line-height: 1;
         box-shadow: 0 1px 3px rgba(0,0,0,0.5);
         pointer-events: none;
         z-index: 10;
+        border: 0.3px solid #fff;
     }
 
-    .toolTip:after {
-      position: absolute;
-      left: 50%;
-      bottom: -6px;
-      content: "";
-      height: 0;
-      margin: 0 0 0 -6px;
-      border-right: 5px solid transparent;
-      border-left: 5px solid transparent;
-      border-top: 6px solid rgba(0,0,0,.7);
-      line-height: 0;
+    .tipTitle {
+        background: rgba(80,100,255,0.9);
+        height:25%;
+        padding-left: 10px;
+        font-weight: bold;
     }
+
+    .tipItem {
+        display: inline-block;
+        float: left;
+        height: 75%;
+        text-align: right;
+        padding-left: 10px;
+    }
+
+    .tipValue {
+        display: inline-block;
+        float: right;
+        height: 75%;
+        text-align: right;
+        padding-right: 10px;
+    }
+
+    .toolTip p{
+        height: 25%;
+        padding:5px 0 0 0;
+    }
+
+
 
     .doughnutTip {
         position:absolute;
