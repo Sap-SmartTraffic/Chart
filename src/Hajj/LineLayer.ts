@@ -71,15 +71,15 @@ export class LineLayer extends BaseLayer {
             let lGen=d3.line()
            if(d.type=="line"){
                 lines.append("path").attr("d",this.smartLineGen(xScale,yScale,true,d.data)).call(attrs({
-                    "stroke":d.style.color||this.chart.getColorByIndex(i)
+                    "stroke":d.style.color||this.chart.getColor(i)
                 })).call(attrs(d.style)).attr("fill","none")
            }
             if(d.type=="area"){
                 lines.append("path").attr("d",this.smartLineGen(xScale,yScale,true,d.data)).call(attrs({
-                    "stroke":d.style.color||this.chart.getColorByIndex(i)
+                    "stroke":d.style.color||this.chart.getColor(i)
                 })).call(attrs(d.style)).attr("fill","none")
                  areas.append("path").attr("d",this.areaGen(xScale,yScale,d.data,Util.toPixel(this.layout.height,this.layout.height)-this.axisLayout.xHidth)).call(attrs({
-                     "fill":d.style.fill||this.chart.getColorByIndex(i),
+                     "fill":d.style.fill||this.chart.getColor(i),
                      "opacity":d.style.opacity||0.5
                 }))
             }
@@ -90,7 +90,7 @@ export class LineLayer extends BaseLayer {
                     bar.call(attrs({
                         height:0,
                         width,
-                        fill:d.style.color||this.chart.getColorByIndex(i),
+                        fill:d.style.color||this.chart.getColor(i),
                         x:xScale(dd.x)-width/2,
                         y:Util.toPixel(this.layout.height)-this.axisLayout.xHidth
                     }))

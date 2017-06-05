@@ -106,8 +106,13 @@ define(["require", "exports", "d3", "underscore", "Evented", "Measure", "Util"],
             var rect = this.stringRectCache(s, cls, fontSize);
             return { width: rect.width, height: rect.height };
         };
-        BaseChart.prototype.getColorByIndex = function (i) {
-            return d3.schemeCategory10[i];
+        BaseChart.prototype.getColor = function (color) {
+            if (color === undefined)
+                return d3.schemeCategory20[Math.round(Math.random() * 20)];
+            else if (typeof (color) == "number")
+                return d3.schemeCategory20[color];
+            else
+                return color;
         };
         BaseChart.prototype.render = function (ref) {
             this.update();

@@ -108,8 +108,13 @@ export class BaseChart extends Evented {
         return {width:rect.width,height:rect.height}
     }
 
-    getColorByIndex(i){
-        return d3.schemeCategory10[i]
+    getColor(color?){
+        if(color === undefined)
+            return d3.schemeCategory20[Math.round(Math.random()*20)]
+        else if(typeof(color) == "number")
+            return d3.schemeCategory20[color]
+        else 
+            return color
     }
 
     render(ref){

@@ -15,20 +15,57 @@ define(["require", "exports", "d3", "underscore", "Util", "BaseLayer"], function
         __extends(LineLayer, _super);
         function LineLayer(id, conf) {
             var _this = _super.call(this, conf) || this;
+            /*
+            smartLineGen(xScale, yScale, isHandleNaN, ds) {
+                if (ds.length < 1) return "M0,0";
+                var lineString = "";
+                var isStartPoint = true;
+                if (!isHandleNaN) {
+                    ds = ds.filter(function (v) {
+                        return !isNaN(v.y);
+                    })
+                }
+                for (var i = 0; i < ds.length; ++i) {
+                    if (isStartPoint) {
+                        if (isNaN(ds[i].y)) {
+                            isStartPoint = true;
+                            continue;
+                        } else {
+                            lineString += "M" + xScale(ds[i].x) + "," + yScale(ds[i].y);
+                            isStartPoint = false;
+                        }
+                    } else {
+                        if (isNaN(ds[i].y)) {
+                            isStartPoint = true;
+                            continue;
+                        } else {
+                            lineString += "L" + xScale(ds[i].x) + "," + yScale(ds[i].y);
+                        }
+                    }
+        
+                }
+                return lineString;
+            }
+            */
+            _this.curveTypeMap = {
+                linear: d3.curveLinear,
+                basis: d3.curveBasis,
+                cardinal: d3.curveCardinal,
+                step: d3.curveStep
+            };
             _this.setConfig(conf);
             return _this;
         }
-        LineLayer.prototype.init = function () {
-        };
-        LineLayer.prototype.drawer = function (svgNode) {
+        LineLayer.prototype.drawer = function (svgNode, curveType) {
             var _this = this;
             var ds = this.chart.measures;
+            var maxX = Util.max(_.chain(ds).map(function (d) { return d.data; }).reduce(function (d1, d2) { return d1.concat(d2); }).value(), "x"), maxY = Util.max(_.chain(ds).map(function (d) { return d.data; }).reduce(function (d1, d2) { return d1.concat(d2); }).value(), "y");
+            var xScale = d3.scaleLinear().domain([0, maxX]).range([0, Util.toPixel(this.layout.width)]);
+            var yScale = d3.scaleLinear().domain([0, maxY]).range([Util.toPixel(this.layout.height), 0]);
             _.each(ds, function (d, i) {
-                var maxX = Util.max(d.data, "x");
-                var maxY = Util.max(d.data, "y");
-                var xScale = d3.scaleLinear().domain([0, maxX]).range([0, Util.toPixel(_this.layout.width)]);
-                var yScale = d3.scaleLinear().domain([0, maxY]).range([Util.toPixel(_this.layout.height), 0]);
-                svgNode.append("svg:g").append("path").attr("d", _this.smartLineGen(xScale, yScale, true, d.data)).attr("stroke", d.style.color || _this.chart.getColorByIndex(i)).attr("fill", "none");
+                var line = d3.line().x(function (d) { return xScale(d.x); }).y(function (d) { return yScale(d.y); }).curve(_this.curveTypeMap[curveType]);
+                svgNode.append("svg:g").append("path").attr("d", line(d.data)).attr("stroke", d.style.color || _this.chart.getColor(i)).attr("fill", "none");
+                //svgNode.append("svg:g").append("path").attr("d",this.smartLineGen(xScale,yScale,true,d.data)).attr("stroke",d.style.color||this.chart.getColor(i)).attr("fill","none")
             });
             return this;
         };
@@ -36,47 +73,14 @@ define(["require", "exports", "d3", "underscore", "Util", "BaseLayer"], function
             var _this = this;
             var fragment = document.createDocumentFragment();
             var svg = d3.select(fragment).append("svg").classed(this.config.className, function () { return !!_this.config.className; });
-            this.drawer(svg);
+            this.drawer(svg, "basis");
             return svg.node();
         };
         LineLayer.prototype.updateDom = function () {
             var svg = d3.select(this.el);
             svg.selectAll("*").remove();
-            this.drawer(svg);
+            this.drawer(svg, "basis");
             return this;
-        };
-        LineLayer.prototype.smartLineGen = function (xScale, yScale, isHandleNaN, ds) {
-            if (ds.length < 1)
-                return "M0,0";
-            var lineString = "";
-            var isStartPoint = true;
-            if (!isHandleNaN) {
-                ds = ds.filter(function (v) {
-                    return !isNaN(v.y);
-                });
-            }
-            for (var i = 0; i < ds.length; ++i) {
-                if (isStartPoint) {
-                    if (isNaN(ds[i].y)) {
-                        isStartPoint = true;
-                        continue;
-                    }
-                    else {
-                        lineString += "M" + xScale(ds[i].x) + "," + yScale(ds[i].y);
-                        isStartPoint = false;
-                    }
-                }
-                else {
-                    if (isNaN(ds[i].y)) {
-                        isStartPoint = true;
-                        continue;
-                    }
-                    else {
-                        lineString += "L" + xScale(ds[i].x) + "," + yScale(ds[i].y);
-                    }
-                }
-            }
-            return lineString;
         };
         return LineLayer;
     }(BaseLayer_1.BaseLayer));

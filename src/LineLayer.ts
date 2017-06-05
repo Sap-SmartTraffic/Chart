@@ -10,41 +10,11 @@ export class LineLayer extends BaseLayer {
     }
     
     config: {
-        lines:any[]
         className: string
     }
-
-    init() {
-       
-    }
-
-    drawer(svgNode){
-        let ds = this.chart.measures
-        _.each(ds,(d,i)=>{
-        let maxX = Util.max(d.data, "x")
-        let maxY = Util.max(d.data, "y")
-        let xScale = d3.scaleLinear().domain([0, maxX]).range([0, Util.toPixel(this.layout.width)])
-        let yScale = d3.scaleLinear().domain([0,maxY]).range([Util.toPixel(this.layout.height),0])
-        svgNode.append("svg:g").append("path").attr("d",this.smartLineGen(xScale,yScale,true,d.data)).attr("stroke",d.style.color||this.chart.getColorByIndex(i)).attr("fill","none")
-        })
-        return this
-    }
-
-    renderer() {
-        let fragment = document.createDocumentFragment()
-        let svg = d3.select(fragment).append("svg").classed(this.config.className, () => !!this.config.className)
-        this.drawer(svg)
-        return svg.node()
-    }
-
-    updateDom(){
-        let svg=d3.select(this.el)
-        svg.selectAll("*").remove()
-        this.drawer(svg)
-        return this
-    }
-     
-     smartLineGen(xScale, yScale, isHandleNaN, ds) {
+    
+    /*
+    smartLineGen(xScale, yScale, isHandleNaN, ds) {
         if (ds.length < 1) return "M0,0";
         var lineString = "";
         var isStartPoint = true;
@@ -74,4 +44,41 @@ export class LineLayer extends BaseLayer {
         }
         return lineString;
     }
+    */
+
+    curveTypeMap = {
+        linear: d3.curveLinear,
+        basis: d3.curveBasis,
+        cardinal: d3.curveCardinal,
+        step: d3.curveStep
+    }
+
+    drawer(svgNode,curveType) {
+        let ds = this.chart.measures
+        let maxX = Util.max(_.chain(ds).map((d)=>d.data).reduce((d1:any[],d2:any[])=>d1.concat(d2)).value(),"x"),
+            maxY = Util.max(_.chain(ds).map((d)=>d.data).reduce((d1:any[],d2:any[])=>d1.concat(d2)).value(),"y")
+        let xScale = d3.scaleLinear().domain([0, maxX]).range([0, Util.toPixel(this.layout.width)])
+        let yScale = d3.scaleLinear().domain([0,maxY]).range([Util.toPixel(this.layout.height),0])
+        _.each(ds,(d,i)=>{
+            let line = d3.line().x(function(d){return xScale(d.x)}).y(function(d){return yScale(d.y)}).curve(this.curveTypeMap[curveType])
+            svgNode.append("svg:g").append("path").attr("d",line(d.data)).attr("stroke",d.style.color||this.chart.getColor(i)).attr("fill","none")
+            //svgNode.append("svg:g").append("path").attr("d",this.smartLineGen(xScale,yScale,true,d.data)).attr("stroke",d.style.color||this.chart.getColor(i)).attr("fill","none")
+        })
+        return this
+    }
+
+    renderer() {
+        let fragment = document.createDocumentFragment()
+        let svg = d3.select(fragment).append("svg").classed(this.config.className, () => !!this.config.className)
+        this.drawer(svg,"basis")
+        return svg.node()
+    }
+
+    updateDom(){
+        let svg=d3.select(this.el)
+        svg.selectAll("*").remove()
+        this.drawer(svg,"basis")
+        return this
+    }
+
 }

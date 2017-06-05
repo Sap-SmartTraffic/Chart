@@ -68,15 +68,15 @@ define(["require", "exports", "d3", "underscore", "Util", "BaseLayer"], function
                 var lGen = d3.line();
                 if (d.type == "line") {
                     lines.append("path").attr("d", _this.smartLineGen(xScale, yScale, true, d.data)).call(attrs({
-                        "stroke": d.style.color || _this.chart.getColorByIndex(i)
+                        "stroke": d.style.color || _this.chart.getColor(i)
                     })).call(attrs(d.style)).attr("fill", "none");
                 }
                 if (d.type == "area") {
                     lines.append("path").attr("d", _this.smartLineGen(xScale, yScale, true, d.data)).call(attrs({
-                        "stroke": d.style.color || _this.chart.getColorByIndex(i)
+                        "stroke": d.style.color || _this.chart.getColor(i)
                     })).call(attrs(d.style)).attr("fill", "none");
                     areas.append("path").attr("d", _this.areaGen(xScale, yScale, d.data, Util.toPixel(_this.layout.height, _this.layout.height) - _this.axisLayout.xHidth)).call(attrs({
-                        "fill": d.style.fill || _this.chart.getColorByIndex(i),
+                        "fill": d.style.fill || _this.chart.getColor(i),
                         "opacity": d.style.opacity || 0.5
                     }));
                 }
@@ -87,7 +87,7 @@ define(["require", "exports", "d3", "underscore", "Util", "BaseLayer"], function
                         bar.call(attrs({
                             height: 0,
                             width: width_1,
-                            fill: d.style.color || _this.chart.getColorByIndex(i),
+                            fill: d.style.color || _this.chart.getColor(i),
                             x: xScale(dd.x) - width_1 / 2,
                             y: Util.toPixel(_this.layout.height) - _this.axisLayout.xHidth
                         }));

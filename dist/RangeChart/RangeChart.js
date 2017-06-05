@@ -8,27 +8,25 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "Util", "BaseChart", "TitleLayer", "AxisLayer", "LineLayer", "LegendLayer", "BarLayer"], function (require, exports, Util, BaseChart_1, TitleLayer_1, AxisLayer_1, LineLayer_1, LegendLayer_1, BarLayer_1) {
+define(["require", "exports", "Util", "BaseChart", "TitleLayer", "AxisLayer", "RangeLayer", "LegendLayer"], function (require, exports, Util, BaseChart_1, TitleLayer_1, AxisLayer_1, RangeLayer_1, LegendLayer_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    var LineChart = (function (_super) {
-        __extends(LineChart, _super);
-        function LineChart(conf) {
+    var RangeChart = (function (_super) {
+        __extends(RangeChart, _super);
+        function RangeChart(conf) {
             var _this = _super.call(this, conf) || this;
             _this.mainTitle = new TitleLayer_1.TitleLayer("title", { value: "hehe", className: "mainTitle", textAlign: "center" });
-            _this.axisLayer = new AxisLayer_1.AxisLayer("axis", { type: "line", xAxisTitle: "日期", yAxisTitle: "当天参与活动的人数", className: "axisLayer" });
-            _this.lineLayer = new LineLayer_1.LineLayer("line", { className: "line" });
+            _this.axisLayer = new AxisLayer_1.AxisLayer("axis", { type: "range", xAxisTitle: "日期", yAxisTitle: "当天参与活动的人数", className: "axisLayer" });
+            _this.rangeLayer = new RangeLayer_1.RangeLayer("range", { className: "range" });
             _this.legendLayer = new LegendLayer_1.LegendLayer("legend", { className: "legend" });
-            _this.barLayer = new BarLayer_1.BarLayer("bar", { className: "bar" });
             _this.addLayer(_this.mainTitle);
             _this.addLayer(_this.axisLayer);
-            _this.addLayer(_this.lineLayer);
+            _this.addLayer(_this.rangeLayer);
             _this.addLayer(_this.legendLayer);
-            _this.addLayer(_this.barLayer);
             _this.init();
             return _this;
         }
-        LineChart.prototype.init = function () {
+        RangeChart.prototype.init = function () {
             var _this = this;
             this.on("chartUpdate", function () {
                 _this.mainTitle.setLayout({ width: _this.config.width, height: _this.mainTitle.getTitleRect().height + "px" });
@@ -36,19 +34,15 @@ define(["require", "exports", "Util", "BaseChart", "TitleLayer", "AxisLayer", "L
                 _this.axisLayer.setLayout({ top: _this.mainTitle.getTitleRect().height + "px",
                     width: _this.config.width,
                     height: Util.toPixel(_this.config.height) - _this.mainTitle.getTitleRect().height - Util.toPixel(_this.legendLayer.layout.height) + "px" });
-                _this.lineLayer.setLayout({ top: _this.mainTitle.getTitleRect().height + Util.toPixel(_this.axisLayer.config.smallPadding) + "px",
-                    left: _this.axisLayer.calculatePaddingLeft() + "px",
-                    width: Util.toPixel(_this.config.width) - _this.axisLayer.calculatePaddingLeft() - Util.toPixel(_this.axisLayer.config.smallPadding) + "px",
-                    height: Util.toPixel(_this.config.height) - _this.mainTitle.getTitleRect().height - _this.axisLayer.calculatePaddingBottom() - Util.toPixel(_this.axisLayer.config.smallPadding) - Util.toPixel(_this.legendLayer.layout.height) + "px" });
-                _this.barLayer.setLayout({ top: _this.mainTitle.getTitleRect().height + Util.toPixel(_this.axisLayer.config.smallPadding) + "px",
+                _this.rangeLayer.setLayout({ top: _this.mainTitle.getTitleRect().height + Util.toPixel(_this.axisLayer.config.smallPadding) + "px",
                     left: _this.axisLayer.calculatePaddingLeft() + "px",
                     width: Util.toPixel(_this.config.width) - _this.axisLayer.calculatePaddingLeft() - Util.toPixel(_this.axisLayer.config.smallPadding) + "px",
                     height: Util.toPixel(_this.config.height) - _this.mainTitle.getTitleRect().height - _this.axisLayer.calculatePaddingBottom() - Util.toPixel(_this.axisLayer.config.smallPadding) - Util.toPixel(_this.legendLayer.layout.height) + "px" });
             });
         };
-        LineChart.prototype.calculateLayout = function () {
+        RangeChart.prototype.calculateLayout = function () {
         };
-        return LineChart;
+        return RangeChart;
     }(BaseChart_1.BaseChart));
-    exports.LineChart = LineChart;
+    exports.RangeChart = RangeChart;
 });

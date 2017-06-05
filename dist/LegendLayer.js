@@ -15,28 +15,52 @@ define(["require", "exports", "d3", "underscore", "BaseLayer"], function (requir
         __extends(LegendLayer, _super);
         function LegendLayer(id, conf) {
             var _this = _super.call(this) || this;
+            _this.config = {
+                height: "48px",
+                className: "LegendLayer",
+                margin: { top: "5px", right: "20px", bottom: "5px", left: "20px" },
+                legendIcon: { width: "15px", height: "15px" },
+                legendText: { height: "15px" },
+                legendInnerMargin: "5px",
+                legendOuterMargin: "10px"
+            };
             _this.setConfig(conf);
             return _this;
         }
+        /*
+        calculateLegendWidth(ds:Measure[]) {
+            let legendWidth = 0
+            _.each(ds, (d,i)=> {
+                legendWidth += this.calculayeLegendUnitWidth("标签"+d.id)
+            })
+            return legendWidth
+        }
+    
+        calculayeLegendUnitWidth(legendText) {
+            return Util.toPixel(this.config.legendIcon.width) + Util.toPixel(this.config.legendInnerMargin) + Util.getStringRect(legendText).width + Util.toPixel(this.config.legendOuterMargin)
+        }
+    
+        calculateHeight(ds) {
+            let availableWidth = Util.toPixel(this.layout.width) - Util.toPixel(this.config.margin.right) - Util.toPixel(this.config.margin.left)
+            let legendWidth = this.calculateLegendWidth(ds)
+            let legendRow = Math.ceil(legendWidth / availableWidth)
+            this.config.height = legendRow * (Util.toPixel(this.config.legendIcon.height)) + Util.toPixel(this.config.margin.top) + Util.toPixel(this.config.margin.bottom) + "px"
+        }
+        */
         LegendLayer.prototype.init = function () {
-        };
-        LegendLayer.prototype.addLegend = function (legend) {
-            this.config.legendGroup.push(legend);
-        };
-        LegendLayer.prototype.removeLegend = function (legend) {
-            var target = _.findIndex(this.config.legendGroup, legend);
-            this.config.legendGroup.splice(target, 1);
         };
         LegendLayer.prototype.renderer = function () {
             var _this = this;
             var ds = this.chart.measures;
             var fragment = document.createDocumentFragment();
-            var legend = d3.select(fragment).append("xhtml:div").node();
+            var legend = d3.select(fragment).append("xhtml:div").attr("class", "legend-wrap");
+            var legendGroup = legend.append("xhtml:div").attr("class", "legendGroup").style("margin", this.config.margin.top + " " + this.config.margin.right + " " + this.config.margin.bottom + " " + this.config.margin.left).style("display", "-webkit-flex").style("flex-wrap", "wrap").style("justify-content", "center");
             _.each(ds, function (d, i) {
-                d3.select(legend).append("xhtml:div").style("width", "20px").style("height", "20px").style("background", _this.chart.getColorByIndex(i)).style("float", "left").style("margin-right", "5px");
-                d3.select(legend).append("xhtml:p").style("line-height", "20px").style("float", "left").text("标签" + i).style("margin-right", "10px");
+                var legendUnit = legendGroup.append("xhtml:div").attr("class", "legendUnit" + i).style("display", "inline-block");
+                legendUnit.append("xhtml:div").style("width", _this.config.legendIcon.width).style("height", _this.config.legendIcon.height).style("display", "inline-block").style("background-color", _this.chart.getColor(i)).style("margin-right", _this.config.legendInnerMargin);
+                legendUnit.append("xhtml:p").style("line-height", _this.config.legendText.height).text("标签" + d.id).style("margin-right", _this.config.legendOuterMargin).style("display", "inline-block").style("vertical-align", "top");
             });
-            return legend;
+            return legend.node();
         };
         return LegendLayer;
     }(BaseLayer_1.BaseLayer));

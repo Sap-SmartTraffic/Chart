@@ -3,39 +3,59 @@ import _ = require("underscore")
 import Util = require ("Util")
 import {Evented} from "Evented"
 import {BaseLayer} from "BaseLayer"
+import {Measure} from "Measure"
 
 export class LegendLayer extends BaseLayer {
-    config: {
-        legendGroup: string[]
-        className: string
+    config = {
+        height:"48px",
+        className:"LegendLayer",
+        margin:{top:"5px",right:"20px",bottom:"5px",left:"20px"},
+        legendIcon:{width:"15px",height:"15px"},
+        legendText:{height:"15px"},
+        legendInnerMargin:"5px",
+        legendOuterMargin:"10px"
     }
 
     constructor(id?, conf?) {
         super()
         this.setConfig(conf)
     }
+    
+    /*
+    calculateLegendWidth(ds:Measure[]) {
+        let legendWidth = 0
+        _.each(ds, (d,i)=> {
+            legendWidth += this.calculayeLegendUnitWidth("标签"+d.id)
+        })
+        return legendWidth
+    }
+
+    calculayeLegendUnitWidth(legendText) {
+        return Util.toPixel(this.config.legendIcon.width) + Util.toPixel(this.config.legendInnerMargin) + Util.getStringRect(legendText).width + Util.toPixel(this.config.legendOuterMargin)
+    }
+
+    calculateHeight(ds) {
+        let availableWidth = Util.toPixel(this.layout.width) - Util.toPixel(this.config.margin.right) - Util.toPixel(this.config.margin.left)
+        let legendWidth = this.calculateLegendWidth(ds)
+        let legendRow = Math.ceil(legendWidth / availableWidth)
+        this.config.height = legendRow * (Util.toPixel(this.config.legendIcon.height)) + Util.toPixel(this.config.margin.top) + Util.toPixel(this.config.margin.bottom) + "px"
+    }
+    */
 
     init() {
 
     }
 
-    addLegend(legend: string) {
-        this.config.legendGroup.push(legend)
-    }
-
-    removeLegend(legend: string) {
-        let target = _.findIndex(this.config.legendGroup, legend)
-        this.config.legendGroup.splice(target, 1)
-    }
-
     renderer() {
         let ds = this.chart.measures
         let fragment = document.createDocumentFragment()
-        let legend = d3.select(fragment).append("xhtml:div").node()
+        let legend = d3.select(fragment).append("xhtml:div").attr("class","legend-wrap")
+        let legendGroup = legend.append("xhtml:div").attr("class","legendGroup").style("margin",this.config.margin.top+" "+this.config.margin.right+" "+this.config.margin.bottom+" "+this.config.margin.left).style("display","-webkit-flex").style("flex-wrap","wrap").style("justify-content","center")
         _.each(ds, (d,i)=>{
-            d3.select(legend).append("xhtml:div").style("width","20px").style("height","20px").style("background", this.chart.getColorByIndex(i)).style("float","left").style("margin-right","5px")
-            d3.select(legend).append("xhtml:p").style("line-height", "20px").style("float", "left").text("标签"+i).style("margin-right", "10px")
+            let legendUnit = legendGroup.append("xhtml:div").attr("class","legendUnit"+i).style("display","inline-block")
+            legendUnit.append("xhtml:div").style("width",this.config.legendIcon.width).style("height",this.config.legendIcon.height).style("display","inline-block").style("background-color", this.chart.getColor(i)).style("margin-right",this.config.legendInnerMargin)
+            legendUnit.append("xhtml:p").style("line-height", this.config.legendText.height).text("标签"+d.id).style("margin-right", this.config.legendOuterMargin).style("display","inline-block").style("vertical-align","top")
         })
-        return legend
+        return legend.node()
     }
 }
