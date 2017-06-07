@@ -16,8 +16,8 @@ define(["require", "exports", "d3", "underscore", "Util", "BaseLayer"], function
         function AxisLayer(id, conf) {
             var _this = _super.call(this, id, conf) || this;
             _this.config = {
-                type: "line",
-                ticks: 6,
+                type: "",
+                ticks: 5,
                 tickSize: "6px",
                 tickPadding: "3px",
                 smallPadding: "10px",
@@ -30,24 +30,6 @@ define(["require", "exports", "d3", "underscore", "Util", "BaseLayer"], function
             _this.setConfig(conf);
             return _this;
         }
-        AxisLayer.prototype.calculateExtremum = function () {
-            var ds = this.chart.measures;
-            var maxX, maxY, minX, minY;
-            if (this.config.type == "line") {
-                maxX = Util.max(_.chain(ds).map(function (d) { return d.data; }).reduce(function (d1, d2) { return d1.concat(d2); }).value(), "x");
-                maxY = Util.max(_.chain(ds).map(function (d) { return d.data; }).reduce(function (d1, d2) { return d1.concat(d2); }).value(), "y");
-                minX = Util.min(_.chain(ds).map(function (d) { return d.data; }).reduce(function (d1, d2) { return d1.concat(d2); }).value(), "x");
-                minY = Util.min(_.chain(ds).map(function (d) { return d.data; }).reduce(function (d1, d2) { return d1.concat(d2); }).value(), "y");
-            }
-            else if (this.config.type == "range") {
-                maxX = Util.max(_.chain(ds).map(function (d) { return d.data; }).reduce(function (d1, d2) { return d1.concat(d2); }).value(), "x");
-                minX = Util.min(_.chain(ds).map(function (d) { return d.data; }).reduce(function (d1, d2) { return d1.concat(d2); }).value(), "x");
-                var maxY0 = Util.max(_.chain(ds).map(function (d) { return d.data; }).reduce(function (d1, d2) { return d1.concat(d2); }).value(), "y0"), maxY1 = Util.max(_.chain(ds).map(function (d) { return d.data; }).reduce(function (d1, d2) { return d1.concat(d2); }).value(), "y1"), minY0 = Util.min(_.chain(ds).map(function (d) { return d.data; }).reduce(function (d1, d2) { return d1.concat(d2); }).value(), "y0"), minY1 = Util.min(_.chain(ds).map(function (d) { return d.data; }).reduce(function (d1, d2) { return d1.concat(d2); }).value(), "y1");
-                maxY = Math.max(maxY0, maxY1);
-                minY = Math.min(minY0, minY1);
-            }
-            return { minX: minX, maxX: maxX, minY: minY, maxY: maxY };
-        };
         AxisLayer.prototype.calculateYaxisWidth = function () {
             var valueString = this.calculateExtremum().maxY.toString();
             return Util.toPixel(this.config.tickSize) + Util.toPixel(this.config.tickPadding) + Util.getStringRect(valueString).width;
@@ -62,28 +44,62 @@ define(["require", "exports", "d3", "underscore", "Util", "BaseLayer"], function
         AxisLayer.prototype.calculatePaddingBottom = function () {
             return this.calculateXaxisHeight() + Util.getStringRect(this.config.xAxisTitle).height + Util.toPixel(this.config.smallPadding);
         };
-        AxisLayer.prototype.drawer = function (svgNode) {
-            var maxX = this.calculateExtremum().maxX;
+        AxisLayer.prototype.calculateExtremum = function () {
+            var ds = this.chart.measures;
+            var maxX, maxY, minX, minY;
+            maxX = Util.max(_.chain(ds).map(function (d) { return d.data; }).reduce(function (d1, d2) { return d1.concat(d2); }).value(), "x");
+            minX = Util.min(_.chain(ds).map(function (d) { return d.data; }).reduce(function (d1, d2) { return d1.concat(d2); }).value(), "x");
+            if ("y" in ds[0].data[0]) {
+                maxY = Util.max(_.chain(ds).map(function (d) { return d.data; }).reduce(function (d1, d2) { return d1.concat(d2); }).value(), "y");
+                minY = Util.min(_.chain(ds).map(function (d) { return d.data; }).reduce(function (d1, d2) { return d1.concat(d2); }).value(), "y");
+            }
+            else {
+                var maxY0 = Util.max(_.chain(ds).map(function (d) { return d.data; }).reduce(function (d1, d2) { return d1.concat(d2); }).value(), "y0"), maxY1 = Util.max(_.chain(ds).map(function (d) { return d.data; }).reduce(function (d1, d2) { return d1.concat(d2); }).value(), "y1"), minY0 = Util.min(_.chain(ds).map(function (d) { return d.data; }).reduce(function (d1, d2) { return d1.concat(d2); }).value(), "y0"), minY1 = Util.min(_.chain(ds).map(function (d) { return d.data; }).reduce(function (d1, d2) { return d1.concat(d2); }).value(), "y1");
+                maxY = Math.max(maxY0, maxY1);
+                minY = Math.min(minY0, minY1);
+            }
+            return { minX: minX, maxX: maxX, minY: minY, maxY: maxY };
+        };
+        AxisLayer.prototype.getXScale = function () {
+            if (this.config.type == "line") {
+                var maxX = this.calculateExtremum().maxX;
+                return d3.scaleLinear().domain([0, maxX]).range([0, Util.toPixel(this.layout.width) - this.calculatePaddingLeft() - Util.toPixel(this.config.smallPadding)]);
+            }
+            else if (this.config.type == "ordinal") {
+                var ds = this.chart.measures[0].data;
+                var domain_1 = [];
+                _.each(ds, function (d, i) {
+                    domain_1.push(d.x);
+                });
+                return d3.scaleBand().domain(domain_1).range([0, Util.toPixel(this.layout.width) - this.calculatePaddingLeft() - Util.toPixel(this.config.smallPadding)]).paddingInner(0.1).paddingOuter(0.2);
+            }
+            else if (this.config.type == "time") {
+            }
+        };
+        AxisLayer.prototype.getYScale = function () {
             var maxY = this.calculateExtremum().maxY;
+            return d3.scaleLinear().domain([0, maxY]).range([Util.toPixel(this.layout.height) - this.calculatePaddingBottom() - Util.toPixel(this.config.smallPadding), 0]);
+        };
+        AxisLayer.prototype.drawer = function (svgNode) {
             var yAxisWidth = this.calculateYaxisWidth();
             var xAxisHeight = this.calculateXaxisHeight();
             var yAxisTitleHeight = Util.getStringRect(this.config.yAxisTitle).height;
             var xAxisTitleHeight = Util.getStringRect(this.config.xAxisTitle).height;
             var yAxisTitleWidth = Util.getStringRect(this.config.yAxisTitle).width;
             var xAxisTitleWidth = Util.getStringRect(this.config.xAxisTitle).width;
-            var xScale = d3.scaleLinear().domain([0, maxX]).range([0, Util.toPixel(this.layout.width) - this.calculatePaddingLeft() - Util.toPixel(this.config.smallPadding)]);
-            var yScale = d3.scaleLinear().domain([0, maxY]).range([Util.toPixel(this.layout.height) - this.calculatePaddingBottom() - Util.toPixel(this.config.smallPadding), 0]);
+            var xScale = this.getXScale();
+            var yScale = this.getYScale();
             if (this.config.verticalGridLine) {
-                var xInner = d3.axisBottom(xScale).tickSize(Util.toPixel(this.layout.height) - this.calculatePaddingBottom() - Util.toPixel(this.config.smallPadding)).ticks(this.config.ticks).tickFormat("");
+                var xInner = d3.axisBottom(xScale).tickSize(Util.toPixel(this.layout.height) - this.calculatePaddingBottom() - Util.toPixel(this.config.smallPadding)).tickFormat("");
                 svgNode.append("svg:g").call(xInner).attr("transform", "translate(" + this.calculatePaddingLeft() + "," + Util.toPixel(this.config.smallPadding) + ")").attr("class", "grid-line");
             }
             if (this.config.horizontalGridLine) {
-                var yInner = d3.axisLeft(yScale).tickSize(Util.toPixel(this.layout.width) - this.calculatePaddingLeft() - Util.toPixel(this.config.smallPadding)).ticks(this.config.ticks).tickFormat("");
+                var yInner = d3.axisLeft(yScale).tickSize(Util.toPixel(this.layout.width) - this.calculatePaddingLeft() - Util.toPixel(this.config.smallPadding)).tickFormat("");
                 svgNode.append("svg:g").call(yInner).attr("transform", "translate(" + (Util.toPixel(this.layout.width) - Util.toPixel(this.config.smallPadding)) + "," + Util.toPixel(this.config.smallPadding) + ")").attr("class", "grid-line");
             }
-            var xAxis = d3.axisBottom(xScale).ticks(this.config.ticks);
+            var xAxis = d3.axisBottom(xScale);
             svgNode.append("svg:g").attr("class", "axis").call(xAxis).attr("transform", "translate(" + this.calculatePaddingLeft() + "," + (Util.toPixel(this.layout.height) - this.calculatePaddingBottom()) + ")");
-            var yAxis = d3.axisLeft(yScale).ticks(this.config.ticks);
+            var yAxis = d3.axisLeft(yScale);
             svgNode.append("svg:g").attr("class", "axis").call(yAxis).attr("transform", "translate(" + this.calculatePaddingLeft() + "," + Util.toPixel(this.config.smallPadding) + ")");
             svgNode.append("svg:text").attr("class", "AxisTitle").attr("id", "xAxisTitle").text(this.config.xAxisTitle).attr("transform", "translate(" + (Util.toPixel(this.layout.width) + this.calculatePaddingLeft() - xAxisTitleWidth) / 2 + "," + (Util.toPixel(this.layout.height) - xAxisTitleHeight) + ")");
             svgNode.append("svg:text").attr("class", "AxisTitle").attr("id", "yAxisTitle").text(this.config.yAxisTitle).attr("transform", "rotate(-90),translate(" + (0 - (Util.toPixel(this.layout.height) - this.calculatePaddingBottom() + yAxisTitleWidth) / 2 + "," + yAxisTitleHeight + ")"));

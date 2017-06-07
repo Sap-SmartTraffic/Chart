@@ -57,10 +57,10 @@ export class LineLayer extends BaseLayer {
         let ds = this.chart.measures
         let maxX = Util.max(_.chain(ds).map((d)=>d.data).reduce((d1:any[],d2:any[])=>d1.concat(d2)).value(),"x"),
             maxY = Util.max(_.chain(ds).map((d)=>d.data).reduce((d1:any[],d2:any[])=>d1.concat(d2)).value(),"y")
-        let xScale = d3.scaleLinear().domain([0, maxX]).range([0, Util.toPixel(this.layout.width)])
+        let xScale = d3.scaleLinear().domain([0,maxX]).range([0, Util.toPixel(this.layout.width)])
         let yScale = d3.scaleLinear().domain([0,maxY]).range([Util.toPixel(this.layout.height),0])
         _.each(ds,(d,i)=>{
-            let line = d3.line().x(function(d){return xScale(d.x)}).y(function(d){return yScale(d.y)}).curve(this.curveTypeMap[curveType])
+            let line = d3.line().x(function(v){return xScale(v.x)}).y(function(v){return yScale(v.y)}).curve(this.curveTypeMap[curveType])
             svgNode.append("svg:g").append("path").attr("d",line(d.data)).attr("stroke",d.style.color||this.chart.getColor(i)).attr("fill","none")
             //svgNode.append("svg:g").append("path").attr("d",this.smartLineGen(xScale,yScale,true,d.data)).attr("stroke",d.style.color||this.chart.getColor(i)).attr("fill","none")
         })

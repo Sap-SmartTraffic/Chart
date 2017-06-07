@@ -19,12 +19,26 @@ define(["require", "exports", "d3", "underscore", "Util", "BaseLayer"], function
             return _this;
         }
         BarLayer.prototype.drawer = function (svgNode) {
+            var _this = this;
             var ds = this.chart.measures;
-            var maxX = Util.max(_.chain(ds).map(function (d) { return d.data; }).reduce(function (d1, d2) { return d1.concat(d2); }).value(), "x"), maxY = Util.max(_.chain(ds).map(function (d) { return d.data; }).reduce(function (d1, d2) { return d1.concat(d2); }).value(), "y");
-            var xScale = d3.scaleBand().domain(d3.range(ds.length)).rangeRound([0, Util.toPixel(this.layout.width)]);
-            var yScale = d3.scaleLinear().domain([0, maxY]).range([Util.toPixel(this.layout.height), 0]);
+            var series = ds.length;
+            var xMarks = ds[0].data.length;
+            var maxY = Util.max(_.chain(ds).map(function (d) { return d.data; }).reduce(function (d1, d2) { return d1.concat(d2); }).value(), "y");
+            var xScale = d3.scaleBand().domain(_.range(xMarks)).rangeRound([0, Util.toPixel(this.layout.width)]).paddingInner(0.1).paddingOuter(0.2);
+            var seriesScale = d3.scaleBand().domain(_.range(series)).rangeRound([0, xScale.bandwidth()]);
+            var yScale = d3.scaleLinear().domain([0, maxY]).range([0, Util.toPixel(this.layout.height)]);
             _.each(ds, function (d, i) {
-                svgNode.append("rect").attr("x", xScale(i)).attr("y", yScale(d.data[i].y));
+                var group = svgNode.append("g").attr("class", "series" + i).attr("transform", "translate(" + (i * seriesScale.bandwidth()) + ",0)");
+                _.each(d.data, function (v, k) {
+                    group.append("rect").attr("id", "rect" + k)
+                        .attr("x", xScale(k)).attr("y", Util.toPixel(_this.layout.height))
+                        .attr("width", seriesScale.bandwidth()).attr("height", yScale(v.y))
+                        .attr("fill", _this.chart.getColor(i))
+                        .on("mousemove", function () { _this.chart.fire("showTooltip", { xMark: v.x, series: d.id, value: v.y }); })
+                        .on("mouseleave", function () { _this.chart.fire("hideTooltip"); })
+                        .transition().duration(1000)
+                        .attr("y", Util.toPixel(_this.layout.height) - yScale(v.y));
+                });
             });
         };
         BarLayer.prototype.renderer = function () {

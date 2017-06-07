@@ -10,8 +10,7 @@
 
 </body>
 <script>
-    /*
-    requirejs(['PieChart/PieChart'],function(p){
+    /*requirejs(['PieChart/PieChart'],function(p){
         var chart = new p.PieChart({})
         let measure = {"id":1, 
         "data":[
@@ -31,25 +30,21 @@
         }
         chart.loadMeasure(measure)
         chart.render("body")
-    })
-    */
-
-
+    })*/
+    
     /*
     requirejs(['LineChart/LineChart'],function(l){
         var chart = new l.LineChart({width:"600px",height:"400px"})
-        let measures = [{"id" : 1,"data" : [{"x":0,"y":1},{"x":3,"y":2},{"x":5,"y":8},{"x":7,"y":32}]},
-                        {"id" : 2,"data" : [{"x":0,"y":32},{"x":3,"y":8},{"x":5,"y":2},{"x":7,"y":1}]},
-                        {"id" : 3,"data" : [{"x":0,"y":0},{"x":3,"y":2},{"x":5,"y":4},{"x":7,"y":8}]},
-                        {"id" : 4,"data" : [{"x":0,"y":16},{"x":3,"y":4},{"x":5,"y":8},{"x":7,"y":0}]}]
+        let measures = [{"id" : 1,"data" : [{"x":0,"y":1},{"x":2,"y":2},{"x":4,"y":8},{"x":8,"y":32}]},
+                        {"id" : 2,"data" : [{"x":0,"y":32},{"x":2,"y":8},{"x":4,"y":2},{"x":8,"y":1}]},
+                        {"id" : 3,"data" : [{"x":0,"y":0},{"x":2,"y":2},{"x":4,"y":4},{"x":8,"y":8}]},
+                        {"id" : 4,"data" : [{"x":0,"y":16},{"x":2,"y":4},{"x":4,"y":8},{"x":8,"y":0}]}]
         chart.loadMeasures(measures)
         chart.render("body")
-        
     })
     */
-
     
-    /*
+    
     requirejs(['RangeChart/RangeChart'],function(r){
         var chart = new r.RangeChart({})
         let measures = [{"id":1,"data":[{"x":0,"y0":2,"y1":4},{"x":4,"y0":5,"y1":7},{"x":8,"y0":8,"y1":10},{"x":16,"y0":12,"y1":14}]},
@@ -57,20 +52,7 @@
         chart.loadMeasures(measures)
         chart.render("body")
     })
-    */
     
-    
-    requirejs(['BarChart/BarChart'],function(b){
-        var chart = new b.BarChart({})
-        let measures = [{"id":1,"data":[{"x":"04-10","y":4},{"x":"04-11","y":8},{"x":"04-12","y":6},{"x":"04-13","y":12},{"x":"04-14","y":15}]},
-                        {"id":2,"data":[{"x":"04-10","y":7},{"x":"04-11","y":2},{"x":"04-12","y":9},{"x":"04-13","y":3},{"x":"04-14","y":24}]},
-                        {"id":3,"data":[{"x":"04-10","y":3},{"x":"04-11","y":6},{"x":"04-12","y":5},{"x":"04-13","y":10},{"x":"04-14","y":18}]}]
-        chart.loadMeasures(measures)
-        chart.render("body")
-    })
-
-    
-
 
 </script>
 <style>
@@ -83,48 +65,6 @@ body,p,div {
     font-size: 3rem;
 }
 
-/* TooltipLayer */
-.tooltip-container {
-    z-index: 10
-}
-
-.tooltip {
-    border-collapse: collapse;
-    border-spacing: 0;
-    background-color: #fff;
-    opacity: 0.8;
-    empty-cells: show;
-    box-shadow: 7px 7px 12px -9px;
-    border: 1px solid #ddd;
-}
-
-.tooltip tr{
-    border: 1px solid #ccc;
-}
-
-.tooltip th {
-    background-color: #aaa;
-    font-size: 14px;
-    padding: 2px 5px;
-    text-align: left;
-    color: #fff;
-}
-
-.tooltip td {
-    font-size: 13px;
-    padding: 3px 6px;
-    background-color: #fff;
-    border-left: 1px dotted #999;
-}
-
-.tooltip td > span {
-    display: inline-block;
-    width: 10px;
-    height: 10px;
-    margin-right: 6px;
-}
-
-/*
 .toolTip {
     width: 150px;
     height: 100px;
@@ -170,7 +110,6 @@ body,p,div {
     height: 25%;
     padding: 5px 0 0 0;
 }
-*/
 
 .doughnutTip {
     position: absolute;

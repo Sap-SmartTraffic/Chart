@@ -165,7 +165,7 @@ export class PieLayer extends BaseLayer {
                     .attr("class","doughnut doughnut"+i).attr("fill", v==null? "none":d3.scaleLinear().domain([-1, 0, 1]).range(["red", "yellow", "green"])(scale(v)))
                     .attr("d",smartArcGen(outerStartAngle, outerStartAngle, middleRadius, outerRadius))
                     .on("mouseenter",function(e){
-                    svg.selectAll(".doughnut").style("opacity","0.5")
+                        svg.selectAll(".doughnut").style("opacity","0.5")
                         toolTip.html(toolTipText).style("display","block")
                         svg.selectAll(".doughnut"+i).transition().duration(200).style("opacity","1")
                     })

@@ -54,7 +54,7 @@ export class LegendLayer extends BaseLayer {
         _.each(ds, (d,i)=>{
             let legendUnit = legendGroup.append("xhtml:div").attr("class","legendUnit"+i).style("display","inline-block")
             legendUnit.append("xhtml:div").style("width",this.config.legendIcon.width).style("height",this.config.legendIcon.height).style("display","inline-block").style("background-color", this.chart.getColor(i)).style("margin-right",this.config.legendInnerMargin)
-            legendUnit.append("xhtml:p").style("line-height", this.config.legendText.height).text("标签"+d.id).style("margin-right", this.config.legendOuterMargin).style("display","inline-block").style("vertical-align","top")
+            legendUnit.append("xhtml:p").style("line-height", this.config.legendText.height).text(d.id).style("margin-right", this.config.legendOuterMargin).style("display","inline-block").style("vertical-align","top")
         })
         return legend.node()
     }

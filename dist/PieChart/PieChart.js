@@ -8,7 +8,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "Util", "BaseChart", "TitleLayer", "PieLayer"], function (require, exports, Util, BaseChart_1, TitleLayer_1, PieLayer_1) {
+define(["require", "exports", "Util", "BaseChart", "TitleLayer", "PieLayer", "TooltipLayer"], function (require, exports, Util, BaseChart_1, TitleLayer_1, PieLayer_1, TooltipLayer_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var PieChart = (function (_super) {
@@ -17,8 +17,10 @@ define(["require", "exports", "Util", "BaseChart", "TitleLayer", "PieLayer"], fu
             var _this = _super.call(this, conf) || this;
             _this.mainTitle = new TitleLayer_1.TitleLayer("title", { value: "pieChart", className: "mainTitle", textAlign: "center" });
             _this.pieLayer = new PieLayer_1.PieLayer("pie", { className: "pieChart" });
+            _this.tooltipLayer = new TooltipLayer_1.TooltipLayer();
             _this.addLayer(_this.pieLayer);
             _this.addLayer(_this.mainTitle);
+            _this.addLayer(_this.tooltipLayer);
             _this.init();
             return _this;
         }
@@ -28,6 +30,7 @@ define(["require", "exports", "Util", "BaseChart", "TitleLayer", "PieLayer"], fu
                 ///calculate layout
                 _this.mainTitle.setLayout({ width: "100%", height: _this.mainTitle.getTitleRect().height + "px" });
                 _this.pieLayer.setLayout({ top: _this.mainTitle.getTitleRect().height + "px", width: Util.toPixel(_this.config.width) + "px", height: Util.toPixel(_this.config.height) - Util.toPixel(_this.mainTitle.layout.height) + "px" });
+                _this.tooltipLayer.setLayout({ width: "150px", height: "100px" });
             });
             this.on("measure-change", function () {
                 _this.pieLayer.updateDom();

@@ -16,7 +16,7 @@ define(["require", "exports", "Util", "BaseChart", "TitleLayer", "AxisLayer", "R
         function RangeChart(conf) {
             var _this = _super.call(this, conf) || this;
             _this.mainTitle = new TitleLayer_1.TitleLayer("title", { value: "hehe", className: "mainTitle", textAlign: "center" });
-            _this.axisLayer = new AxisLayer_1.AxisLayer("axis", { type: "range", xAxisTitle: "日期", yAxisTitle: "当天参与活动的人数", className: "axisLayer" });
+            _this.axisLayer = new AxisLayer_1.AxisLayer("axis", { type: "line", xAxisTitle: "日期", yAxisTitle: "当天参与活动的人数", className: "axisLayer" });
             _this.rangeLayer = new RangeLayer_1.RangeLayer("range", { className: "range" });
             _this.legendLayer = new LegendLayer_1.LegendLayer("legend", { className: "legend" });
             _this.addLayer(_this.mainTitle);

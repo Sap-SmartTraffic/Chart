@@ -63,7 +63,7 @@ define(["require", "exports", "d3", "underscore", "Util", "BaseLayer"], function
             var xScale = d3.scaleLinear().domain([0, maxX]).range([0, Util.toPixel(this.layout.width)]);
             var yScale = d3.scaleLinear().domain([0, maxY]).range([Util.toPixel(this.layout.height), 0]);
             _.each(ds, function (d, i) {
-                var line = d3.line().x(function (d) { return xScale(d.x); }).y(function (d) { return yScale(d.y); }).curve(_this.curveTypeMap[curveType]);
+                var line = d3.line().x(function (v) { return xScale(v.x); }).y(function (v) { return yScale(v.y); }).curve(_this.curveTypeMap[curveType]);
                 svgNode.append("svg:g").append("path").attr("d", line(d.data)).attr("stroke", d.style.color || _this.chart.getColor(i)).attr("fill", "none");
                 //svgNode.append("svg:g").append("path").attr("d",this.smartLineGen(xScale,yScale,true,d.data)).attr("stroke",d.style.color||this.chart.getColor(i)).attr("fill","none")
             });

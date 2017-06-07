@@ -16,7 +16,7 @@ export class RangeChart extends BaseChart{
     constructor(conf?){
         super(conf)
         this.mainTitle=new TitleLayer("title",{value:"hehe",className:"mainTitle",textAlign:"center"})
-        this.axisLayer = new AxisLayer("axis",{type:"range",xAxisTitle:"日期", yAxisTitle:"当天参与活动的人数", className:"axisLayer"})
+        this.axisLayer = new AxisLayer("axis",{type:"line",xAxisTitle:"日期", yAxisTitle:"当天参与活动的人数", className:"axisLayer"})
         this.rangeLayer=new RangeLayer("range",{className:"range"})
         this.legendLayer = new LegendLayer("legend",{className:"legend"})
         this.addLayer(this.mainTitle)

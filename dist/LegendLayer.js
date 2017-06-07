@@ -58,7 +58,7 @@ define(["require", "exports", "d3", "underscore", "BaseLayer"], function (requir
             _.each(ds, function (d, i) {
                 var legendUnit = legendGroup.append("xhtml:div").attr("class", "legendUnit" + i).style("display", "inline-block");
                 legendUnit.append("xhtml:div").style("width", _this.config.legendIcon.width).style("height", _this.config.legendIcon.height).style("display", "inline-block").style("background-color", _this.chart.getColor(i)).style("margin-right", _this.config.legendInnerMargin);
-                legendUnit.append("xhtml:p").style("line-height", _this.config.legendText.height).text("标签" + d.id).style("margin-right", _this.config.legendOuterMargin).style("display", "inline-block").style("vertical-align", "top");
+                legendUnit.append("xhtml:p").style("line-height", _this.config.legendText.height).text(d.id).style("margin-right", _this.config.legendOuterMargin).style("display", "inline-block").style("vertical-align", "top");
             });
             return legend.node();
         };
