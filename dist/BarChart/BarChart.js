@@ -42,12 +42,6 @@ define(["require", "exports", "Util", "BaseChart", "TitleLayer", "AxisLayer", "B
                     height: Util.toPixel(_this.config.height) - _this.mainTitle.getTitleRect().height - _this.axisLayer.calculatePaddingBottom() - Util.toPixel(_this.axisLayer.config.smallPadding) - Util.toPixel(_this.legendLayer.layout.height) + "px" });
                 _this.tooltipLayer.setLayout({ width: "150px" });
             });
-            this.on("showTooltip", function (data) {
-                _this.tooltipLayer.showTooltip(data);
-            });
-            this.on("hideTooltip", function () {
-                _this.tooltipLayer.hideTooltip();
-            });
         };
         BarChart.prototype.calculateLayout = function () {
         };

@@ -56,15 +56,49 @@ define(["require", "exports", "d3", "underscore", "Util", "BaseLayer"], function
             _this.setConfig(conf);
             return _this;
         }
+        LineLayer.prototype.eventHandler = function (svg) {
+            this.chart.on("enterLegend", function (d) {
+                svg.selectAll(".series").each(function () {
+                    if (d3.select(this).attr("id") != ("series" + d.index))
+                        d3.select(this).transition().duration(200).style("opacity", "0.2");
+                });
+            });
+            this.chart.on("leaveLegend", function () {
+                svg.selectAll(".series").transition().duration(200).style("opacity", "1");
+            });
+            this.chart.on("clickLegend", function (d) {
+            });
+        };
         LineLayer.prototype.drawer = function (svgNode, curveType) {
             var _this = this;
             var ds = this.chart.measures;
+            var series = ds.length;
             var maxX = Util.max(_.chain(ds).map(function (d) { return d.data; }).reduce(function (d1, d2) { return d1.concat(d2); }).value(), "x"), maxY = Util.max(_.chain(ds).map(function (d) { return d.data; }).reduce(function (d1, d2) { return d1.concat(d2); }).value(), "y");
-            var xScale = d3.scaleLinear().domain([0, maxX]).range([0, Util.toPixel(this.layout.width)]);
-            var yScale = d3.scaleLinear().domain([0, maxY]).range([Util.toPixel(this.layout.height), 0]);
+            var xScale = d3.scaleLinear()
+                .domain([0, maxX])
+                .range([0, Util.toPixel(this.layout.width)]);
+            var yScale = d3.scaleLinear()
+                .domain([0, maxY])
+                .range([Util.toPixel(this.layout.height), 0]);
+            var line = d3.line().x(function (v) { return xScale(v.x); })
+                .y(function (v) { return yScale(v.y); })
+                .curve(this.curveTypeMap[curveType]);
             _.each(ds, function (d, i) {
-                var line = d3.line().x(function (v) { return xScale(v.x); }).y(function (v) { return yScale(v.y); }).curve(_this.curveTypeMap[curveType]);
-                svgNode.append("svg:g").append("path").attr("d", line(d.data)).attr("stroke", d.style.color || _this.chart.getColor(i)).attr("fill", "none");
+                var group = svgNode.append("svg:g").attr("class", "series").attr("id", "series" + i);
+                group.append("path")
+                    .attr("d", line(d.data))
+                    .attr("stroke", d.style.color || _this.chart.getColor(i))
+                    .attr("stroke-width", "2px")
+                    .attr("fill", "none");
+                _.each(d.data, function (v, k) {
+                    group.append("circle")
+                        .attr("cx", xScale(v.x))
+                        .attr("cy", yScale(v.y))
+                        .attr("r", "4")
+                        .attr("fill", _this.chart.getColor(i))
+                        .on("mousemove", function () { _this.chart.fire("showTooltip", { xMark: v.x, index: i, series: d.id, value: v.y }); })
+                        .on("mouseleave", function () { _this.chart.fire("hideTooltip"); });
+                });
                 //svgNode.append("svg:g").append("path").attr("d",this.smartLineGen(xScale,yScale,true,d.data)).attr("stroke",d.style.color||this.chart.getColor(i)).attr("fill","none")
             });
             return this;
@@ -73,7 +107,8 @@ define(["require", "exports", "d3", "underscore", "Util", "BaseLayer"], function
             var _this = this;
             var fragment = document.createDocumentFragment();
             var svg = d3.select(fragment).append("svg").classed(this.config.className, function () { return !!_this.config.className; });
-            this.drawer(svg, "basis");
+            this.drawer(svg, "linear");
+            this.eventHandler(svg);
             return svg.node();
         };
         LineLayer.prototype.updateDom = function () {

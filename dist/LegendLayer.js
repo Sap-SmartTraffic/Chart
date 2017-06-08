@@ -54,10 +54,28 @@ define(["require", "exports", "d3", "underscore", "BaseLayer"], function (requir
             var ds = this.chart.measures;
             var fragment = document.createDocumentFragment();
             var legend = d3.select(fragment).append("xhtml:div").attr("class", "legend-wrap");
-            var legendGroup = legend.append("xhtml:div").attr("class", "legendGroup").style("margin", this.config.margin.top + " " + this.config.margin.right + " " + this.config.margin.bottom + " " + this.config.margin.left).style("display", "-webkit-flex").style("flex-wrap", "wrap").style("justify-content", "center");
+            var legendGroup = legend.append("xhtml:div").attr("class", "legendGroup")
+                .style("margin", this.config.margin.top + " " + this.config.margin.right + " " + this.config.margin.bottom + " " + this.config.margin.left)
+                .style("display", "-webkit-flex")
+                .style("flex-wrap", "wrap")
+                .style("justify-content", "center");
             _.each(ds, function (d, i) {
-                var legendUnit = legendGroup.append("xhtml:div").attr("class", "legendUnit" + i).style("display", "inline-block");
-                legendUnit.append("xhtml:div").style("width", _this.config.legendIcon.width).style("height", _this.config.legendIcon.height).style("display", "inline-block").style("background-color", _this.chart.getColor(i)).style("margin-right", _this.config.legendInnerMargin);
+                var legendUnit = legendGroup.append("xhtml:div").attr("class", "legendUnit" + i).style("display", "inline-block").style("opacity", "1");
+                legendUnit.append("xhtml:span").style("width", _this.config.legendIcon.width)
+                    .style("height", _this.config.legendIcon.height)
+                    .style("display", "inline-block")
+                    .style("background-color", _this.chart.getColor(i))
+                    .style("margin-right", _this.config.legendInnerMargin)
+                    .on("mouseenter", function () { _this.chart.fire("enterLegend", { series: d.id, index: i }); })
+                    .on("mouseleave", function () { _this.chart.fire("leaveLegend", {}); })
+                    .on("click", function () {
+                    var item = legend.select(".legendUnit" + i);
+                    if (item.style("opacity") == "1")
+                        item.style("opacity", "0.3");
+                    else
+                        item.style("opacity", "1");
+                    _this.chart.fire("clickLegend", { series: d.id, index: i, isShow: item.style("opacity") });
+                });
                 legendUnit.append("xhtml:p").style("line-height", _this.config.legendText.height).text(d.id).style("margin-right", _this.config.legendOuterMargin).style("display", "inline-block").style("vertical-align", "top");
             });
             return legend.node();

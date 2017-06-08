@@ -53,15 +53,54 @@ export class LineLayer extends BaseLayer {
         step: d3.curveStep
     }
 
+    eventHandler(svg) {
+        this.chart.on("enterLegend",(d)=>{
+            svg.selectAll(".series").each(function(this){
+                if(d3.select(this).attr("id") != ("series"+d.index))
+                    d3.select(this).transition().duration(200).style("opacity","0.2")
+            })
+        })
+
+        this.chart.on("leaveLegend",()=>{
+            svg.selectAll(".series").transition().duration(200).style("opacity","1")
+        })
+
+        this.chart.on("clickLegend",(d)=>{
+            
+        })
+    }
+
     drawer(svgNode,curveType) {
         let ds = this.chart.measures
+        let series = ds.length
         let maxX = Util.max(_.chain(ds).map((d)=>d.data).reduce((d1:any[],d2:any[])=>d1.concat(d2)).value(),"x"),
             maxY = Util.max(_.chain(ds).map((d)=>d.data).reduce((d1:any[],d2:any[])=>d1.concat(d2)).value(),"y")
-        let xScale = d3.scaleLinear().domain([0,maxX]).range([0, Util.toPixel(this.layout.width)])
-        let yScale = d3.scaleLinear().domain([0,maxY]).range([Util.toPixel(this.layout.height),0])
+        let xScale = d3.scaleLinear()
+                       .domain([0,maxX])
+                       .range([0, Util.toPixel(this.layout.width)])
+        let yScale = d3.scaleLinear()
+                       .domain([0,maxY])
+                       .range([Util.toPixel(this.layout.height),0])
+        let line = d3.line().x(function(v){return xScale(v.x)})
+                                .y(function(v){return yScale(v.y)})
+                                .curve(this.curveTypeMap[curveType])
         _.each(ds,(d,i)=>{
-            let line = d3.line().x(function(v){return xScale(v.x)}).y(function(v){return yScale(v.y)}).curve(this.curveTypeMap[curveType])
-            svgNode.append("svg:g").append("path").attr("d",line(d.data)).attr("stroke",d.style.color||this.chart.getColor(i)).attr("fill","none")
+            let group = svgNode.append("svg:g").attr("class","series").attr("id","series"+i)
+            group.append("path")
+                 .attr("d",line(d.data))
+                 .attr("stroke",d.style.color||this.chart.getColor(i))
+                 .attr("stroke-width","2px")
+                 .attr("fill","none")
+            _.each(d.data,(v,k)=>{
+                group.append("circle")
+                 .attr("cx",xScale(v.x))
+                 .attr("cy",yScale(v.y))
+                 .attr("r","4")
+                 .attr("fill",this.chart.getColor(i))
+                 .on("mousemove",()=>{this.chart.fire("showTooltip",{xMark:v.x, index:i, series:d.id, value:v.y})})
+                 .on("mouseleave",()=>{this.chart.fire("hideTooltip")})
+            })
+            
             //svgNode.append("svg:g").append("path").attr("d",this.smartLineGen(xScale,yScale,true,d.data)).attr("stroke",d.style.color||this.chart.getColor(i)).attr("fill","none")
         })
         return this
@@ -70,7 +109,8 @@ export class LineLayer extends BaseLayer {
     renderer() {
         let fragment = document.createDocumentFragment()
         let svg = d3.select(fragment).append("svg").classed(this.config.className, () => !!this.config.className)
-        this.drawer(svg,"basis")
+        this.drawer(svg,"linear")
+        this.eventHandler(svg)
         return svg.node()
     }
 

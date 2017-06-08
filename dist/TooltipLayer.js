@@ -18,24 +18,26 @@ define(["require", "exports", "d3", "Util", "BaseLayer"], function (require, exp
             _this.setConfig(conf);
             return _this;
         }
-        TooltipLayer.prototype.initTooltipContent = function (tooltip, data) {
-        };
-        TooltipLayer.prototype.showTooltip = function (data) {
-            d3.select(this.el).style("display", "block")
-                .style("top", d3.event.layerY + "px")
-                .style("left", d3.event.layerX + Util.toPixel(this.layout.width) / 2 + "px")
-                .html(this.getTooltipContent(data));
-        };
-        TooltipLayer.prototype.hideTooltip = function () {
-            d3.select(this.el).style("display", "none");
+        TooltipLayer.prototype.eventHandler = function () {
+            var _this = this;
+            this.chart.on("showTooltip", function (d) {
+                d3.select(_this.el).style("display", "block")
+                    .style("top", d3.event.layerY + "px")
+                    .style("left", d3.event.layerX + Util.toPixel(_this.layout.width) / 2 + "px")
+                    .html(_this.getTooltipContent(d));
+            });
+            this.chart.on("hideTooltip", function () {
+                d3.select(_this.el).style("display", "none");
+            });
         };
         TooltipLayer.prototype.getTooltipContent = function (data) {
             var textStart = "<table class='tooltip'><tbody><tr><th colspan='2'>" + data.xMark + "</th></tr>";
-            var text = "<tr><td class='name'><span style='background-color:" + this.chart.getColor(data.series) + "'></span>" + "系列" + data.series + "</td><td class='value'>" + data.value + "</td></tr>";
+            var text = "<tr><td class='name'><span style='background-color:" + this.chart.getColor(data.index) + "'></span>" + "系列" + data.series + "</td><td class='value'>" + data.value + "</td></tr>";
             var textEnd = "</tbody></table>";
             return textStart + text + textEnd;
         };
         TooltipLayer.prototype.renderer = function () {
+            this.eventHandler();
             var ds = this.chart.measures;
             var fragment = document.createDocumentFragment();
             var tooltip = d3.select(fragment).append("xhtml:div").attr("class", "tooltip-container").style("pointer-events", "none").style("display", "none");

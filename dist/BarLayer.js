@@ -18,23 +18,44 @@ define(["require", "exports", "d3", "underscore", "Util", "BaseLayer"], function
             _this.setConfig(conf);
             return _this;
         }
-        BarLayer.prototype.drawer = function (svgNode) {
+        BarLayer.prototype.eventHandler = function (svg) {
+            this.chart.on("enterLegend", function (d) {
+                svg.selectAll(".series").each(function () {
+                    if (d3.select(this).attr("id") != ("series" + d.index))
+                        d3.select(this).transition().duration(200).style("opacity", "0.2");
+                });
+            });
+            this.chart.on("leaveLegend", function () {
+                svg.selectAll(".series").transition().duration(200).style("opacity", "1");
+            });
+            this.chart.on("clickLegend", function (d) {
+            });
+        };
+        BarLayer.prototype.drawer = function (svg) {
             var _this = this;
             var ds = this.chart.measures;
             var series = ds.length;
             var xMarks = ds[0].data.length;
             var maxY = Util.max(_.chain(ds).map(function (d) { return d.data; }).reduce(function (d1, d2) { return d1.concat(d2); }).value(), "y");
-            var xScale = d3.scaleBand().domain(_.range(xMarks)).rangeRound([0, Util.toPixel(this.layout.width)]).paddingInner(0.1).paddingOuter(0.2);
-            var seriesScale = d3.scaleBand().domain(_.range(series)).rangeRound([0, xScale.bandwidth()]);
-            var yScale = d3.scaleLinear().domain([0, maxY]).range([0, Util.toPixel(this.layout.height)]);
+            var xScale = d3.scaleBand()
+                .domain(_.range(xMarks))
+                .rangeRound([0, Util.toPixel(this.layout.width)])
+                .paddingInner(0.1).paddingOuter(0.2);
+            var seriesScale = d3.scaleBand()
+                .domain(_.range(series))
+                .rangeRound([0, xScale.bandwidth()]);
+            var yScale = d3.scaleLinear()
+                .domain([0, maxY])
+                .range([0, Util.toPixel(this.layout.height)]);
             _.each(ds, function (d, i) {
-                var group = svgNode.append("g").attr("class", "series" + i).attr("transform", "translate(" + (i * seriesScale.bandwidth()) + ",0)");
+                var group = svg.append("g").attr("class", "series").attr("id", "series" + i)
+                    .attr("transform", "translate(" + (i * seriesScale.bandwidth()) + ",0)");
                 _.each(d.data, function (v, k) {
-                    group.append("rect").attr("id", "rect" + k)
+                    group.append("rect").attr("class", "rect" + k)
                         .attr("x", xScale(k)).attr("y", Util.toPixel(_this.layout.height))
                         .attr("width", seriesScale.bandwidth()).attr("height", yScale(v.y))
                         .attr("fill", _this.chart.getColor(i))
-                        .on("mousemove", function () { _this.chart.fire("showTooltip", { xMark: v.x, series: d.id, value: v.y }); })
+                        .on("mousemove", function () { _this.chart.fire("showTooltip", { xMark: v.x, index: i, series: d.id, value: v.y }); })
                         .on("mouseleave", function () { _this.chart.fire("hideTooltip"); })
                         .transition().duration(1000)
                         .attr("y", Util.toPixel(_this.layout.height) - yScale(v.y));
@@ -46,6 +67,7 @@ define(["require", "exports", "d3", "underscore", "Util", "BaseLayer"], function
             var fragment = document.createDocumentFragment();
             var svg = d3.select(fragment).append("svg").classed(this.config.className, function () { return !!_this.config.className; });
             this.drawer(svg);
+            this.eventHandler(svg);
             return svg.node();
         };
         return BarLayer;

@@ -43,13 +43,7 @@ export class BarChart extends BaseChart{
                                       height:Util.toPixel(this.config.height)-this.mainTitle.getTitleRect().height-this.axisLayer.calculatePaddingBottom() - Util.toPixel(this.axisLayer.config.smallPadding) - Util.toPixel(this.legendLayer.layout.height) +"px"})
             this.tooltipLayer.setLayout({width:"150px"})
         })
-        
-        this.on("showTooltip",(data)=>{
-            this.tooltipLayer.showTooltip(data)})
 
-        this.on("hideTooltip",()=>{
-            this.tooltipLayer.hideTooltip()
-        })
     }
 
     calculateLayout() {

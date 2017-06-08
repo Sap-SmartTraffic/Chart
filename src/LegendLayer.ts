@@ -50,10 +50,29 @@ export class LegendLayer extends BaseLayer {
         let ds = this.chart.measures
         let fragment = document.createDocumentFragment()
         let legend = d3.select(fragment).append("xhtml:div").attr("class","legend-wrap")
-        let legendGroup = legend.append("xhtml:div").attr("class","legendGroup").style("margin",this.config.margin.top+" "+this.config.margin.right+" "+this.config.margin.bottom+" "+this.config.margin.left).style("display","-webkit-flex").style("flex-wrap","wrap").style("justify-content","center")
+        let legendGroup = legend.append("xhtml:div").attr("class","legendGroup")
+                                .style("margin",this.config.margin.top+" "+this.config.margin.right+" "+this.config.margin.bottom+" "+this.config.margin.left)
+                                .style("display","-webkit-flex")
+                                .style("flex-wrap","wrap")
+                                .style("justify-content","center")
         _.each(ds, (d,i)=>{
-            let legendUnit = legendGroup.append("xhtml:div").attr("class","legendUnit"+i).style("display","inline-block")
-            legendUnit.append("xhtml:div").style("width",this.config.legendIcon.width).style("height",this.config.legendIcon.height).style("display","inline-block").style("background-color", this.chart.getColor(i)).style("margin-right",this.config.legendInnerMargin)
+            let legendUnit = legendGroup.append("xhtml:div").attr("class","legendUnit"+i).style("display","inline-block").style("opacity","1")
+            legendUnit.append("xhtml:span").style("width",this.config.legendIcon.width)
+                      .style("height",this.config.legendIcon.height)
+                      .style("display","inline-block")
+                      .style("background-color", this.chart.getColor(i))
+                      .style("margin-right",this.config.legendInnerMargin)
+                      .on("mouseenter",()=>{this.chart.fire("enterLegend",{series:d.id,index:i})})
+                      .on("mouseleave",()=>{this.chart.fire("leaveLegend",{})})
+                      .on("click",()=>{
+                          let item = legend.select(".legendUnit"+i)
+                          if(item.style("opacity") == "1")
+                              item.style("opacity","0.3")  
+                          else 
+                              item.style("opacity","1")
+
+                          this.chart.fire("clickLegend",{series:d.id,index:i,isShow:item.style("opacity")})
+                      })
             legendUnit.append("xhtml:p").style("line-height", this.config.legendText.height).text(d.id).style("margin-right", this.config.legendOuterMargin).style("display","inline-block").style("vertical-align","top")
         })
         return legend.node()
