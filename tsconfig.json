@@ -3,9 +3,10 @@
     "target": "es5",
     "module": "amd",
     "sourceMap": false,
-    "outDir": "dist"
+    "outDir": "dist_new"
   },
   "exclude": [
-    "./node_modules/*"
+    "./node_modules/*",
+    "./src/*"
   ]
 }
