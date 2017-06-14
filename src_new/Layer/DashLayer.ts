@@ -4,14 +4,29 @@ import Util = require("../Core/Util")
 import {BaseLayer,ILayerConfig} from "../Core/BaseLayer"
 
 export class DashLayer extends BaseLayer {
-    constructor(conf?){
-        super(_.extend({tagName:"svg",className:"dashpie"},conf))
-        this.config=Util.deepExtend(this.config,{rangeMax:100,padding:25},conf)
+    defaultConfig():DashLayerConfig{
+        return {
+                tagName:"svg",
+                className:"dashpie",
+                style:{
+                    top:"0px",
+                    left:"0px",
+                    bottom:null,
+                    right:null,
+                    position:"absolute",
+                    "z-index":0,
+                    width:"300px",
+                    height:"300px",
+                },
+                rangeMax:100,
+                padding:25,
+                dataFomate(v){
+                    return (+v).toFixed(1)+"Km/H"
+                }
+            }
     }
-
     config:DashLayerConfig
-
-    drawer(svgNode) {
+    drawer(svgNode:d3.Selection<Element,{},null,null>) {
         let smartArcGen = function(startAngle, endAngle, innerRadius, outerRadius) {
             let largeArc = ((endAngle - startAngle) % (Math.PI * 2)) > Math.PI ? 1 : 0,
                 startX = centerX + Math.cos(startAngle) * outerRadius,
@@ -31,11 +46,12 @@ export class DashLayer extends BaseLayer {
             ]
             return cmd.join(' ')
         }
-
-        let outerRadius = this.config.width/ 2 - this.config.padding ,
-            innerRadius = this.config.width / 5,
-            centerX = this.config.width / 2,
-            centerY = this.config.height- this.config.padding 
+        let width=Util.toPixel(this.config.style.width)
+        let height=Util.toPixel(this.config.style.height)
+        let outerRadius = width/ 2 - this.config.padding ,
+            innerRadius = width / 5,
+            centerX = width / 2,
+            centerY = height- this.config.padding 
         
         let ds = this.chart.getFirstMeasure("dash")
         if(!ds){
@@ -44,7 +60,6 @@ export class DashLayer extends BaseLayer {
         let radio = ds.data / this.config.rangeMax > 1 ? 1 : ds.data / this.config.rangeMax
         let startAngle = -Math.PI,
             endAngle = startAngle + radio * Math.PI
-        
         let dashGroup = svgNode.append("g").attr("class","dashGroup")
         dashGroup.append("path").attr("d",smartArcGen(-Math.PI,0,innerRadius,outerRadius)).attr("fill","#d6d6d6")
         dashGroup.append("path").attr("d",smartArcGen(startAngle,startAngle,innerRadius,outerRadius))
@@ -62,7 +77,7 @@ export class DashLayer extends BaseLayer {
                  .attr("y",centerY)
                  .attr("text-anchor","middle")
                  .attr("font-size","32px")
-                 .text(ds.data+"km/h")
+                 .text(this.config.dataFomate(ds.data))
         
         dashGroup.append("text").attr("class","rangeMin")
                  .attr("x",centerX - innerRadius - (outerRadius-innerRadius)/2)
@@ -88,5 +103,6 @@ export class DashLayer extends BaseLayer {
 }
 interface DashLayerConfig extends ILayerConfig{
         rangeMax:number,
-        padding:number
+        padding:number,
+        dataFomate(n:string|number):string
 }

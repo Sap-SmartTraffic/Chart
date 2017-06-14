@@ -7,21 +7,24 @@ import {DashLayer} from "../../Layer/DashLayer"
 import Util=require("../../Core/Util")
 
 export class DashChart extends BaseChart{
-    mainTitle: TitleLayer
     dashLayer: DashLayer
     
     constructor(conf?){
         super(conf)
-        this.mainTitle=new TitleLayer({value:"pieChart",className:"mainTitle"})
-        this.dashLayer = new DashLayer({className: "dashChart",width:Util.toPixel(this.config.width),height:Util.toPixel(this.config.height)})
+        this.dashLayer = new DashLayer("dashpie",{
+            style:{
+                width:this.config.style.width,
+                height:this.config.style.height
+            },
+            padding:Util.toPixel("1.5rem")
+        })
+        this.on("measure_change",this.dashLayer.render,this.dashLayer)
         this.addLayer(this.dashLayer)
-        this.addLayer(this.mainTitle)
-        //this.init()
     }
-    loadMeasure(m:Measure){
-        m.type="dash"
-        m.id="0"
+    data(n:number){
+        let m=new Measure(0,n,"dash")
         this.addMeasure(m)
+        return this
     }
     // init(){
     //     this.on("chartUpdate",()=>{

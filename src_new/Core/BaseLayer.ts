@@ -2,37 +2,35 @@ import d3 =require("d3")
 import _ =require("underscore")
 import {BaseChart} from "./BaseChart"
 import Util=require("./Util")
-import {View} from"./View"
+import {View,IViewConfig} from"./View"
 export class BaseLayer extends View{
-    constructor(conf?){
-        super(_.extend({tagName:"svg",className:"layer"},conf))
-        this.config=Util.deepExtend(this.config,{
-            width:300,
-            height:300,
-            position:{
-            top:"0px",
-            left:"0px",
-            position:"absolute",
-            width:"300px",
-            height:"300px",
-            "z-index":0
-        }},conf)
-        this.style(this.config.position)
-        this.id=conf&&conf.id!=undefined? conf.id:_.uniqueId("layer")
+    constructor(id?,...confs){
+        super(confs)
+        this.id= id==undefined?_.uniqueId("layer"):id
+    }
+    defaultConfig():ILayerConfig{
+        return {
+                tagName:"svg",
+                className:"layer",
+                style:{
+                    top:"0px",
+                    left:"0px",
+                    bottom:null,
+                    right:null,
+                    position:"absolute",
+                    "z-index":0,
+                    width:"300px",
+                    height:"300px",
+                    }
+            }
     }
     id:string
     rendered:boolean=false
     chart:BaseChart
-    
     config:ILayerConfig
     setConfig(c){
         this.config=Util.deepExtend(this.config,c)
-        this.style(this.config.position)
-        return this
-    }
-    setPosition(s){
-        this.config.position=Util.deepExtend(this.config.position,s)
-        this.style(this.config.position)
+        this.style(this.config.style)
         return this
     }
     addTo(c:BaseChart){
@@ -55,19 +53,18 @@ export class BaseLayer extends View{
     }
 
 }
-export interface ILayerConfig{
+export interface ILayerConfig extends IViewConfig{
         className:string,
         tagName:string,
-        position:{
+        style:{
             top:string|undefined|null,
             right:string|undefined|null,
             bottom:string|undefined|null,
             left:string|undefined|null,
             width:string,
             height:string,
-            zIndex:number,
+            "z-index":number,
             position:string
-        },
-        height:number
-        width:number
+        }
+       
 }

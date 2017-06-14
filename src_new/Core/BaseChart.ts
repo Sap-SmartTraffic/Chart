@@ -5,19 +5,35 @@ import {BaseLayer} from "./BaseLayer"
 import {Measure} from "./Measure"
 import Util=require("./Util")
 import {View} from"./View"
-export class BaseChart {
+export class BaseChart extends Evented{
     measures:Measure[]=[]
     layers:BaseLayer[]=[]
     rootView:View
     config:IChartConfig
-    constructor(conf){
-        this.config=Util.deepExtend({
-             width:"300px",
-             height:"300px",
-             className:"chart"
-        },conf)
+    constructor(...conf){
+        super()
+        this.config=Util.deepExtend(this.defaultConfig(),conf)
         this.rootView=new View({tagName:"div",className:this.config.className})
-        this.rootView.style(_.pick(this.config,"width","height"))
+        this.rootView.style(this.config.style)
+    }
+    addClass(c){
+        this.rootView.addClass(c)
+        this.fire("classchange")
+        return this
+    }
+    removeClass(c){
+        this.rootView.removeClass(c)
+        this.fire("classchange")
+        return this
+    }
+    defaultConfig():IChartConfig{
+        return {
+            style:{
+                 width:"300px",
+                 height:"300px",
+            },
+            className:"chart"
+        }
     }
     renderAt(dom:Element|HTMLElement|SVGAElement|string){
        if(_.isString(dom)){
@@ -51,6 +67,7 @@ export class BaseChart {
         }else{
             this.measures.push(m)
         }
+        this.fire("measure_change")
     }
     getMeasure(t:string){
         if(t!=undefined){
@@ -69,6 +86,7 @@ export class BaseChart {
             l.chart=this
             l.renderAt(this.rootView.el)
         }
+        this.fire("layer_change")
         l.chart=this
         return this
     }
@@ -90,6 +108,7 @@ export class BaseChart {
                     this.layers=_.filter(this.layers,ll=>ll.id!=id)
             }  
         }
+        this.fire("layer_change")
         return this
     }
     _clearLayer(l:BaseLayer){
@@ -103,7 +122,6 @@ export class BaseChart {
         let rect=this.stringRectCache(s,cls,fontSize)
         return {width:rect.width,height:rect.height}
     }
-
     getColor(color?){
         if(color === undefined)
             return d3.schemeCategory20[Math.round(Math.random()*20)]
@@ -112,13 +130,14 @@ export class BaseChart {
         else 
             return color
     }
-
     render(){
        this.redraw()
     }
 }
-interface IChartConfig{
+export interface IChartConfig{
     className:string
-    width:string,
-    height:string
+    style:{
+        width:string,
+        height:string
+    }
 }

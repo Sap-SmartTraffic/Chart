@@ -142,7 +142,11 @@ export  function  deepExtend(des,...source:any[]){
             des={}
         }
         _.each(source,(s)=>{
-            _.each(s,(v,k)=>{
+            if(_.isArray(s)){
+                let args=[des].concat(s)
+                deepExtend.apply(this,args)
+            }else{
+                _.each(s,(v,k)=>{
                 if(_.isObject(v)){
                     if(_.isUndefined(des[k])){
                         des[k]={}
@@ -153,6 +157,8 @@ export  function  deepExtend(des,...source:any[]){
                 }
                
             })
+            }
+           
         })
         return des
     }

@@ -5,15 +5,19 @@ import Util=require("./Util")
 let styles=Util.d3Invoke("style")
 let attrs=Util.d3Invoke("attr")
 export class View extends Evented{
-    constructor(conf?){
+    constructor(...confs){
         super()
-        this.config=Util.deepExtend({tagName:"div"},conf)
+        this.config=Util.deepExtend(this.defaultConfig(),confs)
         this.initView()
     }
-    config:{
-        tagName:string |null|undefined,
-        className:string |null|undefined
+    defaultConfig():IViewConfig{
+        return {tagName:"div",className:"view",style:null}
     }
+    config:IViewConfig
+    // config:{
+    //     tagName:string |null|undefined,
+    //     className:string |null|undefined
+    // }
     el:Element
     elD3:d3.Selection<Element,{},null,null>
     initView(){
@@ -24,6 +28,7 @@ export class View extends Evented{
         }
         this.elD3=d3.select(this.el)
         this.elD3.classed(this.config.className,true)
+        this.style(this.config.style)
         return this
     }
     appendTo(dom:d3.Selection<Element,{},null,null>){
@@ -50,3 +55,8 @@ export class View extends Evented{
         return this
     }
 }
+export interface IViewConfig{
+        tagName:string |null|undefined,
+        className:string |null|undefined,
+        style:{}|undefined|null
+    }

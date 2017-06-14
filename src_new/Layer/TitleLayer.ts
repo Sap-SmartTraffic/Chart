@@ -2,11 +2,22 @@ import d3 =require("d3")
 import _ =require("underscore")
 import {BaseLayer,ILayerConfig} from "../Core/BaseLayer"
 export class TitleLayer extends BaseLayer{
-    constructor(conf?){
-        super(_.extend({tagName:"div",className:"title"},conf))
-        this.config=_.extend(this.config,{
-            value:""
-        },conf)
+    defaultConfig():ITitleLayerConfig{
+        return {
+                tagName:"div",
+                className:"title",
+                style:{
+                    top:"0px",
+                    left:"0px",
+                    bottom:null,
+                    right:null,
+                    position:"absolute",
+                    "z-index":0,
+                    width:"20rem",
+                    height:"20rem",
+                },
+                value:""
+            }
     }
     config:ITitleLayerConfig
     setTitle(t){
