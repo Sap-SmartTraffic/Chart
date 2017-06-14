@@ -9,8 +9,11 @@ export class LineLayer extends BaseLayer {
         this.setConfig(conf)
     }
     
-    config: {
-        className: string
+    config= {
+        className: "lineLayer",
+        curveType: "linear",
+        isDot: false,
+        isArea: true
     }
     
     /*
@@ -70,7 +73,7 @@ export class LineLayer extends BaseLayer {
         })
     }
 
-    drawer(svgNode,curveType) {
+    drawer(svgNode) {
         let ds = this.chart.measures
         let series = ds.length
         let maxX = Util.max(_.chain(ds).map((d)=>d.data).reduce((d1:any[],d2:any[])=>d1.concat(d2)).value(),"x"),
@@ -83,7 +86,7 @@ export class LineLayer extends BaseLayer {
                        .range([Util.toPixel(this.layout.height),0])
         let line = d3.line().x(function(v){return xScale(v.x)})
                                 .y(function(v){return yScale(v.y)})
-                                .curve(this.curveTypeMap[curveType])
+                                .curve(this.curveTypeMap[this.config.curveType])
         _.each(ds,(d,i)=>{
             let group = svgNode.append("svg:g").attr("class","series").attr("id","series"+i)
             group.append("path")
@@ -91,15 +94,24 @@ export class LineLayer extends BaseLayer {
                  .attr("stroke",d.style.color||this.chart.getColor(i))
                  .attr("stroke-width","2px")
                  .attr("fill","none")
-            _.each(d.data,(v,k)=>{
-                group.append("circle")
-                 .attr("cx",xScale(v.x))
-                 .attr("cy",yScale(v.y))
-                 .attr("r","4")
-                 .attr("fill",this.chart.getColor(i))
-                 .on("mousemove",()=>{this.chart.fire("showTooltip",{xMark:v.x, index:i, series:d.id, value:v.y})})
-                 .on("mouseleave",()=>{this.chart.fire("hideTooltip")})
-            })
+
+            if(this.config.isDot) {
+                _.each(d.data,(v,k)=>{
+                    group.append("circle")
+                         .attr("cx",xScale(v.x))
+                         .attr("cy",yScale(v.y))
+                         .attr("r","4")
+                         .attr("fill",this.chart.getColor(i))
+                         .on("mousemove",()=>{this.chart.fire("showTooltip",{xMark:v.x, index:i, series:d.id, value:v.y})})
+                         .on("mouseleave",()=>{this.chart.fire("hideTooltip")})
+                })
+            }
+
+            if(this.config.isArea) {
+                let area = d3.area().x((d)=>{return xScale(d.x)}).y0(Util.toPixel(this.layout.height)).y1((d)=>{return yScale(d.y)})
+                group.append("g").append("path").attr("d",area(d.data)).attr("stroke-width","0px").attr("fill",d.style.color||this.chart.getColor(i)).style("opacity","0.3")
+            }
+            
             
             //svgNode.append("svg:g").append("path").attr("d",this.smartLineGen(xScale,yScale,true,d.data)).attr("stroke",d.style.color||this.chart.getColor(i)).attr("fill","none")
         })
@@ -109,7 +121,7 @@ export class LineLayer extends BaseLayer {
     renderer() {
         let fragment = document.createDocumentFragment()
         let svg = d3.select(fragment).append("svg").classed(this.config.className, () => !!this.config.className)
-        this.drawer(svg,"linear")
+        this.drawer(svg)
         this.eventHandler(svg)
         return svg.node()
     }
@@ -117,7 +129,7 @@ export class LineLayer extends BaseLayer {
     updateDom(){
         let svg=d3.select(this.el)
         svg.selectAll("*").remove()
-        this.drawer(svg,"basis")
+        this.drawer(svg)
         return this
     }
 

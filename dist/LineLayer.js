@@ -15,6 +15,12 @@ define(["require", "exports", "d3", "underscore", "Util", "BaseLayer"], function
         __extends(LineLayer, _super);
         function LineLayer(id, conf) {
             var _this = _super.call(this, conf) || this;
+            _this.config = {
+                className: "lineLayer",
+                curveType: "linear",
+                isDot: false,
+                isArea: true
+            };
             /*
             smartLineGen(xScale, yScale, isHandleNaN, ds) {
                 if (ds.length < 1) return "M0,0";
@@ -69,7 +75,7 @@ define(["require", "exports", "d3", "underscore", "Util", "BaseLayer"], function
             this.chart.on("clickLegend", function (d) {
             });
         };
-        LineLayer.prototype.drawer = function (svgNode, curveType) {
+        LineLayer.prototype.drawer = function (svgNode) {
             var _this = this;
             var ds = this.chart.measures;
             var series = ds.length;
@@ -82,7 +88,7 @@ define(["require", "exports", "d3", "underscore", "Util", "BaseLayer"], function
                 .range([Util.toPixel(this.layout.height), 0]);
             var line = d3.line().x(function (v) { return xScale(v.x); })
                 .y(function (v) { return yScale(v.y); })
-                .curve(this.curveTypeMap[curveType]);
+                .curve(this.curveTypeMap[this.config.curveType]);
             _.each(ds, function (d, i) {
                 var group = svgNode.append("svg:g").attr("class", "series").attr("id", "series" + i);
                 group.append("path")
@@ -90,15 +96,21 @@ define(["require", "exports", "d3", "underscore", "Util", "BaseLayer"], function
                     .attr("stroke", d.style.color || _this.chart.getColor(i))
                     .attr("stroke-width", "2px")
                     .attr("fill", "none");
-                _.each(d.data, function (v, k) {
-                    group.append("circle")
-                        .attr("cx", xScale(v.x))
-                        .attr("cy", yScale(v.y))
-                        .attr("r", "4")
-                        .attr("fill", _this.chart.getColor(i))
-                        .on("mousemove", function () { _this.chart.fire("showTooltip", { xMark: v.x, index: i, series: d.id, value: v.y }); })
-                        .on("mouseleave", function () { _this.chart.fire("hideTooltip"); });
-                });
+                if (_this.config.isDot) {
+                    _.each(d.data, function (v, k) {
+                        group.append("circle")
+                            .attr("cx", xScale(v.x))
+                            .attr("cy", yScale(v.y))
+                            .attr("r", "4")
+                            .attr("fill", _this.chart.getColor(i))
+                            .on("mousemove", function () { _this.chart.fire("showTooltip", { xMark: v.x, index: i, series: d.id, value: v.y }); })
+                            .on("mouseleave", function () { _this.chart.fire("hideTooltip"); });
+                    });
+                }
+                if (_this.config.isArea) {
+                    var area = d3.area().x(function (d) { return xScale(d.x); }).y0(Util.toPixel(_this.layout.height)).y1(function (d) { return yScale(d.y); });
+                    group.append("g").append("path").attr("d", area(d.data)).attr("stroke-width", "0px").attr("fill", d.style.color || _this.chart.getColor(i)).style("opacity", "0.3");
+                }
                 //svgNode.append("svg:g").append("path").attr("d",this.smartLineGen(xScale,yScale,true,d.data)).attr("stroke",d.style.color||this.chart.getColor(i)).attr("fill","none")
             });
             return this;
@@ -107,14 +119,14 @@ define(["require", "exports", "d3", "underscore", "Util", "BaseLayer"], function
             var _this = this;
             var fragment = document.createDocumentFragment();
             var svg = d3.select(fragment).append("svg").classed(this.config.className, function () { return !!_this.config.className; });
-            this.drawer(svg, "linear");
+            this.drawer(svg);
             this.eventHandler(svg);
             return svg.node();
         };
         LineLayer.prototype.updateDom = function () {
             var svg = d3.select(this.el);
             svg.selectAll("*").remove();
-            this.drawer(svg, "basis");
+            this.drawer(svg);
             return this;
         };
         return LineLayer;
