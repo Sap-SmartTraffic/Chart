@@ -1,6 +1,6 @@
  requirejs.config({
         //By default load any module IDs from js/lib
-        baseUrl: 'http://localhost:3000/dist',
+        baseUrl: '/dist_new',
         paths:{
                 leaflet:"../lib/leaflet/dist/leaflet-src",
                 underscore:"../lib/underscore/underscore",

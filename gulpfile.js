@@ -110,3 +110,25 @@ gulp.task("copyHTML",function(){
 //             console.log(e.path+"-------file changed")
 //         });
 // })
+gulp.task('start_new', function() {
+  browserSync.init({server:{baseDir:"./",index:"dist_new/Chart/DashChart/index.html"}});
+  gulp.watch("./dist_new/*.*",function(e){
+        browserSync.reload();
+        console.log(e.path+"-------file changed")
+        
+  });
+  gulp.watch(["./src_new/**/*.html","./src_new/**/*.js"],function(e){
+           gulp.src(e.path,{base:"src_new"}).pipe(gulp.dest('./dist_new/'))
+            console.log(e.path+"-------file copy")
+        })
+  gulp.watch("./src_new/**/*.less",function(e){
+        console.log("less changed")
+        gulp.src(e.path,{base:"src_new"})
+            .pipe(less())
+            .pipe(gulp.dest("./dist_new/"))
+      })
+  gulp.src('./src_new/**/*.html',{base:"src_new"}).pipe(gulp.dest('./dist_new/'))
+  gulp.src("./src_new/**/*.less",{base:"src_new"})
+            .pipe(less())
+            .pipe(gulp.dest("./dist_new/"))
+});

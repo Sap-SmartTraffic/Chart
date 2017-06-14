@@ -6,6 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": " concurrently \"npm run tsc:w\" \"gulp start\" ",
+    "new": " concurrently \"npm run tsc:w\" \"gulp start_new\" ",
     "tsc": "tsc",
     "tsc:w": "tsc -w"
   },
