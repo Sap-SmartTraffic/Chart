@@ -1,9 +1,9 @@
 import d3 = require("d3")
 import _ = require("underscore")
-import Util = require("Util")
-import {Measure} from "Measure"
-import {Evented} from "Evented"
-import {BaseLayer} from "BaseLayer"
+import Util = require("./Util")
+import {Measure} from "./Measure"
+import {Evented} from "./Evented"
+import {BaseLayer} from "./BaseLayer"
 
 export class RangeLayer extends BaseLayer {
     constructor(id?, conf?) {

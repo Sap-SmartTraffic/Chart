@@ -22,10 +22,12 @@ export class DashLayer extends BaseLayer {
                 padding:25,
                 dataFomate(v){
                     return (+v).toFixed(1)+"Km/H"
-                }
+                },
+                oldData:0
             }
     }
     config:DashLayerConfig
+
     drawer(svgNode:d3.Selection<Element,{},null,null>) {
         let smartArcGen = function(startAngle, endAngle, innerRadius, outerRadius) {
             let largeArc = ((endAngle - startAngle) % (Math.PI * 2)) > Math.PI ? 1 : 0,
@@ -57,20 +59,42 @@ export class DashLayer extends BaseLayer {
         if(!ds){
             return 
         }
-        let radio = ds.data / this.config.rangeMax > 1 ? 1 : ds.data / this.config.rangeMax
+        let curRadio = ds.data / this.config.rangeMax > 1 ? 1 : ds.data / this.config.rangeMax
+        let oldRadio = this.config.oldData / this.config.rangeMax > 1 ? 1 : this.config.oldData / this.config.rangeMax
         let startAngle = -Math.PI,
-            endAngle = startAngle + radio * Math.PI
+            curEndAngle = startAngle + curRadio * Math.PI,
+            oldEndAngle = startAngle + oldRadio * Math.PI
         let dashGroup = svgNode.append("g").attr("class","dashGroup")
         dashGroup.append("path").attr("d",smartArcGen(-Math.PI,0,innerRadius,outerRadius)).attr("fill","#d6d6d6")
-        dashGroup.append("path").attr("d",smartArcGen(startAngle,startAngle,innerRadius,outerRadius))
-               .attr("fill",radio==null? "none":d3.scaleLinear().domain([0, 0.5, 1]).range(["red", "yellow", "green"])(radio))
-               .transition().duration(500).ease(d3.easeLinear).delay(200)
-               .attrTween("d", function(a){
-                    return function(t){
-                        let interpolate = d3.interpolate(startAngle,endAngle)
+        dashGroup.append("path").attr("d",smartArcGen(startAngle,oldEndAngle,innerRadius,outerRadius))
+                 .attr("fill","#d6d6d6")
+                 .transition().duration(1000).ease(d3.easeLinear)
+                 .attrTween("d", function(a){
+                     return function(t){
+                        let interpolate = d3.interpolate(oldEndAngle,curEndAngle)
                         return smartArcGen(startAngle,interpolate(t),innerRadius,outerRadius)
-                    }
-                })
+                     }
+                 })
+                 .attrTween("fill",function(){
+                     return function(t){
+                         let colorInter=d3.interpolate(oldRadio,curRadio)
+                         return d3.scaleLinear().domain([0, 0.5, 1]).range(["red", "yellow", "green"])(colorInter(t))
+                     }
+                 })
+                 /*
+                 .tween("dashTran",function(){
+                     let node = d3.select(this)
+                     let angleInterpolate = d3.interpolate(oldEndAngle,curEndAngle),
+                         colorInterpolate = d3.interpolate(oldRadio, curRadio)
+                     return function(t) {
+                         node.style("fill",d3.scaleLinear().domain([0, 0.5, 1]).range(["red", "yellow", "green"])(colorInterpolate(t)))
+                         node.style("d",smartArcGen(startAngle,angleInterpolate(t),innerRadius,outerRadius))
+                     }
+                 })
+                 */
+                 
+
+        this.config.oldData = ds.data       
         
         dashGroup.append("text").attr("class","dataValue")
                  .attr("x",centerX)
@@ -104,5 +128,6 @@ export class DashLayer extends BaseLayer {
 interface DashLayerConfig extends ILayerConfig{
         rangeMax:number,
         padding:number,
-        dataFomate(n:string|number):string
+        dataFomate(n:string|number):string,
+        oldData:number
 }

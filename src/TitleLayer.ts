@@ -1,7 +1,7 @@
 import d3 =require("d3")
 import _ =require("underscore")
-import {Evented} from "Evented"
-import {BaseLayer} from "BaseLayer"
+import {Evented} from "./Evented"
+import {BaseLayer} from "./BaseLayer"
 export class TitleLayer extends BaseLayer{
     config:{
         value: string,

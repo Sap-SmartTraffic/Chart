@@ -1,8 +1,8 @@
 import d3 =require("d3")
 import _ =require("underscore")
-import {Evented} from "Evented"
-import {BaseChart} from "BaseChart"
-import Util=require("Util")
+import {Evented} from "./Evented"
+import {BaseChart} from "./BaseChart"
+import Util=require("./Util")
 export class BaseLayer extends Evented{
     el:any
     id:string

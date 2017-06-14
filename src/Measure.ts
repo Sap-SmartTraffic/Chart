@@ -1,4 +1,4 @@
-import {Evented} from "Evented"
+import {Evented} from "./Evented"
 export class Measure extends Evented{
     id:string
     data:any[]
