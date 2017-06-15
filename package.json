@@ -1,8 +1,8 @@
 {
-  "name": "chart",
+  "name": "@types/smart_traffic_chart",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": " concurrently \"npm run tsc:w\" \"gulp start\" ",
