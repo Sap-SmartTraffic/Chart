@@ -16,14 +16,14 @@ export class DashLayer extends BaseLayer {
                     position:"absolute",
                     "z-index":0,
                     width:"300px",
-                    height:"300px",
+                    height:"300px"
                 },
-                rangeMax:100,
                 padding:25,
                 dataFomate(v){
                     return (+v).toFixed(1)+"Km/H"
                 },
-                oldData:0
+                rangeMax: 100,
+                oldData:0,
             }
     }
     config:DashLayerConfig
@@ -69,30 +69,15 @@ export class DashLayer extends BaseLayer {
         dashGroup.append("path").attr("d",smartArcGen(startAngle,oldEndAngle,innerRadius,outerRadius))
                  .attr("fill","#d6d6d6")
                  .transition().duration(1000).ease(d3.easeLinear)
-                 .attrTween("d", function(a){
-                     return function(t){
-                        let interpolate = d3.interpolate(oldEndAngle,curEndAngle)
-                        return smartArcGen(startAngle,interpolate(t),innerRadius,outerRadius)
-                     }
-                 })
-                 .attrTween("fill",function(){
-                     return function(t){
-                         let colorInter=d3.interpolate(oldRadio,curRadio)
-                         return d3.scaleLinear().domain([0, 0.5, 1]).range(["red", "yellow", "green"])(colorInter(t))
-                     }
-                 })
-                 /*
                  .tween("dashTran",function(){
                      let node = d3.select(this)
                      let angleInterpolate = d3.interpolate(oldEndAngle,curEndAngle),
                          colorInterpolate = d3.interpolate(oldRadio, curRadio)
                      return function(t) {
-                         node.style("fill",d3.scaleLinear().domain([0, 0.5, 1]).range(["red", "yellow", "green"])(colorInterpolate(t)))
-                         node.style("d",smartArcGen(startAngle,angleInterpolate(t),innerRadius,outerRadius))
+                         node.attr("fill",d3.scaleLinear().domain([0, 0.5, 1]).range(["red", "yellow","green"])(colorInterpolate(t)))
+                         node.attr("d",smartArcGen(startAngle,angleInterpolate(t),innerRadius,outerRadius))
                      }
-                 })
-                 */
-                 
+                 })          
 
         this.config.oldData = ds.data       
         

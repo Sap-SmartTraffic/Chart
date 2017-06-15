@@ -111,7 +111,7 @@ gulp.task("copyHTML",function(){
 //         });
 // })
 gulp.task('start_new', function() {
-  browserSync.init({server:{baseDir:"./",index:"dist_new/Chart/DashChart/index.html"}});
+  browserSync.init({server:{baseDir:"./",index:"dist_new/Chart/PieChart/index.html"}});
   gulp.watch("./dist_new/*.*",function(e){
         browserSync.reload();
         console.log(e.path+"-------file changed")
