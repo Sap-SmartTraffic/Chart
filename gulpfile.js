@@ -132,3 +132,18 @@ gulp.task('start_new', function() {
             .pipe(less())
             .pipe(gulp.dest("./dist_new/"))
 });
+var gulp = require('gulp');
+var ts = require('gulp-typescript');
+var merge = require('merge2');  // Requires separate installation 
+ 
+gulp.task('ts', function() {
+    var tsResult = gulp.src('src_new/ChartFactory.ts')
+        .pipe(ts({
+            declaration: true
+        }));
+ 
+    return merge([
+        tsResult.dts.pipe(gulp.dest('release/definitions')),
+        tsResult.js.pipe(gulp.dest('release/js'))
+    ]);
+});

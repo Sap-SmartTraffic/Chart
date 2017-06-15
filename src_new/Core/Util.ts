@@ -115,10 +115,9 @@ export function CacheAble(fn:any,keyFn?){
         }
     }
 }
-export function curry(f) {
+export function curry(f:Function) {
         var arity = f.length;
-        return function f1(r1?,r2?,r3?) {
-            var args = Array.prototype.slice.call(arguments, 0);
+        return function f1(...args) {
             if(args.length < arity) {
                 var f2= function() {
                     var args2 = Array.prototype.slice.call(arguments, 0); // parameters of returned curry func

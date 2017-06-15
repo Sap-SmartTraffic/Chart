@@ -3,7 +3,7 @@ import _ = require("underscore")
 import Util = require("../Core/Util")
 import {BaseLayer,ILayerConfig} from "../Core/BaseLayer"
 
-export class DashLayer extends BaseLayer {
+export class DashLayer extends BaseLayer  {
     defaultConfig():DashLayerConfig{
         return {
                 tagName:"svg",
@@ -27,7 +27,6 @@ export class DashLayer extends BaseLayer {
             }
     }
     config:DashLayerConfig
-
     drawer(svgNode:d3.Selection<Element,{},null,null>) {
         let smartArcGen = function(startAngle, endAngle, innerRadius, outerRadius) {
             let largeArc = ((endAngle - startAngle) % (Math.PI * 2)) > Math.PI ? 1 : 0,
@@ -65,9 +64,10 @@ export class DashLayer extends BaseLayer {
             curEndAngle = startAngle + curRadio * Math.PI,
             oldEndAngle = startAngle + oldRadio * Math.PI
         let dashGroup = svgNode.append("g").attr("class","dashGroup")
-        dashGroup.append("path").attr("d",smartArcGen(-Math.PI,0,innerRadius,outerRadius)).attr("fill","#d6d6d6")
+        dashGroup.append("path").attr("d",smartArcGen(-Math.PI,0,innerRadius,outerRadius)).attr("fill","#d6d6d6").classed("basebackground",true)
         dashGroup.append("path").attr("d",smartArcGen(startAngle,oldEndAngle,innerRadius,outerRadius))
-                 .attr("fill","#d6d6d6")
+                 .attr("fill","none")
+                 .classed("dashvaluebackground",true)
                  .transition().duration(1000).ease(d3.easeLinear)
                  .tween("dashTran",function(){
                      let node = d3.select(this)
