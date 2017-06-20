@@ -111,7 +111,7 @@ gulp.task("copyHTML",function(){
 //         });
 // })
 gulp.task('start_new', function() {
-  browserSync.init({server:{baseDir:"./",index:"dist_new/Chart/PieChart/index.html"}});
+  browserSync.init({server:{baseDir:"./",index:"dist_new/Chart/Loader/barLoader.html"}});
   gulp.watch("./dist_new/*.*",function(e){
         browserSync.reload();
         console.log(e.path+"-------file changed")
@@ -133,8 +133,8 @@ gulp.task('start_new', function() {
             .pipe(gulp.dest("./dist_new/"))
 });
 var gulp = require('gulp');
-var ts = require('gulp-typescript');
-var merge = require('merge2');  // Requires separate installation 
+//var ts = require('gulp-typescript');
+//var merge = require('merge2');  // Requires separate installation 
  
 gulp.task('ts', function() {
     var tsResult = gulp.src('src_new/ChartFactory.ts')
