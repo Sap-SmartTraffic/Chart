@@ -27,12 +27,18 @@ export class FocusPanel extends BaseLayer {
     }
 
     drawer(svgNode:d3.Selection<Element,{},null,null>) {
+        let gradientColor = svgNode.append("defs").append("radialGradient").attr("id","radialColor")
+                                   .attr("cx","50%").attr("cy","50%")
+                                   .attr("r","50%")
+                                   .attr("fx","50%").attr("fy","50%")
+        gradientColor.append("stop").attr("offset","0%").attr("style","stop-color:aqua;stop-opacity:1")
+        gradientColor.append("stop").attr("offset","100%").attr("style","stop-color:steelblue;stop-opacity:1")
         svgNode.append("rect").attr("class","panel")
                .attr("x",this.config.padding)
                .attr("y",this.config.padding)
                .attr("width",Util.toPixel(this.config.style.width) - this.config.padding * 2)
                .attr("height",Util.toPixel(this.config.style.height)-this.config.padding * 2)
-               .attr("fill","aqua")
+               .attr("fill","url(#radialColor)")
         
         let parseTime = d3.timeParse("%H")
         let xScale = d3.scaleTime()
@@ -58,6 +64,7 @@ export class FocusPanel extends BaseLayer {
                      .on("end",function(){
                          svgNode.style("cursor","default")
                      })
+
         svgNode.append("line").attr("class","focusLine")
                .attr("x1",xScale(focusTime)).attr("y1",Util.toPixel(this.config.style.height)-this.config.padding)
                .attr("x2",xScale(focusTime)).attr("y2",this.config.padding)

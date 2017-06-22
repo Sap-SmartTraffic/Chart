@@ -52,12 +52,18 @@ export class RangeLayer extends BaseLayer {
                .attr("transform","translate("+ Util.toPixel(this.config.padding.left)+","+Util.toPixel(this.config.padding.top)+")")
                .call(yAxis)
         
+        let gradientColor = svgNode.append("defs").append("linearGradient").attr("id","linearColor")
+                                   .attr("x1","0%").attr("y1","0%")
+                                   .attr("x2","0%").attr("y2","100%")
+        gradientColor.append("stop").attr("offset","0%").attr("style","stop-color:steelblue;stop-opacity:1")
+        gradientColor.append("stop").attr("offset","100%").attr("style","stop-color:aqua;stop-opacity:1")
+
         let area = d3.area()
                      .x((d)=>{return xScale(d.time)})
                      .y0((d)=>{return yScale(d.min)})
                      .y1((d)=>{return yScale(d.max)})
         svgNode.append("g").attr("class","areaGroup").append("path")
-               .attr("class","area").attr("d",area(ds.data))
+               .attr("class","area").attr("d",area(ds.data)).attr("fill","url(#linearColor)")
         
         svgNode.append("line").attr("class","focusLine")
                .attr("x1",xScale(d3.timeParse("%H")("12")))

@@ -22,7 +22,7 @@ export class RangeChart extends BaseChart {
         })
         this.focusPanel = new FocusPanel("focuspanel",{
             style: {
-                top:"550px",
+                top:"300px",
                 left:"30px"
             }
         })
