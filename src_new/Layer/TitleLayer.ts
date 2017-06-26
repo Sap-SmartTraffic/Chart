@@ -34,6 +34,6 @@ export class TitleLayer extends BaseLayer{
         return this
     }
 }
-interface ITitleLayerConfig extends ILayerConfig{
+ export interface ITitleLayerConfig extends ILayerConfig{
             value:string
 }

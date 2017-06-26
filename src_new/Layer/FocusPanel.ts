@@ -84,7 +84,7 @@ export class FocusPanel extends BaseLayer {
     }
 }
 
-interface FocusPanelConfig extends ILayerConfig {
+export interface FocusPanelConfig extends ILayerConfig {
     rangeMin: string,
     rangeMax: string,
     focusTime: string,

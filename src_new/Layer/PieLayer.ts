@@ -103,7 +103,7 @@ export class PieLayer extends BaseLayer {
 
 }
 
-interface PieLayerConfig extends ILayerConfig {
+export interface PieLayerConfig extends ILayerConfig {
     segmentCount: number,
     segmentStart: number,
     padding: number,

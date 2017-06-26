@@ -38,7 +38,7 @@ export class RangeLayer extends BaseLayer {
         let width = Util.toPixel(this.config.style.width) - Util.toPixel(this.config.padding.left)-Util.toPixel(this.config.padding.right)
         let height = Util.toPixel(this.config.style.height) - Util.toPixel(this.config.padding.top)-Util.toPixel(this.config.padding.bottom)
         let xScale = d3.scaleTime()
-                       .domain(d3.extent(ds.data,(d)=>{return d.time}))
+                       .domain([+d3.min(ds.data,(d:any)=>{return d.time}),+d3.max(ds.data,(d:any)=>{return d.time})])
                        .range([Util.toPixel(this.config.padding.left),width])
         let yScale = d3.scaleLinear()
                        .domain([0,maxY])
@@ -58,7 +58,7 @@ export class RangeLayer extends BaseLayer {
         gradientColor.append("stop").attr("offset","0%").attr("style","stop-color:steelblue;stop-opacity:1")
         gradientColor.append("stop").attr("offset","100%").attr("style","stop-color:aqua;stop-opacity:1")
 
-        let area = d3.area()
+        let area = d3.area<{time:number,min:number,max:number}>()
                      .x((d)=>{return xScale(d.time)})
                      .y0((d)=>{return yScale(d.min)})
                      .y1((d)=>{return yScale(d.max)})
@@ -87,7 +87,7 @@ export class RangeLayer extends BaseLayer {
     }
 }
 
-interface RangeLayerConfig extends ILayerConfig {
+export interface RangeLayerConfig extends ILayerConfig {
     padding: {
         top: string|undefined|null,
         right: string|undefined|null,

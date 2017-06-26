@@ -110,7 +110,7 @@ export class DashLayer extends BaseLayer  {
         return this
     }
 }
-interface DashLayerConfig extends ILayerConfig{
+export interface DashLayerConfig extends ILayerConfig{
         rangeMax:number,
         padding:number,
         dataFomate(n:string|number):string,

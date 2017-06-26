@@ -6,10 +6,10 @@ import {TitleLayer} from "../../Layer/TitleLayer"
 import {RangeLayer} from "../../Layer/RangeLayer"
 import {FocusPanel} from "../../Layer/FocusPanel"
 import Util=require("../../Core/Util")
-
 export class RangeChart extends BaseChart {
     rangeLayer: RangeLayer
     focusPanel: FocusPanel
+
 
     constructor(conf?) {
         super(conf)

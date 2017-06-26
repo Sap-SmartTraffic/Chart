@@ -3,6 +3,9 @@ var exec=require("child_process").exec;
 var spawn = require('child_process').spawn;
 const browserSync = require('browser-sync').create();
 var less = require('gulp-less');
+var ts = require('gulp-typescript');
+var concat = require('gulp-concat');
+var merge = require('merge2')
 // var requirejsOptimize = require('gulp-requirejs-optimize')
 
 gulp.task('start', function() {
@@ -147,3 +150,28 @@ gulp.task('ts', function() {
         tsResult.js.pipe(gulp.dest('release/js'))
     ]);
 });
+gulp.task('bundle-rangechart', function() {
+    var tsResult = gulp.src('src_new/Chart/RangeChart/RangeChart.ts')
+        .pipe(ts({
+            declaration: true
+        }));
+ 
+    return merge([
+        tsResult.dts.pipe(gulp.dest('release/RaneChart')),
+        tsResult.js.pipe(concat('release/RaneChart/RangeChart.ts')).pipe(gulp.dest('release/'))
+    ]);
+});
+gulp.task("bundle",function(){
+     var tsResult = gulp.src('src_new/Chart/RangeChart/RangeChart.ts')
+        .pipe(ts({
+            declaration: true,
+            outFile:"RangeChart.js",
+            module:"AMD"
+        }));
+    var less=gulp.src('src_new/Chart/RangeChart/RangeChart.less');
+    return merge([
+        tsResult.dts.pipe(gulp.dest('release/')),
+        tsResult.js.pipe(gulp.dest('release/')),
+        less.pipe(concat('RangeChart.less')).pipe(gulp.dest('release/'))
+    ]);
+})

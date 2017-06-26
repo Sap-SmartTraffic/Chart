@@ -32,6 +32,7 @@
     "typescript": "2.3.0"
   },
   "dependencies": {
+    "gulp-concat": "^2.6.1",
     "gulp-typescript": "^3.1.7",
     "merge2": "^1.0.3"
   }
