@@ -1,7 +1,7 @@
 import d3 =require("d3")
 import _ =require("underscore")
 import {Evented} from "./Evented"
-import Util=require("./Util")
+import {Util} from "./Util"
 let styles=Util.d3Invoke("style")
 let attrs=Util.d3Invoke("attr")
 export class View extends Evented{

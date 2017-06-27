@@ -1,6 +1,5 @@
 declare module "Core/Util" {
-    export = Util;
-    module Util {
+    export module Util {
         function isEndWith(s: any, ed: string): boolean;
         function toPixel(s: string | number, ctx?: string): any;
         function isBeginWith(s: any, bs: string): boolean;
@@ -70,6 +69,7 @@ declare module "Layer/TimeAdjust" {
         id: string;
         config: TimeAdjustConfig;
         defaultConfig(): TimeAdjustConfig;
+        setConfig(c: any): void;
         drawer(svgNode: d3.Selection<Element, {}, null, null>): void;
         render(): this;
         renderAt(dom: Element | HTMLElement | SVGAElement): void;

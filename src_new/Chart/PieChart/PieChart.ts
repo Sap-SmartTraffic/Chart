@@ -4,7 +4,7 @@ import _ =require("underscore")
 import {BaseChart} from "../../Core/BaseChart"
 import {TitleLayer} from "../../Layer/TitleLayer"
 import {PieLayer} from "../../Layer/PieLayer"
-import Util=require("../../Core/Util")
+import {Util}from "../../Core/Util"
 
 export class PieChart extends BaseChart {
     pieLayer: PieLayer

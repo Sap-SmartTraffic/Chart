@@ -1,6 +1,6 @@
 import d3 = require("d3")
 import _ = require("underscore")
-import Util = require("../Core/Util")
+import {Util} from "../Core/Util"
 import {View,IViewConfig} from "../Core/View"
 
 export class TimeAdjust extends View {

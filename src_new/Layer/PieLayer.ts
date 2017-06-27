@@ -1,6 +1,6 @@
 import d3 = require("d3")
 import _ = require("underscore")
-import Util = require("../Core/Util")
+import {Util} from "../Core/Util"
 import {BaseLayer, ILayerConfig} from "../Core/BaseLayer"
 
 export class PieLayer extends BaseLayer {

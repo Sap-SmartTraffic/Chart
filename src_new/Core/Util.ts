@@ -1,6 +1,5 @@
 import _ =require("underscore")
-export =Util
-module Util{
+export module Util{
 export function isEndWith(s:any,ed:string){
     let ss= s.toString();
     let matcher= new RegExp(ed+"$")

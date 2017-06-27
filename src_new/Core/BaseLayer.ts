@@ -1,7 +1,7 @@
 import d3 =require("d3")
 import _ =require("underscore")
 import {BaseChart} from "./BaseChart"
-import Util=require("./Util")
+import {Util} from './Util'
 import {View,IViewConfig} from"./View"
 export class BaseLayer extends View{
     constructor(id?,...confs){

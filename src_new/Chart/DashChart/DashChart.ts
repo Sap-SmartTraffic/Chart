@@ -4,7 +4,7 @@ import _ =require("underscore")
 import {BaseChart} from "../../Core/BaseChart"
 import {TitleLayer} from "../../Layer/TitleLayer"
 import {DashLayer} from "../../Layer/DashLayer"
-import Util=require("../../Core/Util")
+import {Util}from "../../Core/Util"
 
 export class DashChart extends BaseChart{
     dashLayer: DashLayer

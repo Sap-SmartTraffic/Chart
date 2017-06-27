@@ -3,7 +3,7 @@ import _=require("underscore")
 import {Evented} from "./Evented"
 import {BaseLayer} from "./BaseLayer"
 import {Measure} from "./Measure"
-import Util=require("./Util")
+import {Util}from"./Util"
 import {View} from"./View"
 export class BaseChart extends Evented{
     measures:Measure[]=[]

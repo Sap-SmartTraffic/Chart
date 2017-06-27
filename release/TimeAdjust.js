@@ -10,6 +10,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 define("Core/Util", ["require", "exports", "underscore"], function (require, exports, _) {
     "use strict";
+    exports.__esModule = true;
     var Util;
     (function (Util) {
         function isEndWith(s, ed) {
@@ -234,8 +235,7 @@ define("Core/Util", ["require", "exports", "underscore"], function (require, exp
             }
         }
         Util.enableAutoResize = enableAutoResize;
-    })(Util || (Util = {}));
-    return Util;
+    })(Util = exports.Util || (exports.Util = {}));
 });
 define("Core/Evented", ["require", "exports", "underscore"], function (require, exports, _) {
     "use strict";
@@ -323,11 +323,11 @@ define("Core/Evented", ["require", "exports", "underscore"], function (require, 
     }());
     exports.Evented = Evented;
 });
-define("Core/View", ["require", "exports", "d3", "Core/Evented", "Core/Util"], function (require, exports, d3, Evented_1, Util) {
+define("Core/View", ["require", "exports", "d3", "Core/Evented", "Core/Util"], function (require, exports, d3, Evented_1, Util_1) {
     "use strict";
     exports.__esModule = true;
-    var styles = Util.d3Invoke("style");
-    var attrs = Util.d3Invoke("attr");
+    var styles = Util_1.Util.d3Invoke("style");
+    var attrs = Util_1.Util.d3Invoke("attr");
     var View = (function (_super) {
         __extends(View, _super);
         function View() {
@@ -336,7 +336,7 @@ define("Core/View", ["require", "exports", "d3", "Core/Evented", "Core/Util"], f
                 confs[_i] = arguments[_i];
             }
             var _this = _super.call(this) || this;
-            _this.config = Util.deepExtend(_this.defaultConfig(), confs);
+            _this.config = Util_1.Util.deepExtend(_this.defaultConfig(), confs);
             _this.initView();
             return _this;
         }
@@ -382,7 +382,7 @@ define("Core/View", ["require", "exports", "d3", "Core/Evented", "Core/Util"], f
     }(Evented_1.Evented));
     exports.View = View;
 });
-define("Layer/TimeAdjust", ["require", "exports", "d3", "underscore", "Core/Util", "Core/View"], function (require, exports, d3, _, Util, View_1) {
+define("Layer/TimeAdjust", ["require", "exports", "d3", "underscore", "Core/Util", "Core/View"], function (require, exports, d3, _, Util_2, View_1) {
     "use strict";
     exports.__esModule = true;
     var TimeAdjust = (function (_super) {
@@ -416,6 +416,9 @@ define("Layer/TimeAdjust", ["require", "exports", "d3", "underscore", "Core/Util
                 padding: 20
             };
         };
+        TimeAdjust.prototype.setConfig = function (c) {
+            this.config = Util_2.Util.deepExtend(this.config, c);
+        };
         TimeAdjust.prototype.drawer = function (svgNode) {
             var gradientColor = svgNode.append("defs").append("radialGradient").attr("id", "radialColor")
                 .attr("cx", "50%").attr("cy", "50%")
@@ -426,16 +429,16 @@ define("Layer/TimeAdjust", ["require", "exports", "d3", "underscore", "Core/Util
             svgNode.append("rect").attr("class", "panel")
                 .attr("x", this.config.padding)
                 .attr("y", this.config.padding)
-                .attr("width", Util.toPixel(this.config.style.width) - this.config.padding * 2)
-                .attr("height", Util.toPixel(this.config.style.height) - this.config.padding * 2)
+                .attr("width", Util_2.Util.toPixel(this.config.style.width) - this.config.padding * 2)
+                .attr("height", Util_2.Util.toPixel(this.config.style.height) - this.config.padding * 2)
                 .attr("fill", "url(#radialColor)");
             var parseTime = d3.timeParse("%H");
             var xScale = d3.scaleTime()
                 .domain([parseTime(this.config.rangeMin), parseTime(this.config.rangeMax)])
-                .range([this.config.padding, Util.toPixel(this.config.style.width) - this.config.padding]);
+                .range([this.config.padding, Util_2.Util.toPixel(this.config.style.width) - this.config.padding]);
             var xAxis = d3.axisBottom(xScale).tickFormat(d3.timeFormat("%H:%M"));
             svgNode.append("g").attr("class", "axis xAxis")
-                .attr("transform", "translate(0," + (Util.toPixel(this.config.style.height) - this.config.padding) + ")")
+                .attr("transform", "translate(0," + (Util_2.Util.toPixel(this.config.style.height) - this.config.padding) + ")")
                 .call(xAxis);
             var focusTime = parseTime(this.config.focusTime);
             var self = this;
@@ -453,7 +456,7 @@ define("Layer/TimeAdjust", ["require", "exports", "d3", "underscore", "Core/Util
                 svgNode.style("cursor", "default");
             });
             svgNode.append("line").attr("class", "focusLine")
-                .attr("x1", xScale(focusTime)).attr("y1", Util.toPixel(this.config.style.height) - this.config.padding)
+                .attr("x1", xScale(focusTime)).attr("y1", Util_2.Util.toPixel(this.config.style.height) - this.config.padding)
                 .attr("x2", xScale(focusTime)).attr("y2", this.config.padding)
                 .on("mouseenter", function () {
                 svgNode.style("cursor", "col-resize");
