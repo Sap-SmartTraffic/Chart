@@ -24,38 +24,34 @@
     }
 </style>
 <script>
-    // requirejs(["Chart/RangeChart/RangeChart"],function(r){
-    //     var c1 = new r.RangeChart({style:{width:"60rem",height:"20rem"}})
-    //     c1.data([
-    //         {"time":0,"min":4,"max":15},
-    //         {"time":1,"min":9,"max":23},
-    //         {"time":2,"min":11,"max":28},
-    //         {"time":3,"min":16,"max":31},
-    //         {"time":4,"min":19,"max":39},
-    //         {"time":5,"min":26,"max":56},
-    //         {"time":6,"min":21,"max":43},
-    //         {"time":7,"min":43,"max":68},
-    //         {"time":8,"min":57,"max":85},
-    //         {"time":9,"min":51,"max":72},
-    //         {"time":10,"min":31,"max":43},
-    //         {"time":11,"min":37,"max":64},
-    //         {"time":12,"min":46,"max":87},
-    //         {"time":13,"min":54,"max":95},
-    //         {"time":14,"min":64,"max":100},
-    //         {"time":15,"min":48,"max":87},
-    //         {"time":16,"min":37,"max":63},
-    //         {"time":17,"min":54,"max":94},
-    //         {"time":18,"min":49,"max":73},
-    //         {"time":19,"min":32,"max":54},
-    //         {"time":20,"min":10,"max":23},
-    //         {"time":21,"min":14,"max":29},
-    //         {"time":22,"min":9,"max":16},
-    //         {"time":23,"min":3,"max":7}]);
-    //     c1.renderAt("content") 
-    // })
-    requirejs(["Layer/TimeAdjust"],function(t){
-        var t1 = new t.TimeAdjust()
-        t1.renderAt(document.getElementsByTagName("content")[0])
+    requirejs(["Chart/RangeChart/RangeChart"],function(r){
+        var c1 = new r.RangeChart({style:{width:"60rem",height:"20rem"}})
+        c1.data([
+            {"time":0,"min":4,"max":15},
+            {"time":1,"min":9,"max":23},
+            {"time":2,"min":11,"max":28},
+            {"time":3,"min":16,"max":31},
+            {"time":4,"min":19,"max":39},
+            {"time":5,"min":26,"max":56},
+            {"time":6,"min":21,"max":43},
+            {"time":7,"min":43,"max":68},
+            {"time":8,"min":57,"max":85},
+            {"time":9,"min":51,"max":72},
+            {"time":10,"min":31,"max":43},
+            {"time":11,"min":37,"max":64},
+            {"time":12,"min":46,"max":87},
+            {"time":13,"min":54,"max":95},
+            {"time":14,"min":64,"max":100},
+            {"time":15,"min":48,"max":87},
+            {"time":16,"min":37,"max":63},
+            {"time":17,"min":54,"max":94},
+            {"time":18,"min":49,"max":73},
+            {"time":19,"min":32,"max":54},
+            {"time":20,"min":10,"max":23},
+            {"time":21,"min":14,"max":29},
+            {"time":22,"min":9,"max":16},
+            {"time":23,"min":3,"max":7}]);
+        c1.renderAt("content") 
     })
 </script>
 </html>

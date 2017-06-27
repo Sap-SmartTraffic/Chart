@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Chart Test</title>
+</head>
+<script src="../../../lib/requirejs/require.js"></script>
+<script src="../../../dist_new/requireConfig.js"></script>
+<link rel="stylesheet" href="../../../dist_new/Chart/BarChart/BarChart.css">
+<body>
+<section>
+    <header>BarChart</header>
+    <content></content>
+</section>
+</body>
+<style>
+    header{
+        width: 100%;
+        text-align: center;
+        font-size: 2rem
+    }
+    content{
+        display: flex
+    }
+</style>
+<script>
+    requirejs(["Chart/BarChart/BarChart"],function(b){
+        var barChart = new b.BarChart({style:{width:"20rem",height:"10rem"}})
+        let measures = [{id:1,data:[{"x":"04-10","y":4},{"x":"04-11","y":8},{"x":"04-12","y":6},{"x":"04-13","y":12},{"x":"04-14","y":15}],type:"bar"},
+                        {id:2,data:[{"x":"04-10","y":7},{"x":"04-11","y":2},{"x":"04-12","y":9},{"x":"04-13","y":3},{"x":"04-14","y":24}],type:"bar"},
+                        {id:3,data:[{"x":"04-10","y":3},{"x":"04-11","y":6},{"x":"04-12","y":5},{"x":"04-13","y":10},{"x":"04-14","y":18}],type:"bar"}]
+        barChart.loadMeasures(measures)
+        barChart.renderAt("content")
+    })
+
+
+</script>
+</html>

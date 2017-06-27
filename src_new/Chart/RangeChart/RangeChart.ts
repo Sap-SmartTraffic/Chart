@@ -4,12 +4,9 @@ import _ =require("underscore")
 import {BaseChart} from "../../Core/BaseChart"
 import {TitleLayer} from "../../Layer/TitleLayer"
 import {RangeLayer} from "../../Layer/RangeLayer"
-import {FocusPanel} from "../../Layer/FocusPanel"
 import Util=require("../../Core/Util")
 export class RangeChart extends BaseChart {
     rangeLayer: RangeLayer
-    focusPanel: FocusPanel
-
 
     constructor(conf?) {
         super(conf)
@@ -20,15 +17,9 @@ export class RangeChart extends BaseChart {
                 height: this.config.style.height
             }
         })
-        this.focusPanel = new FocusPanel("focuspanel",{
-            style: {
-                top:"300px",
-                left:"30px"
-            }
-        })
+        
         this.on("measure_change",this.rangeLayer.render,this.rangeLayer)
         this.addLayer(this.rangeLayer)
-        this.addLayer(this.focusPanel)
     }
 
     data(data:any[]){

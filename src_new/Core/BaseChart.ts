@@ -56,10 +56,17 @@ export class BaseChart extends Evented{
 
     loadMeasures(measures:any[]) {
         _.each(measures, (d)=>{
-            let measure = new Measure(d.id, d.data)
-            this.addMeasure(measure)
+            let measure = new Measure(d.id, d.data, d.type)
+            let i=_.findIndex(this.measures,(mm)=>mm.id==d.id)
+            if(i!=-1){
+                this.measures[i]=d
+            }else{
+                this.measures.push(d)
+            }
         })
+        this.fire("measure_change")
     }
+    
     addMeasure(m:Measure){
         let i=_.findIndex(this.measures,(mm)=>mm.id==m.id)
         if(i!=-1){
@@ -69,7 +76,8 @@ export class BaseChart extends Evented{
         }
         this.fire("measure_change")
     }
-    getMeasure(t:string){
+
+    getMeasures(t:string){
         if(t!=undefined){
             return _.filter(this.measures,m=> m.type==t)
         }else{

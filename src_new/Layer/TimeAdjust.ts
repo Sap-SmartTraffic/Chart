@@ -33,6 +33,7 @@ export class TimeAdjust extends View {
     setConfig(c){
         this.config=Util.deepExtend(this.config,c)
     }
+
     drawer(svgNode:d3.Selection<Element,{},null,null>) {
         let gradientColor = svgNode.append("defs").append("radialGradient").attr("id","radialColor")
                                    .attr("cx","50%").attr("cy","50%")
@@ -64,7 +65,7 @@ export class TimeAdjust extends View {
                      })
                      .on("drag",function(){
                          if(xScale.invert(d3.event.x)>=parseTime(self.config.rangeMin)&&xScale.invert(d3.event.x)<=parseTime(self.config.rangeMax)){
-                             d3.select(this).attr("x1",d3.event.x).attr("x2",d3.event.x)
+                             d3.select(this).attr("x",d3.event.x)
                              self.fire("dragLine",{time:xScale.invert(d3.event.x)})
                          }   
                      })
@@ -72,9 +73,10 @@ export class TimeAdjust extends View {
                          svgNode.style("cursor","default")
                      })
 
-        svgNode.append("line").attr("class","focusLine")
-               .attr("x1",xScale(focusTime)).attr("y1",Util.toPixel(this.config.style.height)-this.config.padding)
-               .attr("x2",xScale(focusTime)).attr("y2",this.config.padding)
+        svgNode.append("rect").attr("class","focusLine")
+               .attr("x",xScale(focusTime)-1).attr("y",this.config.padding)
+               .attr("width",2).attr("height",Util.toPixel(this.config.style.height)-this.config.padding * 2)
+               .attr("fill","#ffffff")
                .on("mouseenter",function(){
                    svgNode.style("cursor","col-resize")
                })
