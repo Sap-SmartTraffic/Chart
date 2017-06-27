@@ -30,7 +30,9 @@ export class TimeAdjust extends View {
             padding:20
         }
     }
-
+    setConfig(c){
+        this.config=Util.deepExtend(this.config,c)
+    }
     drawer(svgNode:d3.Selection<Element,{},null,null>) {
         let gradientColor = svgNode.append("defs").append("radialGradient").attr("id","radialColor")
                                    .attr("cx","50%").attr("cy","50%")
