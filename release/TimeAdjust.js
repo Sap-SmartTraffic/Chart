@@ -448,16 +448,17 @@ define("Layer/TimeAdjust", ["require", "exports", "d3", "underscore", "Core/Util
             })
                 .on("drag", function () {
                 if (xScale.invert(d3.event.x) >= parseTime(self.config.rangeMin) && xScale.invert(d3.event.x) <= parseTime(self.config.rangeMax)) {
-                    d3.select(this).attr("x1", d3.event.x).attr("x2", d3.event.x);
+                    d3.select(this).attr("x", d3.event.x);
                     self.fire("dragLine", { time: xScale.invert(d3.event.x) });
                 }
             })
                 .on("end", function () {
                 svgNode.style("cursor", "default");
             });
-            svgNode.append("line").attr("class", "focusLine")
-                .attr("x1", xScale(focusTime)).attr("y1", Util_2.Util.toPixel(this.config.style.height) - this.config.padding)
-                .attr("x2", xScale(focusTime)).attr("y2", this.config.padding)
+            svgNode.append("rect").attr("class", "focusLine")
+                .attr("x", xScale(focusTime) - 1).attr("y", this.config.padding)
+                .attr("width", 2).attr("height", Util_2.Util.toPixel(this.config.style.height) - this.config.padding * 2)
+                .attr("fill", "#ffffff")
                 .on("mouseenter", function () {
                 svgNode.style("cursor", "col-resize");
             })
