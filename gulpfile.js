@@ -162,10 +162,10 @@ gulp.task('bundle-rangechart', function() {
     ]);
 });
 gulp.task("bundle",function(){
-     var tsResult = gulp.src('src_new/Chart/RangeChart/RangeChart.ts')
+     var tsResult = gulp.src('src_new/Layer/TimeAdjust.ts')
         .pipe(ts({
             declaration: true,
-            outFile:"RangeChart.js",
+            outFile:"TimeAdjust.js",
             module:"AMD"
         }));
     var less=gulp.src('src_new/Chart/RangeChart/RangeChart.less');
