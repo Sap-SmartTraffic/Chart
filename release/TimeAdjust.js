@@ -413,7 +413,7 @@ define("Chart/TimeAdjust/TimeAdjust", ["require", "exports", "d3", "underscore",
                 rangeMin: "6",
                 rangeMax: "18",
                 focusTime: "12",
-                svgPadding: "20px",
+                axisHeight: "20px",
                 timeParse: "%H",
                 timeFormat: "%H:%M",
                 lineTextPadding: "20px"
@@ -424,21 +424,33 @@ define("Chart/TimeAdjust/TimeAdjust", ["require", "exports", "d3", "underscore",
         };
         TimeAdjust.prototype.drawer = function (svgNode) {
             svgNode.append("rect").attr("class", "panel")
-                .attr("x", Util_2.Util.toPixel(this.config.svgPadding))
-                .attr("y", Util_2.Util.toPixel(this.config.svgPadding))
-                .attr("width", Util_2.Util.toPixel(this.config.style.width) - Util_2.Util.toPixel(this.config.svgPadding) * 2)
-                .attr("height", Util_2.Util.toPixel(this.config.style.height) - Util_2.Util.toPixel(this.config.svgPadding) * 2);
+                .attr("x", 0)
+                .attr("y", 0)
+                .attr("width", Util_2.Util.toPixel(this.config.style.width))
+                .attr("height", Util_2.Util.toPixel(this.config.style.height) - Util_2.Util.toPixel(this.config.axisHeight));
             var self = this;
             var parseTime = d3.timeParse(this.config.timeParse);
             var formatTime = d3.timeFormat(this.config.timeFormat);
             var focusTime = parseTime(this.config.focusTime);
             var xScale = d3.scaleTime()
                 .domain([parseTime(this.config.rangeMin), parseTime(this.config.rangeMax)])
-                .range([Util_2.Util.toPixel(this.config.svgPadding), Util_2.Util.toPixel(this.config.style.width) - Util_2.Util.toPixel(this.config.svgPadding)]);
-            var xAxis = d3.axisBottom(xScale).tickFormat(formatTime).ticks(2);
-            svgNode.append("g").attr("class", "axis xAxis")
-                .attr("transform", "translate(0," + (Util_2.Util.toPixel(this.config.style.height) - Util_2.Util.toPixel(this.config.svgPadding)) + ")")
-                .call(xAxis);
+                .range([0, Util_2.Util.toPixel(this.config.style.width)]);
+            var axis = svgNode.append("g").attr("class", "axis xAxis")
+                .attr("transform", "translate(0," + (Util_2.Util.toPixel(this.config.style.height) - Util_2.Util.toPixel(this.config.axisHeight)) + ")");
+            axis.append("path").attr("class", "domain").attr("stroke", "#000").attr("stroke-width", "1")
+                .attr("d", "M 0.5,0 H" + (Util_2.Util.toPixel(this.config.style.width) - 0.5));
+            var tick1 = axis.append("g").attr("class", "tick").attr("transform", "translate(0.5,0)");
+            tick1.append("line").attr("stroke", "#000").attr("y2", "5");
+            tick1.append("text").attr("stroke", "#000").attr("y", "12")
+                .attr("text-anchor", "start").text(formatTime(parseTime(this.config.rangeMin)));
+            var tick2 = axis.append("g").attr("class", "tick").attr("transform", "translate(" + Util_2.Util.toPixel(this.config.style.width) / 2 + ",0)");
+            tick2.append("line").attr("stroke", "#000").attr("y2", "5");
+            tick2.append("text").attr("stroke", "#000").attr("y", "12")
+                .attr("text-anchor", "middle").text(formatTime(xScale.invert(Util_2.Util.toPixel(this.config.style.width) / 2)));
+            var tick3 = axis.append("g").attr("class", "tick").attr("transform", "translate(" + (Util_2.Util.toPixel(this.config.style.width) - 0.5) + ",0)");
+            tick3.append("line").attr("stroke", "#000").attr("y2", "5");
+            tick3.append("text").attr("stroke", "#000").attr("y", "12")
+                .attr("text-anchor", "end").text(formatTime(parseTime(this.config.rangeMax)));
             var drag = d3.drag()
                 .on("start", function () {
                 svgNode.style("cursor", "col-resize");
@@ -461,7 +473,7 @@ define("Chart/TimeAdjust/TimeAdjust", ["require", "exports", "d3", "underscore",
             svgNode.append("text").attr("class", (xScale(focusTime) > Util_2.Util.toPixel(this.config.style.width) / 2) ? "focusText leftSide" : "focusText rightSide")
                 .text(formatTime(parseTime(this.config.focusTime)))
                 .attr("x", (xScale(focusTime) > Util_2.Util.toPixel(this.config.style.width) / 2) ? (xScale(focusTime) - Util_2.Util.toPixel(this.config.lineTextPadding)) : (xScale(focusTime) + Util_2.Util.toPixel(this.config.lineTextPadding)))
-                .attr("y", (Util_2.Util.toPixel(this.config.style.height) / 2));
+                .attr("y", (Util_2.Util.toPixel(this.config.style.height) - Util_2.Util.toPixel(this.config.axisHeight)) / 2);
             var focusGroup = svgNode.append("g").attr("class", "focusGroup")
                 .on("mouseenter", function () {
                 svgNode.style("cursor", "col-resize");
@@ -471,30 +483,30 @@ define("Chart/TimeAdjust/TimeAdjust", ["require", "exports", "d3", "underscore",
             })
                 .call(drag);
             focusGroup.append("line").attr("class", "focusLine")
-                .attr("x1", xScale(focusTime)).attr("y1", Util_2.Util.toPixel(this.config.svgPadding))
-                .attr("x2", xScale(focusTime)).attr("y2", Util_2.Util.toPixel(this.config.style.height) - Util_2.Util.toPixel(this.config.svgPadding));
+                .attr("x1", xScale(focusTime)).attr("y1", 0)
+                .attr("x2", xScale(focusTime)).attr("y2", Util_2.Util.toPixel(this.config.style.height) - Util_2.Util.toPixel(this.config.axisHeight));
             var focusButton = focusGroup.append("g").attr("class", "focusButton");
             focusButton.append("rect").attr("class", "focusRect")
                 .attr("x", xScale(focusTime) - 6)
-                .attr("y", (Util_2.Util.toPixel(this.config.style.height) / 2 - 10))
+                .attr("y", ((Util_2.Util.toPixel(this.config.style.height) - Util_2.Util.toPixel(this.config.axisHeight)) / 2 - 10))
                 .attr("rx", "3").attr("ry", "3")
                 .attr("width", "12")
                 .attr("height", "20");
             focusButton.append("line").attr("class", "focusRectLine")
                 .attr("x1", xScale(focusTime) - 4)
-                .attr("y1", (Util_2.Util.toPixel(this.config.style.height) / 2 - 5))
+                .attr("y1", ((Util_2.Util.toPixel(this.config.style.height) - Util_2.Util.toPixel(this.config.axisHeight)) / 2 - 5))
                 .attr("x2", xScale(focusTime) + 4)
-                .attr("y2", (Util_2.Util.toPixel(this.config.style.height) / 2 - 5));
+                .attr("y2", ((Util_2.Util.toPixel(this.config.style.height) - Util_2.Util.toPixel(this.config.axisHeight)) / 2 - 5));
             focusButton.append("line").attr("class", "focusRectLine")
                 .attr("x1", xScale(focusTime) - 4)
-                .attr("y1", (Util_2.Util.toPixel(this.config.style.height) / 2))
+                .attr("y1", ((Util_2.Util.toPixel(this.config.style.height) - Util_2.Util.toPixel(this.config.axisHeight)) / 2))
                 .attr("x2", xScale(focusTime) + 4)
-                .attr("y2", (Util_2.Util.toPixel(this.config.style.height) / 2));
+                .attr("y2", ((Util_2.Util.toPixel(this.config.style.height) - Util_2.Util.toPixel(this.config.axisHeight)) / 2));
             focusButton.append("line").attr("class", "focusRectLine")
                 .attr("x1", xScale(focusTime) - 4)
-                .attr("y1", (Util_2.Util.toPixel(this.config.style.height) / 2 + 5))
+                .attr("y1", ((Util_2.Util.toPixel(this.config.style.height) - Util_2.Util.toPixel(this.config.axisHeight)) / 2 + 5))
                 .attr("x2", xScale(focusTime) + 4)
-                .attr("y2", (Util_2.Util.toPixel(this.config.style.height) / 2 + 5));
+                .attr("y2", ((Util_2.Util.toPixel(this.config.style.height) - Util_2.Util.toPixel(this.config.axisHeight)) / 2 + 5));
         };
         TimeAdjust.prototype.render = function () {
             this.el.innerHTML = "";
