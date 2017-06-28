@@ -114,7 +114,7 @@ gulp.task("copyHTML",function(){
 //         });
 // })
 gulp.task('start_new', function() {
-  browserSync.init({server:{baseDir:"./",index:"dist_new/Chart/BarChart/index.html"}});
+  browserSync.init({server:{baseDir:"./",index:"dist_new/Chart/TimeAdjust/index.html"}});
   gulp.watch("./dist_new/*.*",function(e){
         browserSync.reload();
         console.log(e.path+"-------file changed")
@@ -162,13 +162,13 @@ gulp.task('bundle-rangechart', function() {
     ]);
 });
 gulp.task("bundle",function(){
-     var tsResult = gulp.src('src_new/Layer/TimeAdjust.ts')
+     var tsResult = gulp.src('src_new/Chart/TimeAdjust/TimeAdjust.ts')
         .pipe(ts({
             declaration: true,
             outFile:"TimeAdjust.js",
             module:"AMD"
         }));
-    var less=gulp.src('src_new/Chart/RangeChart/RangeChart.less');
+    var less=gulp.src('src_new/Chart/TimeAdjust/TimeAdjust.less');
     return merge([
         tsResult.dts.pipe(gulp.dest('release/')),
         tsResult.js.pipe(gulp.dest('release/')),

@@ -61,7 +61,7 @@ declare module "Core/View" {
         style: {} | undefined | null;
     }
 }
-declare module "Layer/TimeAdjust" {
+declare module "Chart/TimeAdjust/TimeAdjust" {
     import d3 = require("d3");
     import { View, IViewConfig } from "Core/View";
     export class TimeAdjust extends View {
@@ -91,5 +91,7 @@ declare module "Layer/TimeAdjust" {
         rangeMax: string;
         focusTime: string;
         padding: number;
+        timeParse: string;
+        timeFormat: string;
     }
 }

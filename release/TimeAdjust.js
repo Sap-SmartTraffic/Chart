@@ -382,7 +382,7 @@ define("Core/View", ["require", "exports", "d3", "Core/Evented", "Core/Util"], f
     }(Evented_1.Evented));
     exports.View = View;
 });
-define("Layer/TimeAdjust", ["require", "exports", "d3", "underscore", "Core/Util", "Core/View"], function (require, exports, d3, _, Util_2, View_1) {
+define("Chart/TimeAdjust/TimeAdjust", ["require", "exports", "d3", "underscore", "Core/Util", "Core/View"], function (require, exports, d3, _, Util_2, View_1) {
     "use strict";
     exports.__esModule = true;
     var TimeAdjust = (function (_super) {
@@ -413,7 +413,9 @@ define("Layer/TimeAdjust", ["require", "exports", "d3", "underscore", "Core/Util
                 rangeMin: "6",
                 rangeMax: "18",
                 focusTime: "12",
-                padding: 20
+                padding: 20,
+                timeParse: "%H",
+                timeFormat: "%H:%M"
             };
         };
         TimeAdjust.prototype.setConfig = function (c) {
@@ -432,33 +434,48 @@ define("Layer/TimeAdjust", ["require", "exports", "d3", "underscore", "Core/Util
                 .attr("width", Util_2.Util.toPixel(this.config.style.width) - this.config.padding * 2)
                 .attr("height", Util_2.Util.toPixel(this.config.style.height) - this.config.padding * 2)
                 .attr("fill", "url(#radialColor)");
-            var parseTime = d3.timeParse("%H");
+            var self = this;
+            var parseTime = d3.timeParse(this.config.timeParse);
+            var formatTime = d3.timeFormat(this.config.timeFormat);
+            var timeText = Util_2.Util.getStringRect("hh:mm", "", Number(svgNode.select(".focusText").attr("font-size")));
+            var focusTime = parseTime(this.config.focusTime);
             var xScale = d3.scaleTime()
                 .domain([parseTime(this.config.rangeMin), parseTime(this.config.rangeMax)])
                 .range([this.config.padding, Util_2.Util.toPixel(this.config.style.width) - this.config.padding]);
-            var xAxis = d3.axisBottom(xScale).tickFormat(d3.timeFormat("%H:%M"));
+            var xAxis = d3.axisBottom(xScale).tickFormat(formatTime).ticks(2);
             svgNode.append("g").attr("class", "axis xAxis")
                 .attr("transform", "translate(0," + (Util_2.Util.toPixel(this.config.style.height) - this.config.padding) + ")")
                 .call(xAxis);
-            var focusTime = parseTime(this.config.focusTime);
-            var self = this;
             var drag = d3.drag()
                 .on("start", function () {
                 svgNode.style("cursor", "col-resize");
             })
                 .on("drag", function () {
                 if (xScale.invert(d3.event.x) >= parseTime(self.config.rangeMin) && xScale.invert(d3.event.x) <= parseTime(self.config.rangeMax)) {
-                    d3.select(this).attr("x", d3.event.x);
+                    var focusText = svgNode.select(".focusText"), focusLine = svgNode.select(".focusLine");
+                    var oldLineX = Number(focusLine.attr("x1")), oldTextX = Number(focusText.attr("x"));
+                    d3.select(this).attr("transform", "translate(" + (d3.event.x - oldLineX) + ",0)");
+                    if ((d3.event.x + timeText.width) > Util_2.Util.toPixel(self.config.style.width) - self.config.padding * 2)
+                        focusText.text(formatTime(xScale.invert(d3.event.x))).attr("x", d3.event.x - timeText.width);
+                    else
+                        focusText.text(formatTime(xScale.invert(d3.event.x))).attr("x", d3.event.x + timeText.width);
+                    //  if (oldTextX < d3.event.x){
+                    //      focusText.text(formatTime(xScale.invert(d3.event.x))).attr("x",d3.event.x + timeText.width)
+                    //  }
+                    //  else if(oldTextX > d3.event.x) {
+                    //      focusText.text(formatTime(xScale.invert(d3.event.x))).attr("x",d3.event.x - timeText.width)
+                    //  }
                     self.fire("dragLine", { time: xScale.invert(d3.event.x) });
                 }
             })
                 .on("end", function () {
                 svgNode.style("cursor", "default");
             });
-            svgNode.append("rect").attr("class", "focusLine")
-                .attr("x", xScale(focusTime) - 1).attr("y", this.config.padding)
-                .attr("width", 2).attr("height", Util_2.Util.toPixel(this.config.style.height) - this.config.padding * 2)
-                .attr("fill", "#ffffff")
+            svgNode.append("text").attr("class", "focusText")
+                .text(formatTime(parseTime(this.config.focusTime)))
+                .attr("x", (xScale(focusTime) + timeText.width))
+                .attr("y", (Util_2.Util.toPixel(this.config.style.height) / 2 + timeText.height / 2));
+            var focusGroup = svgNode.append("g").attr("class", "focusGroup")
                 .on("mouseenter", function () {
                 svgNode.style("cursor", "col-resize");
             })
@@ -466,6 +483,31 @@ define("Layer/TimeAdjust", ["require", "exports", "d3", "underscore", "Core/Util
                 svgNode.style("cursor", "default");
             })
                 .call(drag);
+            focusGroup.append("line").attr("class", "focusLine")
+                .attr("x1", xScale(focusTime)).attr("y1", this.config.padding)
+                .attr("x2", xScale(focusTime)).attr("y2", Util_2.Util.toPixel(this.config.style.height) - this.config.padding);
+            var focusButton = focusGroup.append("g").attr("class", "focusButton");
+            focusButton.append("rect").attr("class", "focusRect")
+                .attr("x", xScale(focusTime) - 6)
+                .attr("y", (Util_2.Util.toPixel(this.config.style.height) / 2 - 10))
+                .attr("rx", "3").attr("ry", "3")
+                .attr("width", "12")
+                .attr("height", "20");
+            focusButton.append("line").attr("class", "focusRectLine")
+                .attr("x1", xScale(focusTime) - 4)
+                .attr("y1", (Util_2.Util.toPixel(this.config.style.height) / 2 - 5))
+                .attr("x2", xScale(focusTime) + 4)
+                .attr("y2", (Util_2.Util.toPixel(this.config.style.height) / 2 - 5));
+            focusButton.append("line").attr("class", "focusRectLine")
+                .attr("x1", xScale(focusTime) - 4)
+                .attr("y1", (Util_2.Util.toPixel(this.config.style.height) / 2))
+                .attr("x2", xScale(focusTime) + 4)
+                .attr("y2", (Util_2.Util.toPixel(this.config.style.height) / 2));
+            focusButton.append("line").attr("class", "focusRectLine")
+                .attr("x1", xScale(focusTime) - 4)
+                .attr("y1", (Util_2.Util.toPixel(this.config.style.height) / 2 + 5))
+                .attr("x2", xScale(focusTime) + 4)
+                .attr("y2", (Util_2.Util.toPixel(this.config.style.height) / 2 + 5));
         };
         TimeAdjust.prototype.render = function () {
             this.el.innerHTML = "";
