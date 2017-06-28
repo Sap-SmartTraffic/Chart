@@ -90,8 +90,9 @@ declare module "Chart/TimeAdjust/TimeAdjust" {
         rangeMin: string;
         rangeMax: string;
         focusTime: string;
-        padding: number;
+        svgPadding: string;
         timeParse: string;
         timeFormat: string;
+        lineTextPadding: string;
     }
 }

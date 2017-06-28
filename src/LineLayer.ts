@@ -49,12 +49,12 @@ export class LineLayer extends BaseLayer {
     }
     */
 
-    curveTypeMap = {
+    curveTypeMap ={
         linear: d3.curveLinear,
         basis: d3.curveBasis,
         cardinal: d3.curveCardinal,
         step: d3.curveStep
-    }
+    } 
 
     eventHandler(svg) {
         this.chart.on("enterLegend",(d)=>{

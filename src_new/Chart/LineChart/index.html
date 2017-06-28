@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Chart Test</title>
+</head>
+<script src="../../../lib/requirejs/require.js"></script>
+<script src="../../../dist_new/requireConfig.js"></script>
+<link rel="stylesheet" href="../../../dist_new/Chart/BarChart/BarChart.css">
+<body>
+<section></section>
+    <content></content>
+</section>
+</body>
+<style>
+    content{
+        display: flex
+    }
+</style>
+<script>
+    requirejs(["Chart/LineChart/LineChart"],function(b){
+        var barChart = new b.BarChart({style:{width:"40rem",height:"30rem"}})
+        let measures = [{id:1, data:[{x:0,y:1},{x:3,y:2},{x:5,y:8},{x:7,y:32}], type:"line"},
+                        {id:2, data:[{x:0,y:32},{x:3,y:8},{x:5,y:2},{x:7,y:1}], type:"line"}]
+        barChart.loadMeasures(measures)
+        barChart.renderAt("content")
+    })
+
+</script>
+</html>

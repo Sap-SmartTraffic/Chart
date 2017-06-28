@@ -15,8 +15,8 @@ export class TimeAdjust extends View {
             tagName: "svg",
             className: "timeAdjust",
             style: {
-                top: "100px",
-                left: "50px",
+                top: "0px",
+                left: "0px",
                 bottom: "null",
                 right: "null",
                 position: "absolute",
@@ -27,9 +27,10 @@ export class TimeAdjust extends View {
             rangeMin:"6",
             rangeMax:"18",
             focusTime:"12",
-            padding:20,
+            svgPadding:"20px",
             timeParse: "%H",
-            timeFormat: "%H:%M"
+            timeFormat: "%H:%M",
+            lineTextPadding: "20px"
         }
     }
     setConfig(c){
@@ -37,18 +38,11 @@ export class TimeAdjust extends View {
     }
 
     drawer(svgNode:d3.Selection<Element,{},null,null>) {
-        let gradientColor = svgNode.append("defs").append("radialGradient").attr("id","radialColor")
-                                   .attr("cx","50%").attr("cy","50%")
-                                   .attr("r","50%")
-                                   .attr("fx","50%").attr("fy","50%")
-        gradientColor.append("stop").attr("offset","0%").attr("style","stop-color:aqua;stop-opacity:1")
-        gradientColor.append("stop").attr("offset","100%").attr("style","stop-color:steelblue;stop-opacity:1")
         svgNode.append("rect").attr("class","panel")
-               .attr("x",this.config.padding)
-               .attr("y",this.config.padding)
-               .attr("width",Util.toPixel(this.config.style.width) - this.config.padding * 2)
-               .attr("height",Util.toPixel(this.config.style.height)-this.config.padding * 2)
-               .attr("fill","url(#radialColor)")
+               .attr("x",Util.toPixel(this.config.svgPadding))
+               .attr("y",Util.toPixel(this.config.svgPadding))
+               .attr("width",Util.toPixel(this.config.style.width) - Util.toPixel(this.config.svgPadding) * 2)
+               .attr("height",Util.toPixel(this.config.style.height)- Util.toPixel(this.config.svgPadding) * 2)
         
         let self = this
         let parseTime = d3.timeParse(this.config.timeParse)
@@ -57,10 +51,10 @@ export class TimeAdjust extends View {
 
         let xScale = d3.scaleTime()
                        .domain([parseTime(this.config.rangeMin),parseTime(this.config.rangeMax)])
-                       .range([this.config.padding,Util.toPixel(this.config.style.width)-this.config.padding])
+                       .range([Util.toPixel(this.config.svgPadding),Util.toPixel(this.config.style.width)-Util.toPixel(this.config.svgPadding)])
         let xAxis = d3.axisBottom(xScale).tickFormat(formatTime).ticks(2)
         svgNode.append("g").attr("class","axis xAxis")
-               .attr("transform","translate(0,"+(Util.toPixel(this.config.style.height)-this.config.padding)+")")
+               .attr("transform","translate(0,"+(Util.toPixel(this.config.style.height)-Util.toPixel(this.config.svgPadding))+")")
                .call(xAxis)
                
         let drag = d3.drag()
@@ -75,9 +69,9 @@ export class TimeAdjust extends View {
                                  oldTextX = Number(focusText.attr("x"))
                              d3.select(this).attr("transform","translate("+(d3.event.x-oldLineX)+",0)")
                              if(d3.event.x > Util.toPixel(self.config.style.width)/2)
-                                 focusText.text(formatTime(xScale.invert(d3.event.x))).attr("x",d3.event.x - 40)
+                                 focusText.text(formatTime(xScale.invert(d3.event.x))).attr("x",(d3.event.x - Util.toPixel(self.config.lineTextPadding))).attr("class","focusText leftSide")
                              else 
-                                 focusText.text(formatTime(xScale.invert(d3.event.x))).attr("x",d3.event.x + 40)
+                                 focusText.text(formatTime(xScale.invert(d3.event.x))).attr("x",(d3.event.x + Util.toPixel(self.config.lineTextPadding))).attr("class","focusText rightSide")
                              
                              self.fire("dragLine",{time:xScale.invert(d3.event.x)})
                          }   
@@ -86,9 +80,9 @@ export class TimeAdjust extends View {
                          svgNode.style("cursor","default")
                      })
         
-        svgNode.append("text").attr("class","focusText")
+        svgNode.append("text").attr("class",(xScale(focusTime)>Util.toPixel(this.config.style.width)/2)?"focusText leftSide":"focusText rightSide")
                .text(formatTime(parseTime(this.config.focusTime)))
-               .attr("x",(xScale(focusTime)+40))
+               .attr("x",(xScale(focusTime)>Util.toPixel(this.config.style.width)/2)?(xScale(focusTime)-Util.toPixel(this.config.lineTextPadding)):(xScale(focusTime)+Util.toPixel(this.config.lineTextPadding)))
                .attr("y",(Util.toPixel(this.config.style.height)/2))
         
         let focusGroup = svgNode.append("g").attr("class","focusGroup")
@@ -101,8 +95,8 @@ export class TimeAdjust extends View {
                                 .call(drag)  
 
         focusGroup.append("line").attr("class","focusLine")
-               .attr("x1",xScale(focusTime)).attr("y1",this.config.padding)
-               .attr("x2",xScale(focusTime)).attr("y2",Util.toPixel(this.config.style.height)-this.config.padding)
+               .attr("x1",xScale(focusTime)).attr("y1",Util.toPixel(this.config.svgPadding))
+               .attr("x2",xScale(focusTime)).attr("y2",Util.toPixel(this.config.style.height)-Util.toPixel(this.config.svgPadding))
                
         let focusButton = focusGroup.append("g").attr("class","focusButton")
         focusButton.append("rect").attr("class","focusRect")
@@ -159,7 +153,8 @@ export interface TimeAdjustConfig extends IViewConfig{
     rangeMin: string,
     rangeMax: string,
     focusTime: string,
-    padding: number,
+    svgPadding: string,
     timeParse: string,
-    timeFormat: string
+    timeFormat: string,
+    lineTextPadding: string
 }
