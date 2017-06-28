@@ -23,8 +23,7 @@
     }
 </style>
 <script>
-    
-    requirejs(["Layer/TimeAdjust"],function(t){
+    requirejs(["Chart/TimeAdjust/TimeAdjust"],function(t){
         var timeAdjust = new t.TimeAdjust()
         timeAdjust.renderAt(document.getElementsByTagName("content")[0])
     })

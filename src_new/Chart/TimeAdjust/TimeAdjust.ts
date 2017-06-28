@@ -15,8 +15,8 @@ export class TimeAdjust extends View {
             tagName: "svg",
             className: "timeAdjust",
             style: {
-                top: "0px",
-                left: "0px",
+                top: "100px",
+                left: "50px",
                 bottom: "null",
                 right: "null",
                 position: "absolute",
@@ -53,7 +53,6 @@ export class TimeAdjust extends View {
         let self = this
         let parseTime = d3.timeParse(this.config.timeParse)
         let formatTime = d3.timeFormat(this.config.timeFormat)
-        let timeText = Util.getStringRect("hh:mm","",Number(svgNode.select(".focusText").attr("font-size")))
         let focusTime = parseTime(this.config.focusTime)
 
         let xScale = d3.scaleTime()
@@ -75,16 +74,10 @@ export class TimeAdjust extends View {
                              let oldLineX = Number(focusLine.attr("x1")),
                                  oldTextX = Number(focusText.attr("x"))
                              d3.select(this).attr("transform","translate("+(d3.event.x-oldLineX)+",0)")
-                             if((d3.event.x + timeText.width) > Util.toPixel(self.config.style.width) - self.config.padding * 2)
-                                 focusText.text(formatTime(xScale.invert(d3.event.x))).attr("x",d3.event.x - timeText.width)
+                             if(d3.event.x > Util.toPixel(self.config.style.width)/2)
+                                 focusText.text(formatTime(xScale.invert(d3.event.x))).attr("x",d3.event.x - 40)
                              else 
-                                 focusText.text(formatTime(xScale.invert(d3.event.x))).attr("x",d3.event.x + timeText.width)
-                            //  if (oldTextX < d3.event.x){
-                            //      focusText.text(formatTime(xScale.invert(d3.event.x))).attr("x",d3.event.x + timeText.width)
-                            //  }
-                            //  else if(oldTextX > d3.event.x) {
-                            //      focusText.text(formatTime(xScale.invert(d3.event.x))).attr("x",d3.event.x - timeText.width)
-                            //  }
+                                 focusText.text(formatTime(xScale.invert(d3.event.x))).attr("x",d3.event.x + 40)
                              
                              self.fire("dragLine",{time:xScale.invert(d3.event.x)})
                          }   
@@ -95,8 +88,8 @@ export class TimeAdjust extends View {
         
         svgNode.append("text").attr("class","focusText")
                .text(formatTime(parseTime(this.config.focusTime)))
-               .attr("x",(xScale(focusTime)+timeText.width))
-               .attr("y",(Util.toPixel(this.config.style.height)/2+timeText.height/2))
+               .attr("x",(xScale(focusTime)+40))
+               .attr("y",(Util.toPixel(this.config.style.height)/2))
         
         let focusGroup = svgNode.append("g").attr("class","focusGroup")
                                 .on("mouseenter",function(){
