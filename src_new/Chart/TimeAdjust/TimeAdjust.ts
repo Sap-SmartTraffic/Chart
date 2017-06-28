@@ -53,23 +53,23 @@ export class TimeAdjust extends View {
         let xScale = d3.scaleTime()
                        .domain([parseTime(this.config.rangeMin),parseTime(this.config.rangeMax)])
                        .range([0,Util.toPixel(this.config.style.width)])
-
+        
+        svgNode.append("rect").attr("class","axisBackground")
+               .attr("x","0").attr("y",Util.toPixel(this.config.style.height)-Util.toPixel(this.config.axisHeight))
+               .attr("width",Util.toPixel(this.config.style.width)).attr("height",Util.toPixel(this.config.axisHeight))
         let axis = svgNode.append("g").attr("class","axis xAxis")
                           .attr("transform","translate(0,"+(Util.toPixel(this.config.style.height)-Util.toPixel(this.config.axisHeight))+")")
         
         axis.append("path").attr("class","domain").attr("stroke","#000").attr("stroke-width","1")
             .attr("d","M 0.5,0 H"+(Util.toPixel(this.config.style.width)-0.5))
         let tick1 = axis.append("g").attr("class","tick").attr("transform","translate(0.5,0)")
-        tick1.append("line").attr("stroke","#000").attr("y2","5")
-        tick1.append("text").attr("stroke","#000").attr("y","12")
+        tick1.append("text").attr("dy","3").attr("alignment-baseline","hanging")
              .attr("text-anchor","start").text(formatTime(parseTime(this.config.rangeMin)))
         let tick2 = axis.append("g").attr("class","tick").attr("transform","translate("+ Util.toPixel(this.config.style.width)/2 +",0)")
-        tick2.append("line").attr("stroke","#000").attr("y2","5")
-        tick2.append("text").attr("stroke","#000").attr("y","12")
+        tick2.append("text").attr("dy","3").attr("alignment-baseline","hanging")
              .attr("text-anchor","middle").text(formatTime(xScale.invert(Util.toPixel(this.config.style.width)/2)))
         let tick3 = axis.append("g").attr("class","tick").attr("transform","translate("+(Util.toPixel(this.config.style.width)-0.5)+",0)")
-        tick3.append("line").attr("stroke","#000").attr("y2","5")
-        tick3.append("text").attr("stroke","#000").attr("y","12")
+        tick3.append("text").attr("dy","3").attr("alignment-baseline","hanging")
              .attr("text-anchor","end").text(formatTime(parseTime(this.config.rangeMax)))
 
                
