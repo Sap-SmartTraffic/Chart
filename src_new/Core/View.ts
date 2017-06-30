@@ -11,7 +11,11 @@ export class View extends Evented{
         this.initView()
     }
     defaultConfig():IViewConfig{
-        return {tagName:"div",className:"view",style:null}
+        return {tagName:"div",className:"view"}
+    }
+    setConfig(c){
+        this.config=_.extend(this.defaultConfig(),this.config,c)
+        return this
     }
     config:IViewConfig
     // config:{
@@ -34,6 +38,9 @@ export class View extends Evented{
     appendTo(dom:d3.Selection<Element,{},null,null>){
         dom.node().appendChild(this.el)
         return this
+    }
+    append(element){
+        this.el.appendChild(element)
     }
     style(s){
         this.elD3.call(styles(s))
@@ -58,5 +65,4 @@ export class View extends Evented{
 export interface IViewConfig{
         tagName:string |null|undefined,
         className:string |null|undefined,
-        style:{}|undefined|null
     }

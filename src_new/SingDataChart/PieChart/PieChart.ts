@@ -1,9 +1,19 @@
-import d3 = require("d3")
-import _ = require("underscore")
-import {Util} from "../Core/Util"
-import {BaseLayer, ILayerConfig} from "../Core/BaseLayer"
+import d3 = require('d3');
+import _ = require('underscore');
+import { BaseChart, SingleDateChart } from '../../Core/BaseChart';
+import { BaseLayer, ILayerConfig } from '../../Core/BaseLayer';
+import { Util } from '../../Core/Util';
+import { TitleLayer } from '../../Layer/TitleLayer';
 
 export class PieLayer extends BaseLayer {
+    constructor(id?,conf?){
+        super(id,conf)
+        this.on("addToChart",()=>{
+            this.chart.on("style_change data_change",()=>{
+                this.update()
+            })
+        })
+    }
     config: PieLayerConfig
     defaultConfig(): PieLayerConfig {
         return {
@@ -26,7 +36,19 @@ export class PieLayer extends BaseLayer {
             colorRange: ["red","yellow","green"]
         }
     }
-
+    chart:SingleDateChart
+    getParseData():IPieData[]{
+        let d=this.chart.getData()
+        if(_.isNaN(d)||_.isUndefined(d)){
+            return []
+        }
+        else if(_.isArray(d)){
+            return d
+        }
+        else{
+            return []
+        }
+    }
     drawer(svgNode:d3.Selection<Element,{},null,null>) {
         let smartArcGen = function(startAngle, endAngle, innerRadius, outerRadius) {
             let largeArc = ((endAngle - startAngle) % (Math.PI * 2)) > Math.PI ? 1 : 0,
@@ -57,13 +79,13 @@ export class PieLayer extends BaseLayer {
             innerRadius = outerRadius / 2,
             segmentAngle = 2 * Math.PI / this.config.segmentCount
 
-        let ds = this.chart.getFirstMeasure("pie")
+        let ds = this.getParseData()
         if(!ds){
             return 
         }
         let colorScale = d3.scaleLinear().domain(this.config.colorDomain).range(this.config.colorRange)
         let doughnutGroup = svgNode.append("g").attr("class","doughnutGroup")
-        _.each(ds.data,(d,i)=>{
+        _.each(ds,(d,i)=>{
             let startAngle = -Math.PI / 2 + segmentAngle * i,
                 endAngle = startAngle + segmentAngle
             doughnutGroup.append("path")
@@ -94,7 +116,6 @@ export class PieLayer extends BaseLayer {
         })
         return this
     }
-
     render() {
         this.el.innerHTML=""
         this.drawer(this.elD3)
@@ -109,4 +130,25 @@ export interface PieLayerConfig extends ILayerConfig {
     padding: number,
     colorDomain: number[],
     colorRange: any[]
+}
+export interface IPieData{
+    value:number
+}
+export class PieChart extends SingleDateChart {
+    pieLayer: PieLayer
+
+    constructor(conf?) {
+        super(conf)
+        this.pieLayer = new PieLayer("pie",{
+            style:{
+                width: ()=>this.config.style.width,
+                height: ()=>this.config.style.height
+            },
+            padding: Util.toPixel("1.5rem")
+        })
+       this.pieLayer.addTo(this)
+    }
+    setConfig(c:PieLayerConfig){
+        this.pieLayer.setConfig(_.pick(c,"segmentCount","segmentStart","padding","colorDomain","colorRange"))
+    }
 }

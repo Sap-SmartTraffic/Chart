@@ -14,7 +14,7 @@ export class DashLayer extends BaseLayer  {
                     bottom:null,
                     right:null,
                     position:"absolute",
-                    "z-index":0,
+                    zindex:0,
                     width:"300px",
                     height:"300px"
                 },
