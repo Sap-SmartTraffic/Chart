@@ -4,6 +4,7 @@ export interface IEvented{
     off:(t:string ,fn:Function)=>this
     fire:(t: string, obj ? : any)=>this
     listen:(o:IEvented,estr:string,fn:Function)=>this
+    clear:()=>void
 }
 export class Evented implements IEvented{
     constructor() {

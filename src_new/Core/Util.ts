@@ -42,6 +42,14 @@ export function toPixel(str:string|number,ctx?:string){
         }
     }
 }
+export namespace operation{
+  export function add(str1:string,str2:string){
+    return toPixel(str1+"+"+str2)
+  }
+  export function sub (s1,s2){
+      return toPixel(s1+"-"+s2)
+  }
+}
 export function isBeginWith(s:any,bs:string){
     let ss= s.toString();
     let matcher= new RegExp("^"+bs)

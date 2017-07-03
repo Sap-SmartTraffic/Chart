@@ -1,13 +1,11 @@
-import d3 =require("d3")
-import _=require("underscore")
-import {Evented} from "./Evented"
-import {BaseLayer} from "./BaseLayer"
-import {Measure} from "./Measure"
-import {Util}from"./Util"
-import {View} from"./View"
+import d3 = require('d3');
+import _ = require('underscore');
+import { BaseLayer } from './BaseLayer';
+import { Evented, IEvented } from './Evented';
+import { Util } from './Util';
+import { View } from './View';
 export class BaseChart extends Evented{
     isRender:boolean=false
-    measures:Measure[]=[]
     layers:BaseLayer[]=[]
     rootView:View
     config:IChartConfig
