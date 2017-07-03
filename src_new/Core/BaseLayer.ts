@@ -34,11 +34,19 @@ export class BaseLayer extends View{
         this.render()
         return this
     }
+<<<<<<< HEAD
     setStyle(s) {
         this.config.style = _.extend(this.config.style,s)
         this.updateStyle()
     }
     evaluateStyle():ILayerStyle {
+=======
+    setStyle(s){
+        this.config.style=_.extend(this.config.style,s)
+        this.updateStyle()
+    }
+    evaluateStyle():ILayerStyle{
+>>>>>>> origin/master
         return {
             top:Util.toPixel(this.config.style.top)+"px",
             left:Util.toPixel(this.config.style.left)+"px",
@@ -50,9 +58,15 @@ export class BaseLayer extends View{
             position:this.config.style.position
         }
     }
+<<<<<<< HEAD
     updateStyle() {
         let s = this.evaluateStyle()
         s["z-index"] = s.zindex
+=======
+    updateStyle(){
+        let s=this.evaluateStyle()
+        s["z-index"]=s.zindex
+>>>>>>> origin/master
         this.style(s)
     }
     addTo(c:BaseChart){
@@ -68,16 +82,26 @@ export class BaseLayer extends View{
         this.el.innerHTML=""
         return this
     }
+<<<<<<< HEAD
     renderAtMap(dom:Element|HTMLElement|SVGAElement){
        this.chart.getLayerContainer().append(this.el)
        this.render()
+=======
+    renderAtMap(){
+        this.chart.getLayerContainer().append(this.el)
+        this.render()
+>>>>>>> origin/master
     }
     clear(){
         this.el.remove()
         this.el=null;
         super.clear();
     }
+<<<<<<< HEAD
     getNode() {
+=======
+    getNode(){
+>>>>>>> origin/master
         return this.el
     }
     update(){
@@ -89,6 +113,7 @@ export class BaseLayer extends View{
 export interface ILayerConfig extends IViewConfig{
         className:string,
         tagName:string,
+<<<<<<< HEAD
         style:ILayerStyle   
 }
 
@@ -101,4 +126,17 @@ export interface ILayerStyle {
     height:string,
     zindex:number,
     position:string	              
+=======
+        style:ILayerStyle
+}
+export interface ILayerStyle{
+            top:string|undefined|null,
+            right:string|undefined|null,
+            bottom:string|undefined|null,
+            left:string|undefined|null,
+            width:string,
+            height:string,
+            zindex:number,
+            position:string
+>>>>>>> origin/master
 }

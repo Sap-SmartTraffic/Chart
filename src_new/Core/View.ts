@@ -12,6 +12,13 @@ export class View extends Evented{
     }
     defaultConfig():IViewConfig{
         return {tagName:"div",className:"view"}
+<<<<<<< HEAD
+=======
+    }
+    setConfig(c){
+        this.config=_.extend(this.defaultConfig(),this.config,c)
+        return this
+>>>>>>> origin/master
     }
     setConfig(c){
         this.config = _.extend(this.defaultConfig(),this.config,c)
@@ -40,7 +47,11 @@ export class View extends Evented{
         dom.node().appendChild(this.el)
         return this
     }
+<<<<<<< HEAD
     append(element) {
+=======
+    append(element){
+>>>>>>> origin/master
         this.el.appendChild(element)
     }
     style(s){
@@ -65,5 +76,9 @@ export class View extends Evented{
 }
 export interface IViewConfig{
         tagName:string |null|undefined,
+<<<<<<< HEAD
         className:string |null|undefined
+=======
+        className:string |null|undefined,
+>>>>>>> origin/master
     }

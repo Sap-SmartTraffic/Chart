@@ -6,6 +6,7 @@ export function isEndWith(s:any,ed:string){
     return matcher.test(ss);
   }
 export function toPixel(str:string|number,ctx?:string){
+<<<<<<< HEAD
     let string2Pixel = (s)=>{
         if(_.isNumber(s)) {
             return s
@@ -14,10 +15,21 @@ export function toPixel(str:string|number,ctx?:string){
             return parseFloat(s)
         }
         else if(isEndWith(s,"rem")) {
+=======
+    let string2Pixel=(s)=>{
+        if(_.isNumber(s)){
+            return s
+        }
+        else if(isEndWith(s,"px")){
+            return parseFloat(s)
+        }
+        else if(isEndWith(s,"rem")){
+>>>>>>> origin/master
             let font=window.getComputedStyle(document.body).getPropertyValue('font-size')||"16px"
             return parseFloat(s) * parseFloat(font)
         }
         else if(isEndWith(s,"%")){
+<<<<<<< HEAD
             return parseFloat(s)* toPixel(ctx)/100
         }else{
             return 0
@@ -33,6 +45,21 @@ export function toPixel(str:string|number,ctx?:string){
         return toPixel(str.call(null))
     }
     else {
+=======
+             return parseFloat(s)* toPixel(ctx)/100
+        }else{
+            return 0
+        }
+    }
+    if(_.isNumber(str)){
+        return string2Pixel(str)
+    }else if(_.isUndefined(str)||_.isNull(str)){
+        return str
+    }else if(_.isFunction(str)){
+         return toPixel(str.call(null))
+    }
+    else{
+>>>>>>> origin/master
         if(str.split("+").length>= 2){
             return toPixel(str.split("+").slice(0,1).join(""))+toPixel(str.split("+").slice(1).join("+"))    
         }
@@ -168,7 +195,11 @@ export  function  deepExtend(des,...source:any[]){
                 deepExtend.apply(this,args)
             }else{
                 _.each(s,(v,k)=>{
+<<<<<<< HEAD
                 if(_.isObject(v)&&!_.isElement(v)&&_.isFunction(v)){
+=======
+                if(_.isObject(v)&& !_.isElement(v)&&!_.isFunction(v)){
+>>>>>>> origin/master
                     if(_.isUndefined(des[k])){
                         des[k]={}
                     }

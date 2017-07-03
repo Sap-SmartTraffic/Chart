@@ -24,8 +24,17 @@
 </style>
 <script>
     requirejs(["Chart/TimeAdjust/TimeAdjust"],function(t){
-        var timeAdjust = new t.TimeAdjust()
+        var timeAdjust = new t.TimeAdjust({style:{
+            height:"20rem",
+            width:"50rem"
+        }})
         timeAdjust.renderAt(document.getElementsByTagName("content")[0])
+        timeAdjust.on("dragend",function(d){
+            console.log(d)
+        })
+        timeAdjust.on("draging",function(d){
+            console.log(d,"ing")
+        })
     })
 
 </script>

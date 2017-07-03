@@ -162,16 +162,16 @@ gulp.task('bundle-rangechart', function() {
     ]);
 });
 gulp.task("bundle",function(){
-     var tsResult = gulp.src('src_new/Chart/TimeAdjust/TimeAdjust.ts')
+     var tsResult = gulp.src('src_new/VicroadChart.ts')
         .pipe(ts({
             declaration: true,
-            outFile:"TimeAdjust.js",
+            outFile:"VicroadChart.js",
             module:"AMD"
         }));
-    var less=gulp.src('src_new/Chart/TimeAdjust/TimeAdjust.less');
+    var css=gulp.src('src_new/VicroadChart.less');
     return merge([
-        tsResult.dts.pipe(gulp.dest('release/')),
-        tsResult.js.pipe(gulp.dest('release/')),
-        less.pipe(concat('RangeChart.less')).pipe(gulp.dest('release/'))
+        tsResult.dts.pipe(gulp.dest('release/Vicroad')),
+        tsResult.js.pipe(gulp.dest('release/Vicroad')),
+        css.pipe(less()).pipe(gulp.dest('release/Vicroad'))
     ]);
 })

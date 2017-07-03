@@ -14,7 +14,13 @@ export class Measure{
             this.category=[]
             this.category.push(this.type)
         }else{
+<<<<<<< HEAD
             this.category=category
         }
+=======
+             this.category=category
+        }
+       
+>>>>>>> origin/master
     }
 }
