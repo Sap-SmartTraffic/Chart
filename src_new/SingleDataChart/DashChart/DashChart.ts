@@ -33,7 +33,9 @@ export class DashLayer extends BaseLayer {
                 return (+v).toFixed(1)+"Km/H"
             },
             rangeMax: 100,
-            oldData:0
+            oldData:0,
+            colorDomain: [0,0.5,1],
+            colorRange: ["red","yellow","green"]
         }
     }
 
@@ -65,7 +67,7 @@ export class DashLayer extends BaseLayer {
             innerRadius = width / 5,
             centerX = width / 2,
             centerY = height- this.config.padding 
-        
+        let self = this
         let ds = this.chart.getData()
         if(!ds){
             return 
@@ -86,7 +88,7 @@ export class DashLayer extends BaseLayer {
                      let angleInterpolate = d3.interpolate(oldEndAngle,curEndAngle),
                          colorInterpolate = d3.interpolate(oldRadio, curRadio)
                      return function(t) {
-                         node.attr("fill",d3.scaleLinear().domain([0, 0.5, 1]).range(["red","yellow","green"])(colorInterpolate(t)))
+                         node.attr("fill",d3.scaleLinear().domain(self.config.colorDomain).range(self.config.colorRange)(colorInterpolate(t)))
                          node.attr("d",smartArcGen(startAngle,angleInterpolate(t),innerRadius,outerRadius))
                      }
                  })          
@@ -127,7 +129,9 @@ export interface DashLayerConfig extends ILayerConfig{
         rangeMax:number,
         padding:number,
         dataFomate(n:string|number):string,
-        oldData:number
+        oldData:number,
+        colorDomain:number[]
+        colorRange:any[]
 }
         
 
