@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Chart Test</title>
+</head>
+<script src="../../../lib/requirejs/require.js"></script>
+<script src="../../../dist_new/requireConfig.js"></script>
+<link rel="stylesheet" href="../../../dist_new/Chart/DashChart/DashChart.css">
+<body>
+<section>
+    <header> DashPie</header>
+    <content></content>
+</section>
+</body>
+<style>
+    header{
+        width: 100%;
+        text-align: center;
+        font-size: 2rem
+    }
+    content{
+        display: flex
+    }
+</style>
+<script>
+    requirejs(["SingleDataChart/DashChart/DashChart"],function(d){
+        var dashChart = new d.DashChart({style:{width:"20rem",height:"10rem"}})
+        dashChart.setData(30)
+        dashChart.renderAt("content")
+        setInterval(function(){
+            dashChart.setData(Math.random()*100)
+        },2000)
+    })
+</script>
+</html>

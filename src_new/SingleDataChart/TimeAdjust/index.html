@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Chart Test</title>
+</head>
+<script src="../../../lib/requirejs/require.js"></script>
+<script src="../../../dist_new/requireConfig.js"></script>
+<link rel="stylesheet" href="../../../dist_new/Chart/TimeAdjust/TimeAdjust.css">
+<body>
+<section>
+    <content></content>
+</section>
+</body>
+<style>
+    header{
+        width: 100%;
+        text-align: center;
+        font-size: 2rem
+    }
+    content{
+        display: flex
+    }
+</style>
+<script>
+    requirejs(["SingleDataChart/TimeAdjust/TimeAdjust"],function(t){
+        var timeAdjust = new t.TimeAdjust({style:{
+            height:"20rem",
+            width:"50rem"
+        }})
+        timeAdjust.renderAt(document.getElementsByTagName("content")[0])
+        timeAdjust.on("dragend",function(d){
+            console.log(d)
+        })
+        timeAdjust.on("draging",function(d){
+            console.log(d,"ing")
+        })
+    })
+</script>
+</html>

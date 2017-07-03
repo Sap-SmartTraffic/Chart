@@ -7,6 +7,7 @@ export class BaseLayer extends View{
     constructor(id?,...confs){
         super(confs)
         this.id= id==undefined?_.uniqueId("layer"):id
+        this.updateStyle()
     }
     defaultConfig():ILayerConfig{
         return {
@@ -18,7 +19,7 @@ export class BaseLayer extends View{
                     bottom:null,
                     right:null,
                     position:"absolute",
-                    "z-index":0,
+                    zindex:0,
                     width:"300px",
                     height:"300px",
                     }
@@ -30,20 +31,45 @@ export class BaseLayer extends View{
     config:ILayerConfig
     setConfig(c){
         this.config=Util.deepExtend(this.config,c)
-        this.style(this.config.style)
+        this.render()
         return this
     }
+    setStyle(s) {
+        this.config.style = _.extend(this.config.style,s)
+        this.updateStyle()
+    }
+    evaluateStyle():ILayerStyle {
+        return {
+            top:Util.toPixel(this.config.style.top)+"px",
+            left:Util.toPixel(this.config.style.left)+"px",
+            bottom:Util.toPixel(this.config.style.bottom)+"px",
+            right:Util.toPixel(this.config.style.right)+"px",
+            width:Util.toPixel(this.config.style.width)+"px",
+            height:Util.toPixel(this.config.style.height)+"px",
+            zindex:this.config.style.zindex,
+            position:this.config.style.position
+        }
+    }
+    updateStyle() {
+        let s = this.evaluateStyle()
+        s["z-index"] = s.zindex
+        this.style(s)
+    }
     addTo(c:BaseChart){
-        this.chart=c
-        this.chart.addLayer(this)
+        c.addLayer(this)
         return this
+    }
+    _onAdd(c:BaseChart){
+        this.chart=c
+        this.chart.whenReady(this.renderAtMap,this)
+        this.fire("addToChart",{map:c})
     }
     render(){
         this.el.innerHTML=""
         return this
     }
-    renderAt(dom:Element|HTMLElement|SVGAElement){
-       dom.appendChild(this.el)
+    renderAtMap(dom:Element|HTMLElement|SVGAElement){
+       this.chart.getLayerContainer().append(this.el)
        this.render()
     }
     clear(){
@@ -51,20 +77,28 @@ export class BaseLayer extends View{
         this.el=null;
         super.clear();
     }
-
+    getNode() {
+        return this.el
+    }
+    update(){
+        this.updateStyle()
+        this.render()
+    }
 }
+
 export interface ILayerConfig extends IViewConfig{
         className:string,
         tagName:string,
-        style:{
-            top:string|undefined|null,
-            right:string|undefined|null,
-            bottom:string|undefined|null,
-            left:string|undefined|null,
-            width:string,
-            height:string,
-            "z-index":number,
-            position:string
-        }
-       
+        style:ILayerStyle   
+}
+
+export interface ILayerStyle {
+    top:string|undefined|null,
+    right:string|undefined|null,	
+    bottom:string|undefined|null,
+    left:string|undefined|null,	
+    width:string,
+    height:string,
+    zindex:number,
+    position:string	              
 }

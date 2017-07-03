@@ -12,7 +12,7 @@ export class TitleLayer extends BaseLayer{
                     bottom:null,
                     right:null,
                     position:"absolute",
-                    "z-index":0,
+                    zindex:0,
                     width:"20rem",
                     height:"20rem",
                 },

@@ -1,33 +1,44 @@
-import d3 = require("d3")
-import _ = require("underscore")
-import {Util} from "../Core/Util"
-import {BaseLayer,ILayerConfig} from "../Core/BaseLayer"
+import d3 =require("d3")
+import _ =require("underscore")
+import {Util}from "../../Core/Util"
+import {BaseChart,SingleDataChart} from "../../Core/BaseChart"
+import {BaseLayer,ILayerConfig,ILayerStyle} from "../../Core/BaseLayer"
 
-export class DashLayer extends BaseLayer  {
-    defaultConfig():DashLayerConfig{
-        return {
-                tagName:"svg",
-                className:"dashpie",
-                style:{
-                    top:"0px",
-                    left:"0px",
-                    bottom:null,
-                    right:null,
-                    position:"absolute",
-                    zindex:0,
-                    width:"300px",
-                    height:"300px"
-                },
-                padding:25,
-                dataFomate(v){
-                    return (+v).toFixed(1)+"Km/H"
-                },
-                rangeMax: 100,
-                oldData:0,
-            }
-            
+export class DashLayer extends BaseLayer {
+    constructor(id?,conf?) {
+        super(id,conf)
+        this.on("addToChart",()=>{
+            this.chart.on("style_change data_change",()=>{
+                this.update()
+            })
+        })
     }
     config:DashLayerConfig
+    defaultConfig():DashLayerConfig{
+        return {
+            tagName:"svg",
+            className:"dashpie",
+            style:{
+                top:"0px",
+                left:"0px",
+                bottom:null,
+                right:null,
+                position:"absolute",
+                zindex:0,
+                width:"300px",
+                height:"300px"
+            },
+            padding:25,
+            dataFomate(v){
+                return (+v).toFixed(1)+"Km/H"
+            },
+            rangeMax: 100,
+            oldData:0
+        }
+    }
+
+    chart:SingleDataChart
+
     drawer(svgNode:d3.Selection<Element,{},null,null>) {
         let smartArcGen = function(startAngle, endAngle, innerRadius, outerRadius) {
             let largeArc = ((endAngle - startAngle) % (Math.PI * 2)) > Math.PI ? 1 : 0,
@@ -55,11 +66,11 @@ export class DashLayer extends BaseLayer  {
             centerX = width / 2,
             centerY = height- this.config.padding 
         
-        let ds = this.chart.getFirstMeasure("dash")
+        let ds = this.chart.getData()
         if(!ds){
             return 
         }
-        let curRadio = ds.data / this.config.rangeMax > 1 ? 1 : ds.data / this.config.rangeMax
+        let curRadio = ds / this.config.rangeMax > 1 ? 1 : ds / this.config.rangeMax
         let oldRadio = this.config.oldData / this.config.rangeMax > 1 ? 1 : this.config.oldData / this.config.rangeMax
         let startAngle = -Math.PI,
             curEndAngle = startAngle + curRadio * Math.PI,
@@ -75,19 +86,19 @@ export class DashLayer extends BaseLayer  {
                      let angleInterpolate = d3.interpolate(oldEndAngle,curEndAngle),
                          colorInterpolate = d3.interpolate(oldRadio, curRadio)
                      return function(t) {
-                         node.attr("fill",d3.scaleLinear().domain([0, 0.5, 1]).range(["red", "yellow","green"])(colorInterpolate(t)))
+                         node.attr("fill",d3.scaleLinear().domain([0, 0.5, 1]).range(["red","yellow","green"])(colorInterpolate(t)))
                          node.attr("d",smartArcGen(startAngle,angleInterpolate(t),innerRadius,outerRadius))
                      }
                  })          
 
-        this.config.oldData = ds.data       
+        this.config.oldData = ds      
         
         dashGroup.append("text").attr("class","dataValue")
                  .attr("x",centerX)
                  .attr("y",centerY)
                  .attr("text-anchor","middle")
                  .attr("font-size","32px")
-                 .text(this.config.dataFomate(ds.data))
+                 .text(this.config.dataFomate(ds))
         
         dashGroup.append("text").attr("class","rangeMin")
                  .attr("x",centerX - innerRadius - (outerRadius-innerRadius)/2)
@@ -111,9 +122,31 @@ export class DashLayer extends BaseLayer  {
         return this
     }
 }
+
 export interface DashLayerConfig extends ILayerConfig{
         rangeMax:number,
         padding:number,
         dataFomate(n:string|number):string,
         oldData:number
+}
+        
+
+export class DashChart extends SingleDataChart{
+    dashLayer: DashLayer
+    
+    constructor(conf?){
+        super(conf)
+        this.dashLayer = new DashLayer("dashpie",{
+            style:{
+                width:this.config.style.width,
+                height:this.config.style.height
+            },
+            padding:Util.toPixel("2rem")
+        })
+        this.dashLayer.addTo(this)
+    }
+
+    setConfig(c:DashLayerConfig){
+        this.dashLayer.setConfig(_.pick(c,"rangeMax"))
+    }
 }

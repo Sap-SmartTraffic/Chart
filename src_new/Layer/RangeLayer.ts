@@ -15,7 +15,7 @@ export class RangeLayer extends BaseLayer {
                 bottom: null,
                 right: null,
                 position: "absolute",
-                "z-index": 0,
+                zindex: 0,
                 width: "200rem",
                 height: "100rem"
             },

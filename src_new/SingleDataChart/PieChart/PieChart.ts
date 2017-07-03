@@ -1,9 +1,18 @@
-import d3 = require("d3")
-import _ = require("underscore")
-import {Util} from "../Core/Util"
-import {BaseLayer, ILayerConfig} from "../Core/BaseLayer"
+import d3 =require("d3")
+import _ =require("underscore")
+import {Util}from "../../Core/Util"
+import {BaseChart,SingleDataChart} from "../../Core/BaseChart"
+import {BaseLayer,ILayerConfig,ILayerStyle} from "../../Core/BaseLayer"
 
 export class PieLayer extends BaseLayer {
+    constructor(id?,conf?) {
+        super(id,conf)
+        this.on("addToChart",()=>{
+            this.chart.on("style_change data_change",()=>{
+                this.update()
+            })
+        })
+    }
     config: PieLayerConfig
     defaultConfig(): PieLayerConfig {
         return {
@@ -20,10 +29,35 @@ export class PieLayer extends BaseLayer {
                 height: "100rem"
             },
             segmentCount: 12,
-            segmentStart: 0,
+            segmentStart: 18,
             padding: 10,
             colorDomain: [0,50,100],
             colorRange: ["red","yellow","green"]
+        }
+    }
+
+    chart:SingleDataChart
+
+    getParseData():IPieData[] {
+        let data = this.chart.getData()
+        if(_.isNaN(data)||_.isUndefined(data)) {
+            return []
+        }
+        else if(_.isArray(data)) {
+            let count = this.config.segmentCount,
+                start = this.config.segmentStart
+            let dataset = []
+            for(let i = 0; i < count; i++) {
+                dataset.push({"time":(start+i)>24? (start+i-24):(start+i),"value":null})
+            }
+            for(let i = 0; i < data.length; i++) {
+                let index = _.findIndex(dataset,{"time":data[i].time})
+                dataset[index] = data[i]
+            }
+            return dataset
+        }
+        else {
+            return []
         }
     }
 
@@ -57,13 +91,13 @@ export class PieLayer extends BaseLayer {
             innerRadius = outerRadius / 2,
             segmentAngle = 2 * Math.PI / this.config.segmentCount
 
-        let ds = this.chart.getFirstMeasure("pie")
+        let ds = this.getParseData()
         if(!ds){
             return 
         }
         let colorScale = d3.scaleLinear().domain(this.config.colorDomain).range(this.config.colorRange)
         let doughnutGroup = svgNode.append("g").attr("class","doughnutGroup")
-        _.each(ds.data,(d,i)=>{
+        _.each(ds,(d,i)=>{
             let startAngle = -Math.PI / 2 + segmentAngle * i,
                 endAngle = startAngle + segmentAngle
             doughnutGroup.append("path")
@@ -110,3 +144,29 @@ export interface PieLayerConfig extends ILayerConfig {
     colorDomain: number[],
     colorRange: any[]
 }
+
+export interface IPieData {
+    time:number
+    value:number
+}
+
+export class PieChart extends SingleDataChart {
+    pieLayer:PieLayer
+
+    constructor(conf?) {
+        super(conf)
+        this.pieLayer = new PieLayer("pie",{
+            style: {
+                width: ()=>this.config.style.width,
+                height: ()=>this.config.style.height
+            },
+            padding: Util.toPixel("1.5rem")
+        })
+        this.pieLayer.addTo(this)
+    }
+
+    setConfig(c:PieLayerConfig){
+        this.pieLayer.setConfig(_.pick(c,"segmentCount","segmentStart","padding","colorDomain","colorRange"))
+    }
+}
+

@@ -5,21 +5,44 @@ export function isEndWith(s:any,ed:string){
     let matcher= new RegExp(ed+"$")
     return matcher.test(ss);
   }
-export function toPixel(s:string|number,ctx?:string){
-    if(_.isNumber(s)){
-        return s
+export function toPixel(str:string|number,ctx?:string){
+    let string2Pixel = (s)=>{
+        if(_.isNumber(s)) {
+            return s
+        }
+        else if(isEndWith(s,"px")) {
+            return parseFloat(s)
+        }
+        else if(isEndWith(s,"rem")) {
+            let font=window.getComputedStyle(document.body).getPropertyValue('font-size')||"16px"
+            return parseFloat(s) * parseFloat(font)
+        }
+        else if(isEndWith(s,"%")){
+            return parseFloat(s)* toPixel(ctx)/100
+        }else{
+            return 0
+        }
     }
-    if(isEndWith(s,"px")){
-        return parseFloat(s)
+    if(_.isNumber(str)) {
+        return string2Pixel(str)
     }
-    if(isEndWith(s,"rem")){
-         let font=window.getComputedStyle(document.body).getPropertyValue('font-size')||"16px"
-         return parseFloat(s) * parseFloat(font)
+    else if(_.isUndefined(str)||_.isNull(str)) {
+        return str
     }
-    if(isEndWith(s,"%")){
-        return parseFloat(s)* toPixel(ctx)/100
+    else if(_.isFunction(str)) {
+        return toPixel(str.call(null))
     }
-        return 0
+    else {
+        if(str.split("+").length>= 2){
+            return toPixel(str.split("+").slice(0,1).join(""))+toPixel(str.split("+").slice(1).join("+"))    
+        }
+        else if(str.split("-").length>= 2){
+            return toPixel(str.split("-").slice(0,1).join(""))-toPixel(str.split("-").slice(1).join("-"))    
+        }
+        else{
+            return string2Pixel(str)
+        }
+    }
 }
 export function isBeginWith(s:any,bs:string){
     let ss= s.toString();
@@ -145,7 +168,7 @@ export  function  deepExtend(des,...source:any[]){
                 deepExtend.apply(this,args)
             }else{
                 _.each(s,(v,k)=>{
-                if(_.isObject(v)){
+                if(_.isObject(v)&&!_.isElement(v)&&_.isFunction(v)){
                     if(_.isUndefined(des[k])){
                         des[k]={}
                     }
