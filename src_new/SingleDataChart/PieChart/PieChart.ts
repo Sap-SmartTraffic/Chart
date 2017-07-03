@@ -1,12 +1,11 @@
-import d3 = require('d3');
-import _ = require('underscore');
-import { BaseChart, SingleDateChart } from '../../Core/BaseChart';
-import { BaseLayer, ILayerConfig } from '../../Core/BaseLayer';
-import { Util } from '../../Core/Util';
-import { TitleLayer } from '../../Layer/TitleLayer';
+import d3 =require("d3")
+import _ =require("underscore")
+import {Util}from "../../Core/Util"
+import {BaseChart,SingleDataChart} from "../../Core/BaseChart"
+import {BaseLayer,ILayerConfig,ILayerStyle} from "../../Core/BaseLayer"
 
 export class PieLayer extends BaseLayer {
-    constructor(id?,conf?){
+    constructor(id?,conf?) {
         super(id,conf)
         this.on("addToChart",()=>{
             this.chart.on("style_change data_change",()=>{
@@ -30,25 +29,38 @@ export class PieLayer extends BaseLayer {
                 height: "100rem"
             },
             segmentCount: 12,
-            segmentStart: 0,
+            segmentStart: 18,
             padding: 10,
             colorDomain: [0,50,100],
             colorRange: ["red","yellow","green"]
         }
     }
-    chart:SingleDateChart
-    getParseData():IPieData[]{
-        let d=this.chart.getData()
-        if(_.isNaN(d)||_.isUndefined(d)){
+
+    chart:SingleDataChart
+
+    getParseData():IPieData[] {
+        let data = this.chart.getData()
+        if(_.isNaN(data)||_.isUndefined(data)) {
             return []
         }
-        else if(_.isArray(d)){
-            return d
+        else if(_.isArray(data)) {
+            let count = this.config.segmentCount,
+                start = this.config.segmentStart
+            let dataset = []
+            for(let i = 0; i < count; i++) {
+                dataset.push({"time":(start+i)>24? (start+i-24):(start+i),"value":null})
+            }
+            for(let i = 0; i < data.length; i++) {
+                let index = _.findIndex(dataset,{"time":data[i].time})
+                dataset[index] = data[i]
+            }
+            return dataset
         }
-        else{
+        else {
             return []
         }
     }
+
     drawer(svgNode:d3.Selection<Element,{},null,null>) {
         let smartArcGen = function(startAngle, endAngle, innerRadius, outerRadius) {
             let largeArc = ((endAngle - startAngle) % (Math.PI * 2)) > Math.PI ? 1 : 0,
@@ -116,6 +128,7 @@ export class PieLayer extends BaseLayer {
         })
         return this
     }
+
     render() {
         this.el.innerHTML=""
         this.drawer(this.elD3)
@@ -131,24 +144,29 @@ export interface PieLayerConfig extends ILayerConfig {
     colorDomain: number[],
     colorRange: any[]
 }
-export interface IPieData{
+
+export interface IPieData {
+    time:number
     value:number
 }
-export class PieChart extends SingleDateChart {
-    pieLayer: PieLayer
+
+export class PieChart extends SingleDataChart {
+    pieLayer:PieLayer
 
     constructor(conf?) {
         super(conf)
         this.pieLayer = new PieLayer("pie",{
-            style:{
+            style: {
                 width: ()=>this.config.style.width,
                 height: ()=>this.config.style.height
             },
             padding: Util.toPixel("1.5rem")
         })
-       this.pieLayer.addTo(this)
+        this.pieLayer.addTo(this)
     }
+
     setConfig(c:PieLayerConfig){
         this.pieLayer.setConfig(_.pick(c,"segmentCount","segmentStart","padding","colorDomain","colorRange"))
     }
 }
+

@@ -5,7 +5,7 @@ import { Evented, IEvented } from './Evented';
 import { Util } from './Util';
 import { View } from './View';
 export class BaseChart extends Evented{
-    isRender:boolean=false
+    isRender:boolean = false
     layers:BaseLayer[]=[]
     rootView:View
     config:IChartConfig
@@ -14,6 +14,7 @@ export class BaseChart extends Evented{
         this.config=Util.deepExtend(this.defaultConfig(),conf)
         this.rootView=new View({tagName:"div",className:this.config.className})
         this.rootView.style(this.config.style)
+
         if(this.config.el){
             this.renderAt(this.config.el)
         }
@@ -21,6 +22,7 @@ export class BaseChart extends Evented{
     getLayerContainer(){
         return this.rootView
     }
+
     addClass(c){
         this.rootView.addClass(c)
         this.fire("classchange")
@@ -42,10 +44,12 @@ export class BaseChart extends Evented{
             el:null
         }
     }
-    setStyle(c){
-        this.config.style=_.extend(this.config.style,c)
+
+    setStyle(c) {
+        this.config.style = _.extend(this.config.style, c)
         this.fire("style_change",{style:this.config.style})
     }
+
     renderAt(dom:Element|HTMLElement|SVGAElement|string){
        if(_.isString(dom)){
             let n:any = d3.select(dom).node()
@@ -54,8 +58,9 @@ export class BaseChart extends Evented{
        }else{
           dom.appendChild(this.rootView.el)
        }
+      
        this.fire("rendered")
-       this.isRender=true
+       this.isRender = true
     }
 
     // loadMeasures(measures:any[]) {
@@ -81,13 +86,6 @@ export class BaseChart extends Evented{
     //     this.fire("measure_change")
     // }
 
-    // getMeasures(t:string){
-    //     if(t!=undefined){
-    //         return _.filter(this.measures,m=> m.type==t)
-    //     }else{
-    //         return this.measures
-    //     }
-    // }
     addLayer(l:BaseLayer){
         let i =_.findIndex(this.layers,ll=>ll.id == l.id)
         if(i!=-1){
@@ -100,35 +98,32 @@ export class BaseChart extends Evented{
         this.fire("layer_add layer_change",l)
         return this
     }
-    // getFirstMeasure(type:string){
-    //    let rs= _.filter(this.measures,m=>m.type==type)
-    //     return rs.length>0?rs[0]:undefined
-    // }
     removeLayer(id){
         if(_.isObject(id)){
             let i =_.findIndex(this.layers,ll=>ll.id == id.id)
             if(i!=-1){
                  this._clearLayer(this.layers[i])
                  this.layers=_.filter(this.layers,ll=>ll.id!=id.id)
-            }
-            this.fire("layer_remove layer_change",{layer:this.layers[i]})  
+            }  
+            this.fire("layer_remove layer_change",{layer: this.layers[i]})
         }else{
             let i =_.findIndex(this.layers,ll=>ll.id == id)
             if(i != -1){
                     this._clearLayer(this.layers[i])
                     this.layers=_.filter(this.layers,ll=>ll.id!=id)
-            }
-            this.fire("layer_remove layer_change",{layer:this.layers[i]})
+            }  
+            this.fire("layer_remove layer_change",{layer: this.layers[i]})
         }
         return this
     }
+
     _clearLayer(l:BaseLayer){
         l.clear()
         //clear callback
         return this
     }
 
-   // stringRectCache:any=Util.CacheAble(Util.getStringRect,(s,cls,fontSize)=>s.toString().length+" "+cls+fontSize)
+    // stringRectCache:any=Util.CacheAble(Util.getStringRect,(s,cls,fontSize)=>s.toString().length+" "+cls+fontSize)
     
     // getStringRect(s,cls?,fontSize?){
     //     let rect=this.stringRectCache(s,cls,fontSize)
@@ -142,30 +137,34 @@ export class BaseChart extends Evented{
     //     else 
     //         return color
     // }
-
-    whenReady(callback:Function,ctx?){
-        if(this.isRender){
-            callback.call(ctx||null)
+    
+    whenReady(callback:Function,ctx?) {
+        if(this.isRender) {
+            callback.call(ctx,null)
         }
         this.on("rendered",callback,ctx)
     }
 }
+
 export interface IChartConfig{
     className:string
     style:{
         width:string,
         height:string,
-        position:string|null,
+        position:string|null
     }
     el:any
 }
-export class SingleDateChart extends BaseChart{
+
+export class SingleDataChart extends BaseChart {
     data:any
+
     getData(){
-        return this.data
+       return this.data
     }
+    
     setData(d){
-        this.fire("data_change",{data:d,oldData:this.data})
+        this.fire("data_change",{data:d,oldData:this.data=d})
         this.data=d
-    }
+    }		      
 }

@@ -14,9 +14,10 @@ export class View extends Evented{
         return {tagName:"div",className:"view"}
     }
     setConfig(c){
-        this.config=_.extend(this.defaultConfig(),this.config,c)
+        this.config = _.extend(this.defaultConfig(),this.config,c)
         return this
     }
+
     config:IViewConfig
     // config:{
     //     tagName:string |null|undefined,
@@ -32,14 +33,13 @@ export class View extends Evented{
         }
         this.elD3=d3.select(this.el)
         this.elD3.classed(this.config.className,true)
-        this.style(this.config.style)
         return this
     }
     appendTo(dom:d3.Selection<Element,{},null,null>){
         dom.node().appendChild(this.el)
         return this
     }
-    append(element){
+    append(element) {
         this.el.appendChild(element)
     }
     style(s){

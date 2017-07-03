@@ -1,17 +1,9 @@
 import d3 = require('d3');
 import _ = require('underscore');
-import { SingleDateChart } from '../../Core/BaseChart';
-import { BaseLayer } from '../../Core/BaseLayer';
 import { Util } from '../../Core/Util';
-export interface ITimeAdjustData{
-    timeParse:string,
-    focusTime:string,
-    rangeMin:string,
-    rangeMax:string,
-    axisHeight:string,
-    lineTextPadding:string,
-    timeFormat:string
-}
+import { SingleDataChart } from '../../Core/BaseChart';
+import { BaseLayer } from '../../Core/BaseLayer';
+
 export class TimeAdjustLayer extends BaseLayer{
     constructor(id?,conf?){
         super(id,conf)
@@ -23,7 +15,7 @@ export class TimeAdjustLayer extends BaseLayer{
         })
     }
     currentTime:Date
-    chart:SingleDateChart
+    chart:SingleDataChart
     parseData(d):ITimeAdjustData{
         return _.extend({
             rangeMin:"6",
@@ -152,7 +144,8 @@ export class TimeAdjustLayer extends BaseLayer{
     }
     
 }
-export class TimeAdjust extends SingleDateChart{
+
+export class TimeAdjust extends SingleDataChart{
     constructor(conf?){
         super(conf)
              this.timelayer=new TimeAdjustLayer("timelayer",{
@@ -169,7 +162,15 @@ export class TimeAdjust extends SingleDateChart{
     setData(d:ITimeAdjustData){
         this.data=d
     }
-
 }
 
+export interface ITimeAdjustData{
+    timeParse:string,
+    focusTime:string,
+    rangeMin:string,
+    rangeMax:string,
+    axisHeight:string,
+    lineTextPadding:string,
+    timeFormat:string
+}
 

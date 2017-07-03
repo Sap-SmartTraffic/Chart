@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Chart Test</title>
+</head>
+<script src="../../../lib/requirejs/require.js"></script>
+<script src="../../../dist_new/requireConfig.js"></script>
+<link rel="stylesheet" href="../../../dist_new/Chart/PieChart/PieChart.css">
+<body>
+<section>
+    <content></content>
+</section>
+</body>
+<style>
+    header{
+        width: 100%;
+        text-align: center;
+        font-size: 2rem
+    }
+    content{
+        display: flex
+    }
+</style>
+<script>
+    requirejs(["SingleDataChart/PieChart/PieChart"],function(p){
+        var pieChart = new p.PieChart({style:{
+            height:"20rem",
+            width:"50rem"
+        }})
+        pieChart.setData([
+            {"time":3,"value":56},
+            {"time":4,"value":65},
+            {"time":5,"value":32},
+            {"time":2,"value":47},
+            {"time":21,"value":87},
+            {"time":23,"value":79},
+            {"time":24,"value":93},
+            {"time":20,"value":52},
+            {"time":1,"value":18},
+            {"time":22,"value":39},
+            {"time":18,"value":57},
+            {"time":19,"value":99}]);
+        pieChart.renderAt("content")
+    })
+</script>
+</html>

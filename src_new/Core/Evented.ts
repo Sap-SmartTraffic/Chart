@@ -83,7 +83,7 @@ export class Evented implements IEvented{
         this.events={}
         this.parent=null
     }
-    proxyEvents(obj:IEvented,...args){
+    proxyEvents(obj:IEvented,...args) {
         _.each(args,(k)=>{
             obj.on(k,(...objs)=>{
                 this.fire.apply(this,[k].concat(objs))
