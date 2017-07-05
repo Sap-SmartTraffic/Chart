@@ -38,6 +38,7 @@ export class AxisLayer extends BaseLayer{
                 bottom:"40px",
                 left:"40px"
             },
+            type:"line",
             verticalGridLine:true,
             horizontalGridLine:true
         }
@@ -48,14 +49,29 @@ export class AxisLayer extends BaseLayer{
 
     render(){
         this.el.innerHTML=""
-        let xScale = d3.scaleLinear()
-                       .domain([0, this.chart.max(this.config.axis.key.x)])
-                       .range([Util.toPixel(this.config.padding.left), 
-                               (Util.toPixel(this.config.style.width)-Util.toPixel(this.config.padding.right))]),
+        let xScale,
             yScale = d3.scaleLinear()
                        .domain([0, this.chart.max(this.config.axis.key.y)])
                        .range([(Util.toPixel(this.config.style.height)-Util.toPixel(this.config.padding.bottom)), 
                                 Util.toPixel(this.config.padding.top)])
+        if(this.config.type == "line") {
+            xScale = d3.scaleLinear()
+                       .domain([0, this.chart.max(this.config.axis.key.x)])
+                       .range([Util.toPixel(this.config.padding.left), 
+                               (Util.toPixel(this.config.style.width)-Util.toPixel(this.config.padding.right))])
+        }
+        else if(this.config.type == "ordinal") {
+            let domain = [],ds = this.chart.measures[0].data
+            _.each(ds, (d,i)=>{
+                domain.push(d.x)
+             })
+            xScale = d3.scaleBand()
+                       .domain(domain)
+                       .range([Util.toPixel(this.config.padding.left),Util.toPixel(this.config.style.width) - Util.toPixel(this.config.padding.right)])
+                       .paddingInner(0.1)
+                       .paddingOuter(0.2)
+        }
+
         if(this.config.verticalGridLine) {
             let xGridLine = d3.axisBottom(xScale)
                               .tickSize(Util.toPixel(this.config.style.height) - Util.toPixel(this.config.padding.top) - Util.toPixel(this.config.padding.bottom))
@@ -108,6 +124,7 @@ export interface IAxisLayerConfig extends ILayerConfig{
         bottom: string|undefined|null,
         left: string|undefined|null
     }
+    type:string
     verticalGridLine:boolean,
     horizontalGridLine:boolean
 }
