@@ -6,9 +6,9 @@
 </head>
 <script src="../../../lib/requirejs/require.js"></script>
 <script src="../../../dist_new/requireConfig.js"></script>
-<link rel="stylesheet" href="../../../dist_new/Chart/BarChart/BarChart.css">
+<link rel="stylesheet" href="../../../dist_new/MultiDataChart/LineChart/LineChart.css">
 <body>
-<section></section>
+<section>
     <content></content>
 </section>
 </body>
@@ -18,8 +18,8 @@
     }
 </style>
 <script>
-    requirejs(["Chart/LineChart/LineChart"],function(b){
-        var lineChart = new b.LineChart({style:{width:"40rem",height:"30rem"}})
+    requirejs(["MultiDataChart/LineChart/LineChart"],function(l){
+        var lineChart = new l.LineChart({style:{width:"40rem",height:"30rem"}})
         let measures = [{id:1, data:[{x:0,y:1},{x:3,y:2},{x:5,y:8},{x:7,y:32}], type:"line"},
                         {id:2, data:[{x:0,y:32},{x:3,y:8},{x:5,y:2},{x:7,y:1}], type:"line"}]
         lineChart.loadMeasures(measures)

@@ -4,8 +4,8 @@ import {BaseChart} from "./BaseChart"
 import {Util} from './Util'
 import {View,IViewConfig} from"./View"
 export class BaseLayer extends View{
-    constructor(id?,...confs){
-        super(confs)
+    constructor(id?,conf?){
+        super(conf)
         this.id= id==undefined?_.uniqueId("layer"):id
         this.updateStyle()
     }
@@ -22,7 +22,7 @@ export class BaseLayer extends View{
                     zindex:0,
                     width:"300px",
                     height:"300px",
-                    }
+                }
             }
     }
     id:string

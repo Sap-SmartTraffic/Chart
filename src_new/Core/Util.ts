@@ -45,10 +45,10 @@ export function toPixel(str:string|number,ctx?:string){
     }
 }
 export namespace operation{
-  export function add(str1:string,str2:string){
+  export function add(str1:any,str2:any){
     return toPixel(str1+"+"+str2)
   }
-  export function sub (s1,s2){
+  export function sub (s1:any,s2:any){
       return toPixel(s1+"-"+s2)
   }
 }
@@ -166,7 +166,7 @@ function arguments2Array(args){
     }
     return r
 }
-export  function  deepExtend(des,...source:any[]){
+export function deepExtend(des,...source:any[]){
         if(des==undefined || des==null){
             des={}
         }
@@ -176,16 +176,16 @@ export  function  deepExtend(des,...source:any[]){
                 deepExtend.apply(this,args)
             }else{
                 _.each(s,(v,k)=>{
-                if(_.isObject(v)&&!_.isElement(v)&&_.isFunction(v)){
-                    if(_.isUndefined(des[k])){
-                        des[k]={}
+                    if(_.isObject(v)&&!_.isElement(v)&&!_.isFunction(v)){
+                        if(_.isUndefined(des[k])){
+                            des[k]={}
+                        }
+                        deepExtend(des[k],v)
                     }
-                    deepExtend(des[k],v)
-                }else{
-                     des[k]=v
-                }
-               
-            })
+                    else{
+                        des[k]=v
+                    }
+                })
             }
            
         })

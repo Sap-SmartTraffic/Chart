@@ -142,8 +142,8 @@ export class DashChart extends SingleDataChart{
         super(conf)
         this.dashLayer = new DashLayer("dashpie",{
             style:{
-                width:this.config.style.width,
-                height:this.config.style.height
+                width:()=>this.config.style.width,
+                height:()=>this.config.style.height
             },
             padding:Util.toPixel("2rem")
         })

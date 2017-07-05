@@ -5,9 +5,9 @@ import {Util} from "./Util"
 let styles=Util.d3Invoke("style")
 let attrs=Util.d3Invoke("attr")
 export class View extends Evented{
-    constructor(...confs){
+    constructor(conf){
         super()
-        this.config=Util.deepExtend(this.defaultConfig(),confs)
+        this.config=Util.deepExtend(this.defaultConfig(),conf)
         this.initView()
     }
     defaultConfig():IViewConfig{

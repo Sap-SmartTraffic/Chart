@@ -1,23 +1,25 @@
+import d3 = require("d3")
 import _ = require('underscore');
 import { BaseChart } from '../Core/BaseChart';
-import { IMultiDataMeasure } from "./MultiTypeMeasure";
+import { MultiDataMeasure } from "./MultiTypeMeasure";
 export interface IGetDomain {
     getDomain:(key?:string)=>number[]
     max:(key?:string)=>number
     min:(key?:string)=>number
 }
 export interface IMeasureManager{
-    measures:IMultiDataMeasure[]
-    addMeasure:(m:IMultiDataMeasure)=>this
-    removeMeasure:(m:IMultiDataMeasure|string)=>this
-    getAllMeasure:()=>IMultiDataMeasure[]
-    getMeasure:(type:string)=>IMultiDataMeasure[]
+    measures:MultiDataMeasure[]
+    addMeasure:(m:MultiDataMeasure)=>this
+    loadMeasures:(ms:MultiDataMeasure[])=>this
+    removeMeasure:(m:MultiDataMeasure|string)=>this
+    getAllMeasure:()=>MultiDataMeasure[]
+    getMeasure:(type:string)=>MultiDataMeasure[]
     
 }
 export interface IMultiDataChart extends BaseChart,IMeasureManager,IGetDomain{}
-export class MultiDataChart  extends BaseChart  implements IMultiDataChart{
-    measures:IMultiDataMeasure[]=[]
-    addMeasure(m:IMultiDataMeasure){
+export class MultiDataChart extends BaseChart implements IMultiDataChart{
+    measures:MultiDataMeasure[]=[]
+    addMeasure(m:MultiDataMeasure){
         let i=_.findIndex(this.measures,(mm)=>mm.id==m.id)
         if(i!=-1){
             this.measures[i]=m
@@ -27,7 +29,15 @@ export class MultiDataChart  extends BaseChart  implements IMultiDataChart{
         this.fire("measure_change measure_add",{measure:m})
         return this
     }
-    removeMeasure(m:IMultiDataMeasure|string){
+    loadMeasures(ms:any[]) {
+        _.each(ms, (d)=>{
+            let mm = new MultiDataMeasure(d.id, d.data, d.type)
+            this.addMeasure(mm)
+        })
+        this.fire("measure_change")
+        return this
+    }
+    removeMeasure(m:MultiDataMeasure|string){
         if(_.isString(m)){
             if(_.some(this.measures,(mm)=>mm.id==m)){
                 let rm=_.findWhere(this.measures,{id:m})
@@ -58,7 +68,7 @@ export class MultiDataChart  extends BaseChart  implements IMultiDataChart{
     max(k:string){
         let max=0
         _.each(this.measures,(mm)=>{
-            let _max=mm.max(k)
+            let _max = mm.max(k)
             if(_.isNumber(_max)){
                 max=Math.max(max,_max)
             }
@@ -74,6 +84,15 @@ export class MultiDataChart  extends BaseChart  implements IMultiDataChart{
             }
         })
         return min
+    }
+
+    getColor(color) {
+        if(color === undefined)
+            return d3.schemeCategory20[Math.round(Math.random()*20)]
+        else if(typeof(color) == "number")
+            return d3.schemeCategory20[color]
+        else 
+            return color
     }
     
 }
