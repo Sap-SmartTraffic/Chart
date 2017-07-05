@@ -28,8 +28,7 @@ export class BarLayer extends BaseLayer {
                 zindex: 0,
                 width: "400rem",
                 height: "200rem"
-            },
-            key:{x:"x",y:"y"}
+            }
         }
     }
 
@@ -42,13 +41,13 @@ export class BarLayer extends BaseLayer {
         }
         let xMarks = ds[0].data.length
         let series = ds.length
-        let maxY = this.chart.max(this.config.key.y)
+        let maxY = this.chart.max("y")
         let xScale = d3.scaleBand()
-                       .domain(_.range(xMarks))
+                       .domain(_.range(xMarks).map((d)=>{return d.toString()}))
                        .rangeRound([0, Util.toPixel(this.config.style.width)])
                        .paddingInner(0.1).paddingOuter(0.2)
         let seriesScale = d3.scaleBand()
-                            .domain(_.range(series))
+                            .domain(_.range(series).map((d)=>{return d.toString()}))
                             .rangeRound([0,xScale.bandwidth()])
         let yScale = d3.scaleLinear()
                        .domain([0,maxY])
@@ -58,10 +57,10 @@ export class BarLayer extends BaseLayer {
                                .attr("class","series")
                                .attr("id","series"+i)
                                .attr("transform","translate("+ (i * seriesScale.bandwidth()) +",0)")
-            _.each(d.data, (v,k)=>{
+            _.each(d.data, (v:BarData,k)=>{
                 group.append("rect")
                      .attr("class","rect"+k)
-                     .attr("x",xScale(k))
+                     .attr("x",xScale(k.toString()))
                      .attr("y",Util.toPixel(this.config.style.height))
                      .attr("width",seriesScale.bandwidth())
                      .attr("height",yScale(v.y))
@@ -80,7 +79,12 @@ export class BarLayer extends BaseLayer {
 }
 
 export interface BarLayerConfig extends ILayerConfig {
-    key:{x:string,y:string}
+
+}
+
+export interface BarData {
+    x:string,
+    y:number
 }
 
 export class BarChart extends MultiDataChart {

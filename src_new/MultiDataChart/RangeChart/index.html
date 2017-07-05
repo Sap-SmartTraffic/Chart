@@ -6,28 +6,21 @@
 </head>
 <script src="../../../lib/requirejs/require.js"></script>
 <script src="../../../dist_new/requireConfig.js"></script>
-<link rel="stylesheet" href="../../../dist_new/Chart/RangeChart/RangeChart.css">
+<link rel="stylesheet" href="../../../dist_new/MultiDataChart/BarChart/BarChart.css">
 <body>
 <section>
-    <header></header>
     <content></content>
 </section>
 </body>
 <style>
-    header{
-        width: 100%;
-        text-align: center;
-        font-size: 2rem
-    }
     content{
         display: flex
     }
 </style>
 <script>
-    requirejs(["Chart/RangeChart/RangeChart"],function(r){
-        var c1 = new r.RangeChart({style:{width:"60rem",height:"20rem"}})
-        c1.data([
-            {"time":0,"min":4,"max":15},
+    requirejs(["MultiDataChart/RangeChart/RangeChart"],function(c){
+        var rangeChart = new c.RangeChart({style:{width:"40rem",height:"30rem"}})
+        let measures = [{id:1,data:[{"time":0,"min":4,"max":15},
             {"time":1,"min":9,"max":23},
             {"time":2,"min":11,"max":28},
             {"time":3,"min":16,"max":31},
@@ -50,8 +43,10 @@
             {"time":20,"min":10,"max":23},
             {"time":21,"min":14,"max":29},
             {"time":22,"min":9,"max":16},
-            {"time":23,"min":3,"max":7}]);
-        c1.renderAt("content") 
+            {"time":23,"min":3,"max":7}],type:"range"}]
+        rangeChart.loadMeasures(measures)
+        rangeChart.renderAt("content")
     })
+
 </script>
 </html>

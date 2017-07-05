@@ -3,6 +3,7 @@ import _ =require("underscore")
 import { Util } from '../Core/Util'
 import { BaseLayer, ILayerConfig } from '../Core/BaseLayer'
 import {MultiDataChart} from '../MultiDataChart/MultiDataChart'
+import {BarData} from '../MultiDataChart/BarChart/BarChart'
 
 export class AxisLayer extends BaseLayer{
     constructor(id?,conf?) {
@@ -54,6 +55,7 @@ export class AxisLayer extends BaseLayer{
                        .domain([0, this.chart.max(this.config.axis.key.y)])
                        .range([(Util.toPixel(this.config.style.height)-Util.toPixel(this.config.padding.bottom)), 
                                 Util.toPixel(this.config.padding.top)])
+        
         if(this.config.type == "line") {
             xScale = d3.scaleLinear()
                        .domain([0, this.chart.max(this.config.axis.key.x)])
@@ -62,14 +64,21 @@ export class AxisLayer extends BaseLayer{
         }
         else if(this.config.type == "ordinal") {
             let domain = [],ds = this.chart.measures[0].data
-            _.each(ds, (d,i)=>{
+            _.each(ds, (d:BarData,i)=>{
                 domain.push(d.x)
              })
             xScale = d3.scaleBand()
                        .domain(domain)
-                       .range([Util.toPixel(this.config.padding.left),Util.toPixel(this.config.style.width) - Util.toPixel(this.config.padding.right)])
+                       .range([Util.toPixel(this.config.padding.left),
+                               Util.toPixel(this.config.style.width) - Util.toPixel(this.config.padding.right)])
                        .paddingInner(0.1)
                        .paddingOuter(0.2)
+        }
+        else if(this.config.type == "time") {
+            xScale = d3.scaleTime()
+                       .domain([d3.timeParse("%H")((this.chart.min(this.config.axis.key.x).toString())),d3.timeParse("%H")((this.chart.max(this.config.axis.key.x).toString()))])
+                       .range([Util.toPixel(this.config.padding.left),
+                               Util.toPixel(this.config.style.width) - Util.toPixel(this.config.padding.right)])
         }
 
         if(this.config.verticalGridLine) {

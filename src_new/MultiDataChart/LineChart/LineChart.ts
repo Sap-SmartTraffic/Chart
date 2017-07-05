@@ -29,7 +29,6 @@ export class LineLayer extends BaseLayer {
                 width: "400rem",
                 height: "200rem"
             },
-            key:{x:"x",y:"y"},
             curveType: "linear",
             isDot: false,
             isArea: true
@@ -51,10 +50,10 @@ export class LineLayer extends BaseLayer {
             return
         }
         let series = ds.length
-        let maxX = this.chart.max(this.config.key.x),
-            maxY = this.chart.max(this.config.key.y)
-        let width = Util.toPixel(this.config.style.width)
-        let height = Util.toPixel(this.config.style.height)
+        let maxX = this.chart.max("x"),
+            maxY = this.chart.max("y")
+        let width = Util.toPixel(this.config.style.width),
+            height = Util.toPixel(this.config.style.height)
         
         let xScale = d3.scaleLinear()
                        .domain([0,maxX])
@@ -63,7 +62,7 @@ export class LineLayer extends BaseLayer {
                        .domain([0,maxY])
                        .range([height,0])
 
-        let line = d3.line()
+        let line = d3.line<{x:number,y:number}>()
                      .x(function(v){return xScale(v.x)})
                      .y(function(v){return yScale(v.y)})
                      .curve(this.curveTypeMap[this.config.curveType])
@@ -79,7 +78,7 @@ export class LineLayer extends BaseLayer {
                  .attr("fill","none")
 
             if(this.config.isDot) {
-                _.each(d.data,(v,k)=>{
+                _.each(d.data,(v:LineData,k)=>{
                     group.append("circle")
                          .attr("cx",xScale(v.x))
                          .attr("cy",yScale(v.y))
@@ -89,7 +88,7 @@ export class LineLayer extends BaseLayer {
             }
 
             if(this.config.isArea) {
-                let area = d3.area()
+                let area = d3.area<{x:number,y:number}>()
                              .x((d)=>{return xScale(d.x)})
                              .y0(Util.toPixel(this.config.style.height))
                              .y1((d)=>{return yScale(d.y)})
@@ -112,10 +111,14 @@ export class LineLayer extends BaseLayer {
 }
 
 export interface LineLayerConfig extends ILayerConfig {
-    key:{x:string,y:string}
     curveType: string,
     isDot: boolean,
     isArea: boolean
+}
+
+export interface LineData {
+    x:number,
+    y:number
 }
 
 export class LineChart extends MultiDataChart {
