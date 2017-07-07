@@ -1,10 +1,97 @@
+/* axisLayer */
 .grid-line {
     path {
         stroke-width: 0;
     }
     line {
-    fill: none;
-    stroke:#d6d6d6;
-    shape-rendering: crispEdges;
+        fill: none;
+        stroke:#d6d6d6;
+        shape-rendering: crispEdges;
+    }
 }
+
+/* lineLayer */
+.series {
+    stroke-width: 2px;
+    fill: none;
+}
+
+.lineArea {
+    stroke-width: 0px;
+    opacity: 0.3
+}
+
+.focusLine {
+    stroke: yellowgreen;
+    stroke-width: 1.5px;
+}
+
+.overlay {
+    fill: none;
+    pointer-events: all;
+}
+
+/* TooltipLayer */
+.tooltipContainer {
+    z-index: 10;
+    pointer-events: none;
+    display: none;
+}
+
+.tooltip {
+    border-collapse: collapse;
+    border-spacing: 0;
+    background-color: #fff;
+    opacity: 0.8;
+    empty-cells: show;
+    box-shadow: 7px 7px 12px -9px;
+    border: 1px solid #ddd;
+}
+
+.tooltip tr{
+    border: 1px solid #ccc;
+}
+
+.tooltip th {
+    background-color: #aaa;
+    font-size: 14px;
+    padding: 2px 5px;
+    text-align: left;
+    color: #fff;
+}
+
+.tooltip td {
+    font-size: 13px;
+    padding: 3px 6px;
+    background-color: #fff;
+    border-left: 1px dotted #999;
+}
+
+.tooltip td > span {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin-right: 6px;
+}
+
+/* LegendLayer */
+.legendGroup {
+    margin: 5px 20px 5px 20px;
+    display: -webkit-flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.legendUnit {
+    opacity: 1;
+    display: inline-block;
+
+    span {
+        width: 15px;
+        height: 15px;
+        display: inline-block;
+        margin-right: 5px;
+        vertical-align: middle;
+        line-height: 15px;
+    }
 }

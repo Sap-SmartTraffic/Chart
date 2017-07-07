@@ -33,6 +33,7 @@ export class AxisLayer extends BaseLayer{
                 key:{x:"x",y:"y"},
                 ticks:{x:null,y:null},
             },
+            borderPadding:6,
             padding: {
                 top:"10px",
                 right:"10px",
@@ -40,7 +41,7 @@ export class AxisLayer extends BaseLayer{
                 left:"40px"
             },
             type:"line",
-            verticalGridLine:true,
+            verticalGridLine:false,
             horizontalGridLine:true
         }
     }
@@ -127,6 +128,7 @@ export interface IXYAxisConfig{
 
 export interface IAxisLayerConfig extends ILayerConfig{
     axis:IXYAxisConfig,
+    borderPadding:number
     padding: {
         top: string|undefined|null,
         right: string|undefined|null,
