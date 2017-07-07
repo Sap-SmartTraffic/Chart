@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Chart Test</title>
+</head>
+<script src="../../../lib/requirejs/require.js"></script>
+<script src="../../../dist_new/requireConfig.js"></script>
+<link rel="stylesheet" href="../../../dist_new/Loader/CircleLoader.css">
+<body>
+<section>
+    <content></content>
+</section>
+</body>
+<script>
+    requirejs(["Loader/CircleLoader"],function(c){
+        var circleLoader = new c.Loader(200,300,5)
+        circleLoader.addCircleLoader()
+        circleLoader.loadCircleLoader(20);
+        circleLoader.loadCircleLoader(70);
+        circleLoader.loadCircleLoader(99);
+    })
+</script>
+</html>

@@ -44,11 +44,12 @@
         stroke-width: 0;
     }
 
-    #loaderRatio {
+    .loaderRatio {
+        alignment-baseline: middle;
         font-size: 40px;
     }
 
-    #loaderText {
+    .loaderText {
         font-size: 20px;
     }
   </style>
@@ -109,16 +110,11 @@ Loader.prototype.addCircleLoader = function() {
     path2.appendChild(animateTransform2);
     group.appendChild(path2);
 
-    var ratio = this.makeSVG("text",{transform:"translate("+centerX+","+centerY+")", id:"loaderRatio"});
-    var tspan1 = this.makeSVG("tspan",{});
-    tspan1.textContent = "0";
-    var tspan2 = this.makeSVG("tspan",{});
-    tspan2.textContent = "%";
-    ratio.appendChild(tspan1)
-    ratio.appendChild(tspan2)
+    var ratio = this.makeSVG("text",{transform:"translate("+centerX+","+centerY+")", class:"loaderRatio"})
+    ratio.textContent = "0%"
     group.appendChild(ratio)
 
-    var text = this.makeSVG("text",{transform:"translate("+centerX+","+((this.height+this.width)/2)+")", id:"loaderText"});
+    var text = this.makeSVG("text",{transform:"translate("+centerX+","+((this.height+this.width)/2)+")", class:"loaderText"});
     var str = "Calculating...";
     for(var i = 0; i < str.length; i++) {
         var tspan = this.makeSVG("tspan",{});
@@ -154,7 +150,7 @@ Loader.prototype.loadCircleLoader =function(ratio) {
     setTimeout(()=>{
         setInterval(()=>{
             if(this.oldRatio < ratio) {
-                document.getElementById("loaderRatio").firstChild.textContent = this.oldRatio + 1;
+                document.getElementsByClassName("loaderRatio")[0].textContent = this.oldRatio + 1 + "%";
                 this.oldRatio += 1;
             }
             else {
@@ -173,7 +169,7 @@ window.initLoader = new Loader(200,300,5);
 initLoader.addCircleLoader();
 initLoader.loadCircleLoader(20);
 initLoader.loadCircleLoader(70);
-initLoader.loadCircleLoader(100);
+initLoader.loadCircleLoader(99);
 
   </script>
 </html>
