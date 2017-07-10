@@ -32,7 +32,14 @@ export class TooltipLayer extends BaseLayer{
     }
     chart: MultiDataChart
 
-    getTooltipContent(ds:TooltipData) {
+    getSingleTooltipContent(ds) {
+        let textStart = "<table class='tooltip'><tbody><tr><th colspan='2'>"+ ds.xMark +"</th></tr>"
+        let text = "<tr><td class='name'><span style='background-color:"+ this.chart.getColor(ds.series) +"'></span>" + "系列" + ds.series + "</td><td class='value'>"+ ds.value +"</td></tr>"
+        let textEnd = "</tbody></table>"
+        return textStart + text + textEnd
+    }
+
+    getGroupTooltipContent(ds:TooltipData) {
         let textStart = "<table class='tooltip'><tbody><tr><th colspan='2'>"+ ds.xMark +"</th></tr>"
         let text = ""
         _.each(ds.data,(d)=>{
@@ -42,11 +49,14 @@ export class TooltipLayer extends BaseLayer{
         return textStart + text + textEnd
     }
 
-    
     render(){
-        this.chart.on("showTooltip",(d)=>{
+        this.chart.on("showSingleTooltip",(d)=>{
             this.elD3.style("display","block")
-                     .html(this.getTooltipContent(d))
+                     .html(this.getSingleTooltipContent(d))
+        })
+        this.chart.on("showGroupTooltip",(d)=>{
+            this.elD3.style("display","block")
+                     .html(this.getGroupTooltipContent(d))
         })
         this.chart.on("moveTooltip",()=>{
             this.elD3.style("top",d3.event.y+"px")

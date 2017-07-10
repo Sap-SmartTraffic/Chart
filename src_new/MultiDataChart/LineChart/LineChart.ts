@@ -49,7 +49,7 @@ export class LineLayer extends BaseLayer {
 
     drawer(svgNode:d3.Selection<Element,{},null,null>){
         let self = this
-        let ds = this.chart.getAllMeasure()
+        let ds = this.chart.getMeasure("line")
         if(!ds || typeof(ds) == undefined || ds.length==0) {
             return
         }
@@ -133,7 +133,7 @@ export class LineLayer extends BaseLayer {
                    .attr("height", height - this.config.padding * 2)
                    .on("mouseenter",function(){
                        focusLine.style("display",null)
-                       self.chart.fire("showTooltip",{xMark:d.xMark,data:d.data})
+                       self.chart.fire("showGroupTooltip",{xMark:d.xMark,data:d.data})
                    })
                    .on("mousemove",function(){
                        focusLine.attr("x1",xScale(d.xMark))
