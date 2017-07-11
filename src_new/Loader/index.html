@@ -16,10 +16,21 @@
         circleLoader.toElement()
         circleLoader.addTo(document.body)
         circleLoader.show()
-        circleLoader.setProgress(20)
-        circleLoader.setProgress(70)
-        circleLoader.setProgress(90)
-        circleLoader.remove()
+       
+      
+        
+       setTimeout(()=>{
+             circleLoader.setProgress(20)
+       },1000)
+        setTimeout(()=>{
+             circleLoader.setProgress(70)
+       },1000)
+        setTimeout(()=>{
+          circleLoader.setProgress(90)
+       },3000)
+        setTimeout(()=>{
+            circleLoader.remove()
+       },5000)
     })
     // requirejs(["Loader/BarLoader"],function(c){
     //     var barLoader = new c.BarLoader(200,300)

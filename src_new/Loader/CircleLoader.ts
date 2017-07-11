@@ -108,36 +108,37 @@ export class CircleLoader implements IProgressLoader{
         })
         return this
     }
-
+    intervalIndex:number
     setProgress(ratio:number) {
         let temp = this.oldRatio
-        setTimeout(()=>{
-            setInterval(()=>{
+        if(this.intervalIndex){
+            clearInterval(this.intervalIndex)
+            this.intervalIndex=0
+        }
+        this.intervalIndex=setInterval(()=>{
                 if(this.oldRatio < ratio) {
                     document.getElementsByClassName("loaderRatio")[0].textContent = this.oldRatio + 1 + "%"
                     this.oldRatio += 1
                 }
                 else {
                     if(ratio == 100) {
-                        //do finishAction
+                         clearInterval(this.intervalIndex)
+                         this.intervalIndex=0
                     }
                     else
                         return this
                 }
             },50)
-        },this.interval)
         this.interval = (ratio - temp)*50
 
         return this
     }
 
     remove() {
-        setTimeout(()=>{
-            this.el.style.transform = "translate(-100%,0)"
-        },this.interval)
+         this.el.style.transform = "translate(-100%,0)"
         setTimeout(()=>{
             this.el.remove()
-        },this.interval+1000)
+        },1000)
         return this
     }
 }
