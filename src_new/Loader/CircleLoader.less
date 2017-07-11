@@ -12,46 +12,54 @@
         position: absolute;
         top: 50%;
         left: 50%;
+
+        g {
+            fill: none;
+            fill-rule: evenodd;
+
+            circle {
+                stroke-width: 5;
+                stroke: black;
+                stroke-opacity: 0.2;
+            }
+
+            path {
+                stroke-width: 5;
+            }
+
+            .path1 {
+                stroke: aqua;
+            }
+
+            .path2 {
+                stroke: greenyellow;
+            }
+
+            text {
+                font-family: "Times New Roman";
+                text-anchor: middle;
+                fill: aqua;
+                stroke-width: 0;
+            }
+
+            .loaderRatio {
+                alignment-baseline: middle;
+                font-size: 40px;
+            }
+
+            .loaderText {
+                font-size: 20px;
+            }
+        }
     }
 
-    g {
-        fill: none;
-        fill-rule: evenodd;
-    }
+    
 
-    circle {
-        stroke-width: 5;
-        stroke: black;
-        stroke-opacity: 0.2;
-    }
+    
 
-    path {
-        stroke-width: 5;
-    }
+    
 
-    .path1 {
-        stroke: aqua;
-    }
-
-    .path2 {
-        stroke: greenyellow;
-    }
-
-    text {
-        font-family: "Times New Roman";
-        text-anchor: middle;
-        fill: aqua;
-        stroke-width: 0;
-    }
-
-    .loaderRatio {
-        alignment-baseline: middle;
-        font-size: 40px;
-    }
-
-    .loaderText {
-        font-size: 20px;
-    }
+    
 }
 
     
