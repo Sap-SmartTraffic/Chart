@@ -7,18 +7,18 @@
 <script src="../../../lib/requirejs/require.js"></script>
 <script src="../../../dist_new/requireConfig.js"></script>
 <link rel="stylesheet" href="../../../dist_new/Loader/CircleLoader.css">
+<link rel="stylesheet" href="../../../dist_new/Loader/barLoader.css">
 <body>
-<section>
-    <content></content>
-</section>
 </body>
 <script>
-    requirejs(["Loader/CircleLoader"],function(c){
-        var circleLoader = new c.Loader(200,300,5)
-        circleLoader.addCircleLoader()
-        circleLoader.loadCircleLoader(20);
-        circleLoader.loadCircleLoader(70);
-        circleLoader.loadCircleLoader(99);
+    requirejs(["Loader/BarLoader"],function(c){
+        var barLoader = new c.BarLoader(200,300,5)
+        barLoader.toElement()
+        barLoader.addTo(document.body)
+        barLoader.show()
+        barLoader.setProgress(20);
+        barLoader.setProgress(70);
+        barLoader.setProgress(99);
     })
 </script>
 </html>

@@ -1,5 +1,4 @@
-export class Loader {
-    SVG_NS = "http://www.w3.org/2000/svg";
+export class Loader{
     id = "loader";
     width:number
     height:number
@@ -25,7 +24,7 @@ export class Loader {
     }
 
     makeSVG(tag, attributes) {
-        let elem = document.createElementNS(this.SVG_NS, tag);  
+        let elem = document.createElementNS("http://www.w3.org/2000/svg", tag);  
         for (let attribute in attributes) {
             let name = attribute;  
             let value = attributes[attribute];  
