@@ -6,11 +6,11 @@
 </head>
 <script src="/lib/requirejs/require.js"></script>
 <script src="/dist_new/requireConfig.js"></script>
-<link rel="stylesheet" href="/dist_new/Loader/CircleLoader.css">
+<link rel="stylesheet" href="/dist_new/Component/Loader/CircleLoader/CircleLoader.css">
 <body>
 </body>
 <script>
-    requirejs(["Loader/CircleLoader"],function(c){
+    requirejs(["Component/Loader/CircleLoader/CircleLoader"],function(c){
         var circleLoader = new c.CircleLoader(200,300,5)
         circleLoader.toElement()
         circleLoader.addTo(document.body)

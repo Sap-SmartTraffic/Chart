@@ -6,11 +6,11 @@
 </head>
 <script src="/lib/requirejs/require.js"></script>
 <script src="/dist_new/requireConfig.js"></script>
-<link rel="stylesheet" href="/dist_new/Loader/barLoader.css">
+<link rel="stylesheet" href="/dist_new/Component/Loader/BarLoader/BarLoader.css">
 <body>
 </body>
 <script>
-    requirejs(["Loader/BarLoader"],function(c){
+    requirejs(["./Component/Loader/BarLoader/BarLoader"],function(c){
         var barLoader = new c.BarLoader(200,300)
         barLoader.toElement()
         barLoader.addTo(document.body)

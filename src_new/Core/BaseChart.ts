@@ -62,7 +62,11 @@ export class BaseChart extends Evented{
        this.fire("rendered")
        this.isRender = true
     }
-
+    toElement(){
+        this.fire("rendered")
+        this.isRender=true
+        return this.rootView.el
+    }
     // loadMeasures(measures:any[]) {
     //     _.each(measures, (d)=>{
     //         let measure = new Measure(d.id, d.data, d.type)

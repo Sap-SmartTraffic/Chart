@@ -5,8 +5,9 @@
   "main": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": " concurrently \"npm run tsc:w\" \"gulp start\" ",
-    "new": " concurrently \"npm run tsc:w\" \"gulp start_new\" ",
+    "start": " gulp start_new",
+    "new": "gulp start_new ",
+    "clean":"gulp clean",
     "tsc": "tsc",
     "tsc:w": "tsc -w"
   },
@@ -32,6 +33,7 @@
     "typescript": "2.3.0"
   },
   "dependencies": {
+    "gulp-clean": "^0.3.2",
     "gulp-concat": "^2.6.1",
     "gulp-typescript": "^3.1.7",
     "merge2": "^1.0.3"
