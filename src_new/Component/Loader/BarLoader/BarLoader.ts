@@ -44,7 +44,7 @@ export class BarLoader implements IProgressLoader{
     toElement() {
         this.el = document.createElementNS("http://www.w3.org/1999/xhtml", "div")
         this.el.setAttribute("id",this.id)
-        this.el.setAttribute("class","loaderContainer")
+        this.el.setAttribute("class","barLoaderContainer")
 
         let svgNode = this.makeSVG("svg",{width:this.width, height:this.height})
 

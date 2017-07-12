@@ -23,7 +23,7 @@ export class View extends Evented{
     //     tagName:string |null|undefined,
     //     className:string |null|undefined
     // }
-    el:Element
+    el:any
     elD3:d3.Selection<Element,{},null,null>
     initView(){
         if(this.config.tagName=="svg"){

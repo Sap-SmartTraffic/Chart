@@ -11,7 +11,7 @@ export class BarLayer extends BaseLayer {
     constructor(id?,conf?) {
         super(id,conf)
         this.on("addToChart",()=>{
-            this.chart.on("style_change data_change",()=>{
+            this.chart.on("style_change measure_change",()=>{
                 this.update()
             })
         })
@@ -117,13 +117,20 @@ export class BarChart extends MultiDataChart {
         })
         this.barLayer = new BarLayer("bar",{
             style: {
-                top: this.axisLayer.config.padding.top,
-                left: this.axisLayer.config.padding.left,
-                width: Util.toPixel(this.config.style.width) - Util.toPixel(this.axisLayer.config.padding.left)-Util.toPixel(this.axisLayer.config.padding.right),
-                height: Util.toPixel(this.config.style.height)- Util.toPixel(this.axisLayer.config.padding.top)-Util.toPixel(this.axisLayer.config.padding.bottom)
+                top: ()=>this.axisLayer.config.padding.top,
+                left: ()=>this.axisLayer.config.padding.left,
+                width: ()=>Util.toPixel(this.config.style.width) - Util.toPixel(this.axisLayer.config.padding.left)-Util.toPixel(this.axisLayer.config.padding.right),
+                height: ()=>Util.toPixel(this.config.style.height)- Util.toPixel(this.axisLayer.config.padding.top)-Util.toPixel(this.axisLayer.config.padding.bottom)
             }
         })
-        this.tooltipLayer = new TooltipLayer("tooltip",{})
+        this.tooltipLayer = new TooltipLayer("tooltip",{
+            style: {
+                top: ()=>this.axisLayer.config.padding.top,
+                left: ()=>this.axisLayer.config.padding.left,
+                width: ()=>Util.toPixel(this.config.style.width) - Util.toPixel(this.axisLayer.config.padding.left)-Util.toPixel(this.axisLayer.config.padding.right),
+                height: ()=>Util.toPixel(this.config.style.height)- Util.toPixel(this.axisLayer.config.padding.top)-Util.toPixel(this.axisLayer.config.padding.bottom)
+            }
+        })
         this.legendLayer = new LegendLayer("legend",{
             style: {
                 top: ()=>this.axisLayer.config.style.height,

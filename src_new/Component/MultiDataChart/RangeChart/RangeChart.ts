@@ -9,7 +9,7 @@ export class RangeLayer extends BaseLayer {
     constructor(id?,conf?) {
         super(id,conf)
         this.on("addToChart",()=>{
-            this.chart.on("style_change data_change",()=>{
+            this.chart.on("style_change measure_change",()=>{
                 this.update()
             })
         })

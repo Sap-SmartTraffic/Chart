@@ -16,17 +16,35 @@
         barLoader.addTo(document.body)
         barLoader.show()
         setTimeout(()=>{
-             barLoader.setProgress(20)
+            barLoader.setProgress(20)
         },1000)
         setTimeout(()=>{
-             barLoader.setProgress(70)
+            barLoader.setProgress(70)
         },2000)
         setTimeout(()=>{
-          barLoader.setProgress(100)
+            barLoader.setProgress(100)
         },3000)
         setTimeout(()=>{
             barLoader.remove()
         },6000)
+        setInterval(()=>{
+            barLoader.toElement()
+            barLoader.addTo(document.body)
+            barLoader.show()
+            setTimeout(()=>{
+                barLoader.setProgress(20)
+            },1000)
+            setTimeout(()=>{
+                barLoader.setProgress(70)
+            },2000)
+            setTimeout(()=>{
+                barLoader.setProgress(100)
+            },3000)
+            setTimeout(()=>{
+                barLoader.remove()
+            },6000)
+        },8000)
+        
     })
 </script>
 </html>

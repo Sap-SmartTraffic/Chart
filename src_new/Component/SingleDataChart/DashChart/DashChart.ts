@@ -78,7 +78,8 @@ export class DashLayer extends BaseLayer {
             curEndAngle = startAngle + curRadio * Math.PI,
             oldEndAngle = startAngle + oldRadio * Math.PI
         let dashGroup = svgNode.append("g").attr("class","dashGroup")
-        dashGroup.append("path").attr("d",smartArcGen(-Math.PI,0,innerRadius,outerRadius)).attr("fill","#d6d6d6").classed("basebackground",true)
+        dashGroup.append("path").attr("d",smartArcGen(-Math.PI,0,innerRadius,outerRadius))
+                 .classed("basebackground",true)
         dashGroup.append("path").attr("d",smartArcGen(startAngle,oldEndAngle,innerRadius,outerRadius))
                  .attr("fill","none")
                  .classed("dashvaluebackground",true)
@@ -98,24 +99,18 @@ export class DashLayer extends BaseLayer {
         dashGroup.append("text").attr("class","dataValue")
                  .attr("x",centerX)
                  .attr("y",centerY)
-                 .attr("text-anchor","middle")
-                 .attr("font-size","32px")
                  .text(this.config.dataFomate(ds))
         
         dashGroup.append("text").attr("class","rangeMin")
                  .attr("x",centerX - innerRadius - (outerRadius-innerRadius)/2)
                  .attr("y",centerY)
                  .attr("dy",Util.getStringRect("0","",14).height)
-                 .attr("text-anchor","middle")
                  .text("0")
-                 .attr("font-size","14px")
         dashGroup.append("text").attr("class","rangeMax")
                  .attr("x",centerX + innerRadius + (outerRadius-innerRadius)/2)
                  .attr("y",centerY)
                  .attr("dy",Util.getStringRect("0","",14).height)
-                 .attr("text-anchor","middle")
                  .text(this.config.rangeMax)
-                 .attr("font-size","14px")
     }
 
     render() {

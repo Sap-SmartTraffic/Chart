@@ -31,15 +31,15 @@ export class TooltipLayer extends BaseLayer{
         }
     }
     chart: MultiDataChart
-
-    getSingleTooltipContent(ds) {
+   
+    getSingleTooltipContent(ds):string {
         let textStart = "<table class='tooltip'><tbody><tr><th colspan='2'>"+ ds.xMark +"</th></tr>"
         let text = "<tr><td class='name'><span style='background-color:"+ this.chart.getColor(ds.series) +"'></span>" + "系列" + ds.series + "</td><td class='value'>"+ ds.value +"</td></tr>"
         let textEnd = "</tbody></table>"
         return textStart + text + textEnd
     }
 
-    getGroupTooltipContent(ds:TooltipData) {
+    getGroupTooltipContent(ds:TooltipData):string {
         let textStart = "<table class='tooltip'><tbody><tr><th colspan='2'>"+ ds.xMark +"</th></tr>"
         let text = ""
         _.each(ds.data,(d)=>{
@@ -50,20 +50,31 @@ export class TooltipLayer extends BaseLayer{
     }
 
     render(){
+        let tooltipBox = this.elD3.append("div")
         this.chart.on("showSingleTooltip",(d)=>{
-            this.elD3.style("display","block")
-                     .html(this.getSingleTooltipContent(d))
+            tooltipBox.style("display","block")
+                      .html(this.getSingleTooltipContent(d))
         })
         this.chart.on("showGroupTooltip",(d)=>{
-            this.elD3.style("display","block")
-                     .html(this.getGroupTooltipContent(d))
+            tooltipBox.style("display","block")
+                      .html(this.getGroupTooltipContent(d))
         })
         this.chart.on("moveTooltip",()=>{
-            this.elD3.style("top",d3.event.y+"px")
-                     .style("left",d3.event.x+"px")
+            if(d3.mouse(this.el)[0] > Util.toPixel(this.config.style.width)/2) {
+                tooltipBox.style("top",d3.mouse(this.el)[1] +"px")
+                          .style("left",d3.mouse(this.el)[0] - Util.toPixel(tooltipBox.style("width"))+"px")
+                          .style("position","absolute")
+            }
+            else {
+                tooltipBox.style("top",d3.mouse(this.el)[1] +"px")
+                          .style("left",d3.mouse(this.el)[0] + "px")
+                          .style("position","absolute")
+            }
+
+            
         })
         this.chart.on("hideTooltip",()=>{
-            this.elD3.style("display","none")
+            tooltipBox.style("display","none")
         })
         return this
     }

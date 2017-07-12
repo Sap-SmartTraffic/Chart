@@ -12,31 +12,33 @@
 
 /* TooltipLayer */
 .tooltipContainer {
-    z-index: 10;
     pointer-events: none;
-    display: none;
-}
+    .tooltipBox {
+        z-index: 10;
+        pointer-events: none;
+        display: none;
+    }
 
-.tooltip {
-    border-collapse: collapse;
-    border-spacing: 0;
-    background-color: #fff;
-    opacity: 0.8;
-    empty-cells: show;
-    box-shadow: 7px 7px 12px -9px;
-    border: 1px solid #ddd;
-}
+    .tooltip {
+        border-collapse: collapse;
+        border-spacing: 0;
+        background-color: #fff;
+        opacity: 0.8;
+        empty-cells: show;
+        box-shadow: 7px 7px 12px -9px;
+        border: 1px solid #ddd;
+    }
 
-.tooltip tr{
-    border: 1px solid #ccc;
-}
+    .tooltip tr{
+        border: 1px solid #ccc;
+    }
 
-.tooltip th {
-    background-color: #aaa;
-    font-size: 14px;
-    padding: 2px 5px;
-    text-align: left;
-    color: #fff;
+    .tooltip th {
+        background-color: #aaa;
+        font-size: 14px;
+        padding: 2px 5px;
+        text-align: left;
+        color: #fff;
 }
 
 .tooltip td {
@@ -52,6 +54,8 @@
     height: 10px;
     margin-right: 6px;
 }
+}
+
 
 /* LegendLayer */
 .legendGroup {
