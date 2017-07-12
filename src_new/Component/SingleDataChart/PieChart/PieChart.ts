@@ -1,8 +1,8 @@
 import d3 =require("d3")
 import _ =require("underscore")
-import {Util}from "../../Core/Util"
-import {BaseChart,SingleDataChart} from "../../Core/BaseChart"
-import {BaseLayer,ILayerConfig,ILayerStyle} from "../../Core/BaseLayer"
+import {Util}from "../../../Core/Util"
+import {BaseChart,SingleDataChart} from "../../../Core/BaseChart"
+import {BaseLayer,ILayerConfig,ILayerStyle} from "../../../Core/BaseLayer"
 
 export class PieLayer extends BaseLayer {
     constructor(id?,conf?) {

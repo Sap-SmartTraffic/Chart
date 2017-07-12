@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <title>Chart Test</title>
 </head>
-<script src="../../../lib/requirejs/require.js"></script>
-<script src="../../../dist_new/requireConfig.js"></script>
-<link rel="stylesheet" href="../../../dist_new/SingleDataChart/DashChart/DashChart.css">
+<script src="/lib/requirejs/require.js"></script>
+<script src="/dist_new/requireConfig.js"></script>
+<link rel="stylesheet" href="/dist_new/SingleDataChart/DashChart/DashChart.css">
 <body>
 <section>
     <header> DashPie</header>
@@ -24,7 +24,7 @@
     }
 </style>
 <script>
-    requirejs(["SingleDataChart/DashChart/DashChart"],function(d){
+    requirejs(["./Component/SingleDataChart/DashChart/DashChart"],function(d){
         var dashChart = new d.DashChart({style:{width:"20rem",height:"10rem"}})
         dashChart.setData(30)
         dashChart.renderAt("content")

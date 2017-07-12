@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <title>Chart Test</title>
 </head>
-<script src="../../../lib/requirejs/require.js"></script>
-<script src="../../../dist_new/requireConfig.js"></script>
-<link rel="stylesheet" href="../../../dist_new/SingleDataChart/PieChart/PieChart.css">
+<script src="/lib/requirejs/require.js"></script>
+<script src="/dist_new/requireConfig.js"></script>
+<link rel="stylesheet" href="/dist_new/SingleDataChart/PieChart/PieChart.css">
 <body>
 <section>
     <content></content>
@@ -23,7 +23,7 @@
     }
 </style>
 <script>
-    requirejs(["SingleDataChart/PieChart/PieChart"],function(p){
+    requirejs(["./Component/SingleDataChart/PieChart/PieChart"],function(p){
         var pieChart = new p.PieChart({style:{
             height:"20rem",
             width:"50rem"

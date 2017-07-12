@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <title>Chart Demo-Component</title>
 </head>
-<script src="/../../lib/requirejs/require.js"></script>
-<script src="/../../dist_new/requireConfig.js"></script>
+<script src="/lib/requirejs/require.js"></script>
+<script src="/dist_new/requireConfig.js"></script>
 <body>
     <content id="content"></content>
 </body>
@@ -20,7 +20,7 @@
         flex-wrap: wrap;
     }
     .title{
-            text-align: center;
+        text-align: center;
         font-size: 1.5rem;
     }
 </style>
@@ -38,8 +38,12 @@
        let body=document.getElementById("content")
        var urls=[]
        urls.push({
-           name:"progressLoader",
-           url:"/dist_new/Component/Loader/index.html"
+           name:"circleProgressLoader",
+           url:"/dist_new/Component/Loader/CircleLoader/index.html"
+       })
+       urls.push({
+           name:"barProgressLoader",
+           url:"/dist_new/Component/Loader/BarLoader/index.html"
        })
        urls.push({
            name:"LineChart",
@@ -48,6 +52,22 @@
        urls.push({
            name:"BarChart",
            url:"/dist_new/Component/MultiDataChart/BarChart/index.html"
+       })
+       urls.push({
+           name:"RangeChart",
+           url:"/dist_new/Component/MultiDataChart/RangeChart/index.html"
+       })
+       urls.push({
+           name:"BarLineChart",
+           url:"/dist_new/Component/MultiDataChart/BarLineChart/index.html"
+       })
+       urls.push({
+           name:"DashChart",
+           url:"/dist_new/Component/SingleDataChart/DashChart/index.html"
+       })
+       urls.push({
+           name:"PieChart",
+           url:"/dist_new/Component/SingleDataChart/PieChart/index.html"
        })
        urls.forEach(function(chart){
             body.appendChild(iframeGen(d3,chart))

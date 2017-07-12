@@ -1,8 +1,8 @@
 import d3 = require('d3');
 import _ = require('underscore');
-import { Util } from '../../Core/Util';
-import { SingleDataChart } from '../../Core/BaseChart';
-import { BaseLayer } from '../../Core/BaseLayer';
+import { Util } from '../../../Core/Util';
+import { SingleDataChart } from '../../../Core/BaseChart';
+import { BaseLayer } from '../../../Core/BaseLayer';
 
 export class TimeAdjustLayer extends BaseLayer{
     constructor(id?,conf?){

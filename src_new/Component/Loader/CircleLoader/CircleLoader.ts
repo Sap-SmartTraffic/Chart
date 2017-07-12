@@ -1,5 +1,5 @@
-import {IProgressLoader} from "./ILoader"
-import {Util} from "../Core/Util"
+import {IProgressLoader} from "../ILoader"
+import {Util} from "../../../Core/Util"
 
 export class CircleLoader implements IProgressLoader{
     id = "loader";
@@ -116,26 +116,29 @@ export class CircleLoader implements IProgressLoader{
             this.intervalIndex=0
         }
         this.intervalIndex=setInterval(()=>{
-                if(this.oldRatio < ratio) {
-                    document.getElementsByClassName("loaderRatio")[0].textContent = this.oldRatio + 1 + "%"
-                    this.oldRatio += 1
+            if(this.oldRatio < ratio) {
+                document.getElementsByClassName("loaderRatio")[0].textContent = this.oldRatio + 1 + "%"
+                this.oldRatio += 1
+            }
+            else {
+                clearInterval(this.intervalIndex)
+                this.intervalIndex=0
+                if(ratio == 100) {
+                    return this
                 }
-                else {
-                    if(ratio == 100) {
-                         clearInterval(this.intervalIndex)
-                         this.intervalIndex=0
-                    }
-                    else
-                        return this
-                }
-            },50)
+                else
+                    return this
+            }
+        },50)
         this.interval = (ratio - temp)*50
 
         return this
     }
 
     remove() {
-         this.el.style.transform = "translate(-100%,0)"
+        requestAnimationFrame(()=>{
+            this.el.style.transform = "translate(-100%,0)"
+        })
         setTimeout(()=>{
             this.el.remove()
         },1000)

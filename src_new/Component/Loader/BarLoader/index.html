@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Chart Test</title>
+</head>
+<script src="/lib/requirejs/require.js"></script>
+<script src="/dist_new/requireConfig.js"></script>
+<link rel="stylesheet" href="/dist_new/Loader/barLoader.css">
+<body>
+</body>
+<script>
+    requirejs(["Loader/BarLoader"],function(c){
+        var barLoader = new c.BarLoader(200,300)
+        barLoader.toElement()
+        barLoader.addTo(document.body)
+        barLoader.show()
+        setTimeout(()=>{
+             barLoader.setProgress(20)
+        },1000)
+        setTimeout(()=>{
+             barLoader.setProgress(70)
+        },2000)
+        setTimeout(()=>{
+          barLoader.setProgress(100)
+        },3000)
+        setTimeout(()=>{
+            barLoader.remove()
+        },6000)
+    })
+</script>
+</html>

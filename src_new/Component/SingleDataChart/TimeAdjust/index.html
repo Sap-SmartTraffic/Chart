@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <title>Chart Test</title>
 </head>
-<script src="../../../../lib/requirejs/require.js"></script>
-<script src="../../../../dist_new/requireConfig.js"></script>
-<link rel="stylesheet" href="../../../../dist_new/SingleDataChart/TimeAdjust/TimeAdjust.css">
+<script src="/lib/requirejs/require.js"></script>
+<script src="/dist_new/requireConfig.js"></script>
+<link rel="stylesheet" href="/dist_new/SingleDataChart/TimeAdjust/TimeAdjust.css">
 <body>
 <section>
     <content></content>
@@ -23,7 +23,7 @@
     }
 </style>
 <script>
-    requirejs(["SingleDataChart/TimeAdjust/TimeAdjust"],function(t){
+    requirejs(["./Component/SingleDataChart/TimeAdjust/TimeAdjust"],function(t){
         var timeAdjust = new t.TimeAdjust({style:{
             height:"20rem",
             width:"50rem"

@@ -1,5 +1,5 @@
-import {IProgressLoader} from "./ILoader"
-import {Util} from "../Core/Util"
+import {IProgressLoader} from "../ILoader"
+import {Util} from "../../../Core/Util"
 
 export class BarLoader implements IProgressLoader{
     id = "barLoader"
@@ -36,7 +36,7 @@ export class BarLoader implements IProgressLoader{
     addTo(el:HTMLElement) {
         this.el.style.transform = "translate(-100%,0)"
         this.oldRatio = 0
-        this.interval = 0
+        this.interval = 1000
         el.appendChild(this.el)
         return this
     }
@@ -92,36 +92,40 @@ export class BarLoader implements IProgressLoader{
         })
         return this
     }
-
+    intervalIndex:number
     setProgress(ratio:number) {
         let temp = this.oldRatio
-        setTimeout(()=>{
-            setInterval(()=>{
-                if(this.oldRatio < ratio) {
-                    document.getElementById("colorful").setAttribute("x2",this.oldRatio+"%")
-                    this.oldRatio += 1
+        if(this.intervalIndex){
+            clearInterval(this.intervalIndex)
+            this.intervalIndex=0
+        }
+        this.intervalIndex=setInterval(()=>{
+            if(this.oldRatio < ratio) {
+                document.getElementById("colorful").setAttribute("x2",this.oldRatio+"%")
+                this.oldRatio += 1
+            }
+            else {
+                clearInterval(this.intervalIndex)
+                this.intervalIndex=0
+                if(ratio == 100) {
+                    return this
                 }
-                else {
-                    if(ratio == 100) {
-                        //do finishAction
-                    }
-                    else
-                        return this
-                }
-            },50)
-        },this.interval)
+                else
+                    return this
+            }
+        },50)
         this.interval = (ratio - temp)*50
         
         return this
     }
 
     remove() {
-        setTimeout(()=>{
+        requestAnimationFrame(()=>{
             this.el.style.transform = "translate(-100%,0)"
-        },this.interval)
+        })
         setTimeout(()=>{
             this.el.remove()
-        },this.interval+1000)
+        },1000)
         return this
     }
 }
