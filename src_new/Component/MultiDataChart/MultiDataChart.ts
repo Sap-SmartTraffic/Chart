@@ -1,6 +1,6 @@
 import d3 = require("d3")
 import _ = require('underscore');
-import { BaseChart } from '../Core/BaseChart';
+import { BaseChart } from '../../Core/BaseChart';
 import { MultiDataMeasure } from "./MultiTypeMeasure";
 export interface IGetDomain {
     getDomain:(key?:string)=>number[]

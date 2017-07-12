@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Chart Demo-Component</title>
+</head>
+<script src="/../../lib/requirejs/require.js"></script>
+<script src="/../../dist_new/requireConfig.js"></script>
+<body>
+    <content id="content"></content>
+</body>
+<style>
+    header{
+        width: 100%;
+        text-align: center;
+        font-size: 2rem
+    }
+    content{
+        display: flex;
+        flex-wrap: wrap;
+    }
+    .title{
+            text-align: center;
+        font-size: 1.5rem;
+    }
+</style>
+<script>
+    function iframeGen(d3,chart){
+        var fragment=document.createDocumentFragment()
+        let s=d3.select(fragment).append("xhtml:section").style("height","650px").style("width","800px")
+        s.append("xhtml:iframe").style("height","600px").style("width","800px").attr("src",chart.url)
+        s.append("xhtml:div").classed("title",true).text(chart.name).on("click",function(){
+            window.open(chart.url)
+        })
+        return fragment
+    }
+    requirejs(["d3"],function(d3){
+       let body=document.getElementById("content")
+       var urls=[]
+       urls.push({
+           name:"progressLoader",
+           url:"/dist_new/Component/Loader/index.html"
+       })
+       urls.push({
+           name:"LineChart",
+           url:"/dist_new/Component/MultiDataChart/LineChart/index.html"
+       })
+       urls.push({
+           name:"BarChart",
+           url:"/dist_new/Component/MultiDataChart/BarChart/index.html"
+       })
+       urls.forEach(function(chart){
+            body.appendChild(iframeGen(d3,chart))
+       })
+    })
+</script>
+</html>

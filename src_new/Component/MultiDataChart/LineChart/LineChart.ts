@@ -1,8 +1,8 @@
 import d3 =require("d3")
 import _ = require("underscore")
-import {Util} from "../../Core/Util"
+import {Util} from "../../../Core/Util"
 import {MultiDataChart} from "../../MultiDataChart/MultiDataChart"
-import {BaseLayer,ILayerConfig,ILayerStyle} from "../../Core/BaseLayer"
+import {BaseLayer,ILayerConfig,ILayerStyle} from "../../../Core/BaseLayer"
 import {AxisLayer} from "../../MultiDataChart/AxisLayer"
 import {TooltipLayer,TooltipData} from "../../Layer/TooltipLayer"
 import {LegendLayer} from "../../MultiDataChart/LegendLayer"
@@ -40,7 +40,7 @@ export class LineLayer extends BaseLayer {
 
     chart:MultiDataChart
 
-    curveTypeMap = {
+    curveTypeMap:any = {
         linear: d3.curveLinear,
         basis: d3.curveBasis,
         cardinal: d3.curveCardinal,

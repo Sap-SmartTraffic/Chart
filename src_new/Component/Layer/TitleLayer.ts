@@ -1,6 +1,6 @@
 import d3 =require("d3")
 import _ =require("underscore")
-import {BaseLayer,ILayerConfig} from "../Core/BaseLayer"
+import {BaseLayer,ILayerConfig} from "../../Core/BaseLayer"
 export class TitleLayer extends BaseLayer{
     defaultConfig():ITitleLayerConfig{
         return {

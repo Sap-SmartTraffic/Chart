@@ -197,9 +197,19 @@ export class TimeAdjust extends SingleDataChart{
              this.timelayer.addTo(this)
              this.proxyEvents(this.timelayer,"draging","dragend")
         }
-       
+     defaultConfig(){
+        return {
+            style:{
+                 width:"300px",
+                 height:"300px",
+                 position:"relative"
+            },
+            className:"timeAdjuster",
+            el:null
+        }
+    }
     timelayer:TimeAdjustLayer
-    setData(d:ITimeAdjustData){
+    setData(d){
         this.data=d
     }
 }

@@ -1,4 +1,4 @@
-import { BaseMeasure, IBaseMeasure } from '../Core/BaseMeasure';
+import { BaseMeasure, IBaseMeasure } from '../../Core/BaseMeasure';
 import { IGetDomain } from './MultiDataChart';
 import _ = require('underscore');
 export interface IMultiDataMeasure extends IBaseMeasure,IGetDomain{}

@@ -1,8 +1,8 @@
 import d3 =require("d3")
 import _ = require("underscore")
-import {Util} from "../../Core/Util"
+import {Util} from "../../../Core/Util"
 import {MultiDataChart} from "../../MultiDataChart/MultiDataChart"
-import {BaseLayer,ILayerConfig,ILayerStyle} from "../../Core/BaseLayer"
+import {BaseLayer,ILayerConfig,ILayerStyle} from "../../../Core/BaseLayer"
 import {AxisLayer} from "../../MultiDataChart/AxisLayer"
 
 export class RangeLayer extends BaseLayer {

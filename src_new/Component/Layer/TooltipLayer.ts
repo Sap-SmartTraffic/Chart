@@ -1,7 +1,7 @@
 import d3 =require("d3")
 import _ =require("underscore")
-import { Util } from '../Core/Util'
-import { BaseLayer, ILayerConfig } from '../Core/BaseLayer'
+import { Util } from '../../Core/Util'
+import { BaseLayer, ILayerConfig } from '../../Core/BaseLayer'
 import { MultiDataChart } from '../MultiDataChart/MultiDataChart'
 export class TooltipLayer extends BaseLayer{
     constructor(id?,conf?) {

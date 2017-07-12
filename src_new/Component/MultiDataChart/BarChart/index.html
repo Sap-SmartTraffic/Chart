@@ -4,10 +4,10 @@
   <meta charset="utf-8">
   <title>Chart Test</title>
 </head>
-<script src="../../../lib/requirejs/require.js"></script>
-<script src="../../../dist_new/requireConfig.js"></script>
-<link rel="stylesheet" href="../../../dist_new/MultiDataChart/MultiDataChart.css">
-<link rel="stylesheet" href="../../../dist_new/MultiDataChart/BarChart/BarChart.css">
+<script src="/lib/requirejs/require.js"></script>
+<script src="/dist_new/requireConfig.js"></script>
+<link rel="stylesheet" href="/dist_new/MultiDataChart/MultiDataChart.css">
+<link rel="stylesheet" href="/dist_new/MultiDataChart/BarChart/BarChart.css">
 <body>
 <section>
     <content></content>
@@ -19,7 +19,7 @@
     }
 </style>
 <script>
-    requirejs(["MultiDataChart/BarChart/BarChart"],function(c){
+    requirejs(["./Component/MultiDataChart/BarChart/BarChart"],function(c){
         var barChart = new c.BarChart({style:{width:"40rem",height:"30rem"}})
         let measures = [{id:1,data:[{"x":"04-10","y":4},{"x":"04-11","y":8},{"x":"04-12","y":6},{"x":"04-13","y":12},{"x":"04-14","y":15}],type:"bar"},
                         {id:2,data:[{"x":"04-10","y":7},{"x":"04-11","y":2},{"x":"04-12","y":9},{"x":"04-13","y":3},{"x":"04-14","y":24}],type:"bar"},

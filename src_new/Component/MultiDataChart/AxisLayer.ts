@@ -1,7 +1,7 @@
 import d3 =require("d3")
 import _ =require("underscore")
-import { Util } from '../Core/Util'
-import { BaseLayer, ILayerConfig } from '../Core/BaseLayer'
+import { Util } from '../../Core/Util'
+import { BaseLayer, ILayerConfig } from '../../Core/BaseLayer'
 import {MultiDataChart} from '../MultiDataChart/MultiDataChart'
 import {BarData} from '../MultiDataChart/BarChart/BarChart'
 
@@ -85,7 +85,7 @@ export class AxisLayer extends BaseLayer{
         if(this.config.verticalGridLine) {
             let xGridLine = d3.axisBottom(xScale)
                               .tickSize(Util.toPixel(this.config.style.height) - Util.toPixel(this.config.padding.top) - Util.toPixel(this.config.padding.bottom))
-                              .tickFormat("")
+                              .tickFormat((d,i)=>"")
             this.elD3.append("g")
                      .call(xGridLine)
                      .attr("transform", `translate(0, ${Util.toPixel(this.config.padding.top)})`)
@@ -94,7 +94,7 @@ export class AxisLayer extends BaseLayer{
         if(this.config.horizontalGridLine) {
             let yGridLine = d3.axisLeft(yScale)
                               .tickSize(Util.toPixel(this.config.style.width) - Util.toPixel(this.config.padding.left) - Util.toPixel(this.config.padding.right))
-                              .tickFormat("")
+                              .tickFormat((d,i)=>"")
             this.elD3.append("g")
                      .call(yGridLine)
                      .attr("transform", `translate(${Util.toPixel(this.config.style.width) - Util.toPixel(this.config.padding.right)}, 0)`)
