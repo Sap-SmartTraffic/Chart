@@ -26,8 +26,8 @@
 <script>
     requirejs(["./Component/MultiDataChart/LineChart/LineChart"],function(l){
         var lineChart = new l.LineChart({style:{width:"40rem",height:"30rem"}})
-        let measures = [{id:1, data:[{x:0,y:0},{x:3,y:2},{x:5,y:8},{x:7,y:32}], type:"line"},
-                        {id:2, data:[{x:1,y:32},{x:3,y:8},{x:5,y:2},{x:8,y:1}], type:"line"}]
+        let measures = [{id:1, data:[{x:"2017/07/01",y:0},{x:"2017/07/03",y:2},{x:"2017/07/05",y:8},{x:"2017/07/07",y:32}], type:"line"},
+                        {id:2, data:[{x:"2017/07/02",y:32},{x:"2017/07/03",y:8},{x:"2017/07/05",y:2},{x:"2017/07/08",y:1}], type:"line"}]
         lineChart.loadMeasures(measures)
         lineChart.renderAt("content")
     })

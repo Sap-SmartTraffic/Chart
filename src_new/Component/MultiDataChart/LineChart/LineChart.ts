@@ -32,7 +32,6 @@ export class LineLayer extends BaseLayer {
                 height: "200rem"
             },
             padding:6,
-            xType:"line",
             curveType: "linear",
             hasDot: true,
             hasArea: false,
@@ -57,38 +56,31 @@ export class LineLayer extends BaseLayer {
             return
         }
         let series = ds.length
+        if(typeof(ds[0].data[0].x) == "string") {
+            this.chart.strToTimeMeasure("line")
+        }
         let maxX = this.chart.max("x"),
             minX = this.chart.min("x"),
             maxY = this.chart.max("y")
         let width = Util.toPixel(this.config.style.width),
             height = Util.toPixel(this.config.style.height)
-        
-        let xScale,line
-        if(this.config.xType == "time") {
-            let parseTime = d3.timeParse("%H")
-            let temp = [];
-            _.each(ds,(d,i)=>{
-                let tempData = []
-                _.each(d.data,(v:LineData,k)=>{
-                    tempData.push({x:parseTime(v.x.toString()),y:v.y}) 
-                })
-                temp.push({id:d.id,data:tempData,type:d.type,style:d.style})
-            })
-            ds = temp
-            xScale = d3.scaleTime()
-                       .domain([parseTime(minX.toString()),parseTime(maxX.toString())])
-                       .range([this.config.padding, width-this.config.padding])
+        let xScale
+        if(typeof(ds[0].data[0].x) == "string") {
+             xScale = d3.scaleTime()
+                        .domain([minX,maxX])
+                        .range([this.config.padding, width-this.config.padding])
+        }else {
+             xScale = d3.scaleLinear()
+                        .domain([minX,maxX])
+                        .range([this.config.padding, width-this.config.padding])
         }
-        else {
-            xScale = d3.scaleLinear()
-                       .domain([minX,maxX])
-                       .range([this.config.padding, width-this.config.padding])
-        }
+        ds = this.chart.getMeasure("line")
+    
         let yScale = d3.scaleLinear()
                        .domain([0,maxY])
                        .range([height-this.config.padding,this.config.padding])
         
-        line = d3.line<{x:any,y:any}>()
+        let line = d3.line<{x:any,y:any}>()
                  .x(function(v){return xScale(v.x)})
                  .y(function(v){return yScale(v.y)})
                  .curve(this.curveTypeMap[this.config.curveType])               
@@ -128,12 +120,15 @@ export class LineLayer extends BaseLayer {
             _.each(ds,(d,i)=>{
                 allRectX = _.union(allRectX, _.pluck(d.data,"x"))
             })
-            allRectX = allRectX.sort()
+            allRectX = allRectX.sort((a,b)=>{
+                return a > b ? 1 : -1
+            })
             for(let i = 1; i < allRectX.length; i++ ) {
-                allRectInterval.push(allRectX[i] - allRectX[i-1]) 
+                let interval = allRectX[i] - allRectX[i-1]
+                if(interval != 0)
+                    allRectInterval.push(interval) 
             }
-            let rectWidth = (xScale(_.min(allRectInterval)) - xScale(0)) / 3 * 2
-            
+            let rectWidth = ((_.min(allRectInterval)) / (maxX - minX)) * (width-this.config.padding) / 3 * 2
             _.each(allRectX,(x)=>{
                 let data = []
                 _.each(ds,(d)=>{
@@ -204,7 +199,6 @@ export class LineLayer extends BaseLayer {
 
 export interface LineLayerConfig extends ILayerConfig {
     padding:number,
-    xType: string
     curveType: string,
     hasDot: boolean,
     hasArea: boolean,
@@ -232,10 +226,10 @@ export class LineChart extends MultiDataChart {
             },
             axis:{
                 format:{
-                    x:d3.timeFormat("%H:%M")
+                    x:d3.timeFormat("%m-%d")
                 },
                 ticks:{
-                    x:8
+                    x:6
                 }
             },
             type:"time"
@@ -247,9 +241,7 @@ export class LineChart extends MultiDataChart {
                 left: ()=>Util.toPixel(this.axisLayer.config.padding.left) - this.axisLayer.config.borderPadding,
                 width: ()=>Util.toPixel(this.config.style.width) - Util.toPixel(this.axisLayer.config.padding.left)-Util.toPixel(this.axisLayer.config.padding.right) + this.axisLayer.config.borderPadding * 2,
                 height: ()=>Util.toPixel(this.config.style.height)- Util.toPixel(this.axisLayer.config.padding.top)-Util.toPixel(this.axisLayer.config.padding.bottom) + this.axisLayer.config.borderPadding * 2
-            },
-            hasTooltip:false,
-            xType: "time"
+            }
         })
         this.lineLayer.addTo(this)
         if(this.lineLayer.config.hasTooltip) {

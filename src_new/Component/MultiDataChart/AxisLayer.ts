@@ -77,7 +77,7 @@ export class AxisLayer extends BaseLayer{
         }
         else if(this.config.type == "time") {
             xScale = d3.scaleTime()
-                       .domain([d3.timeParse("%H")((this.chart.min(this.config.axis.key.x).toString())),d3.timeParse("%H")((this.chart.max(this.config.axis.key.x).toString()))])
+                       .domain([this.chart.min(this.config.axis.key.x),(this.chart.max(this.config.axis.key.x))])
                        .range([Util.toPixel(this.config.padding.left),
                                Util.toPixel(this.config.style.width) - Util.toPixel(this.config.padding.right)])
         }

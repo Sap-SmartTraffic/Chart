@@ -14,7 +14,7 @@ export interface IMeasureManager{
     removeMeasure:(m:MultiDataMeasure|string)=>this
     getAllMeasure:()=>MultiDataMeasure[]
     getMeasure:(type:string)=>MultiDataMeasure[]
-    
+    strToTimeMeasure:()=>this
 }
 export interface IMultiDataChart extends BaseChart,IMeasureManager,IGetDomain{}
 export class MultiDataChart extends BaseChart implements IMultiDataChart{
@@ -65,22 +65,53 @@ export class MultiDataChart extends BaseChart implements IMultiDataChart{
     getDomain(k:string){
         return [this.min(k),this.max(k)]
     }
+    strToTimeMeasure(type?:string) {
+        let ms:MultiDataMeasure[]
+        let temp = []
+        if(type == undefined) {
+            ms = this.measures
+            this.measures = [];
+        }
+        else {
+            ms = this.getMeasure(type)
+            this.measures = this.measures.filter((d)=>{d.type != type})
+        }
+        _.each(ms,(d,i)=>{
+            let tempData = []
+            _.each(d.data,(v:{x:any,y:any},k)=>{
+                tempData.push({x:new Date(v.x),y:v.y}) 
+            })
+            temp.push(new MultiDataMeasure(d.id,tempData,d.type))
+        })
+        this.measures = temp
+        return this
+    }
     max(k:string){
-        let max=0
+        let max
         _.each(this.measures,(mm)=>{
             let _max = mm.max(k)
-            if(_.isNumber(_max)){
-                max=Math.max(max,_max)
+            if(!max) {
+                max = _max
+            }
+            else {
+                if(_max > max){
+                    max=_max
+                }
             }
         })
         return max
     }
     min(k:string){
-        let min=0
+        let min
         _.each(this.measures,(mm)=>{
             let _min=mm.min(k)
-            if(_.isNumber(_min)){
-                min=Math.min(min,_min)
+            if(!min) {
+                min=_min
+            }
+            else {
+                if(_min < min){
+                    min= _min
+                }
             }
         })
         return min
