@@ -40,7 +40,14 @@ export class AssembleChart extends MultiDataChart {
                 height: ()=>Util.toPixel(this.config.style.height)- Util.toPixel(this.axisLayer.config.padding.top)-Util.toPixel(this.axisLayer.config.padding.bottom) + this.axisLayer.config.borderPadding * 2
             }
         })
-        this.tooltipLayer = new TooltipLayer("tooltip",{})
+        this.tooltipLayer = new TooltipLayer("tooltip",{
+            style: {
+                top: ()=>Util.toPixel(this.axisLayer.config.padding.top) - this.axisLayer.config.borderPadding,
+                left: ()=>Util.toPixel(this.axisLayer.config.padding.left) - this.axisLayer.config.borderPadding,
+                width: ()=>Util.toPixel(this.config.style.width) - Util.toPixel(this.axisLayer.config.padding.left)-Util.toPixel(this.axisLayer.config.padding.right) + this.axisLayer.config.borderPadding * 2,
+                height: ()=>Util.toPixel(this.config.style.height)- Util.toPixel(this.axisLayer.config.padding.top)-Util.toPixel(this.axisLayer.config.padding.bottom) + this.axisLayer.config.borderPadding * 2
+            }
+        })
         this.legendLayer = new LegendLayer("legend",{
             style: {
                 top: ()=>this.axisLayer.config.style.height,

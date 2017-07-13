@@ -58,7 +58,7 @@ export class BarLoader implements IProgressLoader{
         svgNode.appendChild(defs)
 
         let lineBase = this.makeSVG("line",{id:"lineBase", x1:"0", y1:this.height/3,x2:"100%",y2:this.height/3+0.001})
-        let lineColor = this.makeSVG("line",{id:"colorful",x1:"0", y1:this.height/3, x2:"99.33%",y2:this.height/3+0.001})
+        let lineColor = this.makeSVG("line",{id:"colorful",x1:"0", y1:this.height/3, x2:"0%",y2:this.height/3+0.001})
         svgNode.appendChild(lineBase)
         svgNode.appendChild(lineColor)
 

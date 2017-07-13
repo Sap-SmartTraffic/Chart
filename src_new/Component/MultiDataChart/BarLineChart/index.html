@@ -7,16 +7,22 @@
 <script src="/lib/requirejs/require.js"></script>
 <script src="/dist_new/requireConfig.js"></script>
 <link rel="stylesheet" href="/dist_new/Component/MultiDataChart/BarLineChart/BarLineChart.css">
+<style>
+    .chart {
+        transform: translate(-50%,0);
+        left:50%;
+    }
+
+    section {
+        text-align: center;
+    }
+</style>
 <body>
 <section>
+    <h1>BarLine Chart</h1>
     <content></content>
 </section>
 </body>
-<style>
-    content{
-        display: flex
-    }
-</style>
 <script>
     requirejs(["./Component/MultiDataChart/BarLineChart/BarLineChart"],function(c){
         var assembleChart = new c.AssembleChart({style:{width:"40rem",height:"30rem"}})

@@ -7,17 +7,22 @@
 <script src="/lib/requirejs/require.js"></script>
 <script src="/dist_new/requireConfig.js"></script>
 <link rel="stylesheet" href="/dist_new/Component/MultiDataChart/LineChart/LineChart.css">
+<style>
+    .chart {
+        transform: translate(-50%,0);
+        left:50%;
+    }
 
+    section {
+        text-align: center;
+    }
+</style>
 <body>
 <section>
+    <h1>Line Chart</h1>
     <content></content>
 </section>
 </body>
-<style>
-    content{
-        display: flex
-    }
-</style>
 <script>
     requirejs(["./Component/MultiDataChart/LineChart/LineChart"],function(l){
         var lineChart = new l.LineChart({style:{width:"40rem",height:"30rem"}})

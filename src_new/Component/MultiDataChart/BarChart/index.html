@@ -7,16 +7,22 @@
 <script src="/lib/requirejs/require.js"></script>
 <script src="/dist_new/requireConfig.js"></script>
 <link rel="stylesheet" href="/dist_new/Component/MultiDataChart/BarChart/BarChart.css">
+<style>
+    .chart {
+        transform: translate(-50%,0);
+        left:50%;
+    }
+
+    section {
+        text-align: center;
+    }
+</style>
 <body>
 <section>
+    <h1>Bar Chart</h1>
     <content></content>
 </section>
 </body>
-<style>
-    content{
-        display: flex
-    }
-</style>
 <script>
     requirejs(["./Component/MultiDataChart/BarChart/BarChart"],function(c){
         var barChart = new c.BarChart({style:{width:"40rem",height:"30rem"}})

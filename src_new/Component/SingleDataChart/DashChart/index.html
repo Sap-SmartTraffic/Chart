@@ -9,23 +9,23 @@
 <link rel="stylesheet" href="/dist_new/Component/SingleDataChart/DashChart/DashChart.css">
 <body>
 <section>
-    <header> DashPie</header>
+    <h1>DashPie Chart</h1>
     <content></content>
 </section>
 </body>
 <style>
-    header{
-        width: 100%;
-        text-align: center;
-        font-size: 2rem
+    .chart {
+        transform: translate(-50%,0);
+        left:50%;
     }
-    content{
-        display: flex
+
+    section {
+        text-align: center;
     }
 </style>
 <script>
     requirejs(["./Component/SingleDataChart/DashChart/DashChart"],function(d){
-        var dashChart = new d.DashChart({style:{width:"20rem",height:"10rem"}})
+        var dashChart = new d.DashChart({style:{width:"40rem",height:"30rem"}})
         dashChart.setData(30)
         dashChart.renderAt("content")
         setInterval(function(){

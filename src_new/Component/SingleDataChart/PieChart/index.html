@@ -9,25 +9,23 @@
 <link rel="stylesheet" href="/dist_new/Component/SingleDataChart/PieChart/PieChart.css">
 <body>
 <section>
+    <h1>Pie Chart</h1>
     <content></content>
 </section>
 </body>
 <style>
-    header{
-        width: 100%;
-        text-align: center;
-        font-size: 2rem
+    .chart {
+        transform: translate(-50%,0);
+        left:50%;
     }
-    content{
-        display: flex
+
+    section {
+        text-align: center;
     }
 </style>
 <script>
     requirejs(["./Component/SingleDataChart/PieChart/PieChart"],function(p){
-        var pieChart = new p.PieChart({style:{
-            height:"20rem",
-            width:"50rem"
-        }})
+        var pieChart = new p.PieChart({style:{height:"30rem",width:"40rem"}})
         pieChart.setData([
             {"time":3,"value":56},
             {"time":4,"value":65},
