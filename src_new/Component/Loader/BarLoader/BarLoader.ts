@@ -124,6 +124,7 @@ export class BarLoader implements IProgressLoader{
             this.el.style.transform = "translate(-100%,0)"
         })
         setTimeout(()=>{
+            this.oldRatio = 0
             this.el.remove()
         },1000)
         return this

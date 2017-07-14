@@ -26,11 +26,11 @@
 <script>
     requirejs(["./Component/MultiDataChart/BarLineChart/BarLineChart"],function(c){
         var assembleChart = new c.AssembleChart({style:{width:"40rem",height:"30rem"}})
-        let measures = [{id:1, data:[{x:1,y:0},{x:2,y:2},{x:3,y:8},{x:4,y:32}], type:"line"},
-                        {id:2, data:[{x:1,y:32},{x:2,y:8},{x:3,y:2},{x:4,y:1}], type:"line"},
-                        {id:3, data:[{x:1,y:4},{x:2,y:8},{x:3,y:6},{x:4,y:12},{x:5,y:15}],type:"bar"},
-                        {id:4, data:[{x:1,y:7},{x:2,y:2},{x:3,y:9},{x:4,y:3},{x:5,y:15}],type:"bar"},
-                        {id:5, data:[{x:1,y:3},{x:2,y:6},{x:3,y:5},{x:4,y:10},{x:5,y:18}],type:"bar"}]
+        let measures = [{id:1, data:[{x:"2017/07/01 06:00",y:0},{x:"2017/07/01 10:00",y:2},{x:"2017/07/01 13:00",y:8},{x:"2017/07/01 16:00",y:32}], type:"line"},
+                        {id:2, data:[{x:"2017/07/01 06:00",y:32},{x:"2017/07/01 10:00",y:8},{x:"2017/07/01 13:00",y:2},{x:"2017/07/01 16:00",y:1}], type:"line"},
+                        {id:3, data:[{x:"2017/07/01 06:00",y:4},{x:"2017/07/01 10:00",y:8},{x:"2017/07/01 13:00",y:6},{x:"2017/07/01 16:00",y:12}],type:"bar"},
+                        {id:4, data:[{x:"2017/07/01 06:00",y:7},{x:"2017/07/01 10:00",y:2},{x:"2017/07/01 13:00",y:9},{x:"2017/07/01 16:00",y:3}],type:"bar"},
+                        {id:5, data:[{x:"2017/07/01 06:00",y:3},{x:"2017/07/01 10:00",y:6},{x:"2017/07/01 13:00",y:5},{x:"2017/07/01 16:00",y:10}],type:"bar"}]
         assembleChart.loadMeasures(measures)
         assembleChart.renderAt("content")
     })
