@@ -124,10 +124,14 @@ export class LineLayer extends BaseLayer {
             allRectX = allRectX.sort((a,b)=>{
                 return a > b ? 1 : -1
             })
+            let re = [allRectX[0]]
+            for(let i = 1; i<allRectX.length; i++) {
+                if(allRectX[i].toString() != allRectX[i-1].toString())
+                    re.push(allRectX[i])
+            }   
+            allRectX = re
             for(let i = 1; i < allRectX.length; i++ ) {
-                let interval = allRectX[i] - allRectX[i-1]
-                if(interval != 0)
-                    allRectInterval.push(interval) 
+                allRectInterval.push(allRectX[i] - allRectX[i-1]) 
             }
             let rectWidth = ((_.min(allRectInterval)) / (maxX - minX)) * (width-this.config.padding) / 3 * 2
             _.each(allRectX,(x)=>{
