@@ -276,6 +276,7 @@ export class LineChart extends MultiDataChart {
         this.axisLayer.setConfig(_.pick(c,"axis,borderPadding,padding,type,verticalGridLine,horizontalGridLine"))
         this.legendLayer.setConfig(_.pick(c,""))
         this.tooltipLayer.setConfig(_.pick(c,""))
+        this.fire("style_change")
     }
 }
 

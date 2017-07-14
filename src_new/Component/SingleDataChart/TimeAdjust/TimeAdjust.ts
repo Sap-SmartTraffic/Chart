@@ -209,6 +209,7 @@ export class TimeAdjust extends SingleDataChart{
     timelayer:TimeAdjustLayer
     setData(d){
         this.data=d
+        this.fire("data_change")
     }
 }
 
