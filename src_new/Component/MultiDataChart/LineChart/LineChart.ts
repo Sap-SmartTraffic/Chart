@@ -36,7 +36,8 @@ export class LineLayer extends BaseLayer {
             hasDot: true,
             hasArea: false,
             hasTooltip: true,
-            hasTimeAdjust: true
+            hasTimeAdjust: true,
+            defaultTimeAdjust: "2017/07/01 12:00"
         }
     }
 
@@ -170,9 +171,9 @@ export class LineLayer extends BaseLayer {
         if(this.config.hasTimeAdjust) {
             let adjustLine = svgNode.append("line")
                                     .attr("class","adjustLine")
-                                    .attr("x1",width/2)
+                                    .attr("x1",xScale(new Date(this.config.defaultTimeAdjust)))
                                     .attr("y1",this.config.padding)
-                                    .attr("x2",width/2)
+                                    .attr("x2",xScale(new Date(this.config.defaultTimeAdjust)))
                                     .attr("y2",height-self.config.padding)
             this.chart.on("draging",(d)=>{
                 svgNode.select(".adjustLine")
@@ -204,6 +205,7 @@ export interface LineLayerConfig extends ILayerConfig {
     hasArea: boolean,
     hasTooltip: boolean,
     hasTimeAdjust: boolean,
+    defaultTimeAdjust: string
 }
 
 export interface LineData {
@@ -226,7 +228,7 @@ export class LineChart extends MultiDataChart {
             },
             axis:{
                 format:{
-                    x:d3.timeFormat("%m-%d")
+                    x:d3.timeFormat("%H:%M")
                 },
                 ticks:{
                     x:6
@@ -266,8 +268,10 @@ export class LineChart extends MultiDataChart {
     }
 
     setConfig(c:LineLayerConfig){
-        this.lineLayer.setConfig(_.pick(c,"key"))
-        this.axisLayer.setConfig(_.pick(c,"key"))
+        this.lineLayer.setConfig(_.pick(c,"curveType,hasDot,hasArea,hasTooltip,hasTimeAdjust,defaultTimeAdjust"))
+        this.axisLayer.setConfig(_.pick(c,"axis,borderPadding,padding,type,verticalGridLine,horizontalGridLine"))
+        this.legendLayer.setConfig(_.pick(c,""))
+        this.tooltipLayer.setConfig(_.pick(c,""))
     }
 }
 

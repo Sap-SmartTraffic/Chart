@@ -18,11 +18,10 @@ export class TimeAdjustLayer extends BaseLayer{
     chart:SingleDataChart
     parseData(d):ITimeAdjustData{
         return _.extend({
-            rangeMin:"6",
-            rangeMax:"18",
-            focusTime:"12",
+            rangeMin:"2017/07/01 06:00",
+            rangeMax:"2017/07/01 18:00",
+            focusTime:"2017/07/01 12:00",
             axisHeight:"20px",
-            timeParse: "%H",
             timeFormat: "%H:%M",
             lineTextPadding: "20px",
             timeRound:15
@@ -39,12 +38,11 @@ export class TimeAdjustLayer extends BaseLayer{
                .attr("height",height- Util.toPixel(data.axisHeight))
         
         let self = this
-        let parseTime = d3.timeParse(data.timeParse)
         let formatTime = d3.timeFormat(data.timeFormat)
-        let focusTime = parseTime(data.focusTime)
+        let focusTime = new Date(data.focusTime)
 
         let xScale = d3.scaleTime()
-                       .domain([parseTime(data.rangeMin),parseTime(data.rangeMax)])
+                       .domain([new Date(data.rangeMin),new Date(data.rangeMax)])
                        .range([5,width-5])
         
         svgNode.append("rect")
@@ -69,7 +67,7 @@ export class TimeAdjustLayer extends BaseLayer{
              .attr("dy","3")
              .attr("alignment-baseline","hanging")
              .attr("text-anchor","start")
-             .text(formatTime(parseTime(data.rangeMin)))
+             .text(formatTime(new Date(data.rangeMin)))
         let tick2 = axis.append("g")
                         .attr("class","tick")
                         .attr("transform",`translate(${Util.toPixel(this.config.style.width)/2}, 0)`)
@@ -85,7 +83,7 @@ export class TimeAdjustLayer extends BaseLayer{
              .attr("dy","3")
              .attr("alignment-baseline","hanging")
              .attr("text-anchor","end")
-             .text(formatTime(parseTime(data.rangeMax)))
+             .text(formatTime(new Date(data.rangeMax)))
 
                
         let drag = d3.drag()
@@ -93,7 +91,7 @@ export class TimeAdjustLayer extends BaseLayer{
                          svgNode.style("cursor","col-resize")
                      })
                      .on("drag",function(){ 
-                         if(xScale.invert(d3.event.x)>=parseTime(data.rangeMin)&&xScale.invert(d3.event.x)<=parseTime(data.rangeMax)){
+                         if(xScale.invert(d3.event.x)>=new Date(data.rangeMin)&&xScale.invert(d3.event.x)<=new Date(data.rangeMax)){
                              let focusText = svgNode.select(".focusText"),
                                  focusLine = svgNode.select(".focusLine")
                              let oldLineX = Number(focusLine.attr("x1")),
@@ -125,7 +123,7 @@ export class TimeAdjustLayer extends BaseLayer{
         
         svgNode.append("text")
                .attr("class",(xScale(focusTime)>Util.toPixel(this.config.style.width)/2)?"focusText leftSide":"focusText rightSide")
-               .text(formatTime(parseTime(data.focusTime)))
+               .text(formatTime(new Date(data.focusTime)))
                .attr("x",(xScale(focusTime)>Util.toPixel(this.config.style.width)/2)?(xScale(focusTime)-Util.toPixel(data.lineTextPadding)):(xScale(focusTime)+Util.toPixel(data.lineTextPadding)))
                .attr("y",(Util.toPixel(this.config.style.height) - Util.toPixel(data.axisHeight))/2)
         
@@ -215,7 +213,6 @@ export class TimeAdjust extends SingleDataChart{
 }
 
 export interface ITimeAdjustData{
-    timeParse:string,
     focusTime:string,
     rangeMin:string,
     rangeMax:string,
