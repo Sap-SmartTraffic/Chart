@@ -179,17 +179,14 @@ export class LineLayer extends BaseLayer {
                                     .attr("y1",this.config.padding)
                                     .attr("x2",xScale(new Date(this.config.defaultTimeAdjust)))
                                     .attr("y2",height-self.config.padding)
-            this.chart.on("draging",(d)=>{
+            let setTime = (time:Date|String)=>{
+                if(typeof(time) == "string") {
+                    time = new Date(time)
+                }
                 svgNode.select(".adjustLine")
-                       .attr("x1",xScale(d))
-                       .attr("x2",xScale(d))
-            })
-            this.chart.on("dragend",(d)=>{
-                svgNode.select(".adjustLine")
-                       .attr("x1",xScale(d))
-                       .attr("x2",xScale(d))
-            })
-
+                       .attr("x1",xScale(time))
+                       .attr("x2",xScale(time))
+            }  
         }
 
         return this

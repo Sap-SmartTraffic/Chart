@@ -106,30 +106,32 @@ export class TimeAdjustLayer extends BaseLayer{
                          }   
                      })
                      .on("end",function(){
-                         let focusText = svgNode.select(".focusText"),
-                                         focusLine = svgNode.select(".focusLine")
-                         let oldLineX = Number(focusLine.attr("x1")),
-                         oldTextX = Number(focusText.attr("x"))
-                         let currentTime = xScale.invert(d3.event.x)
-                         let currentMinutes = currentTime.getMinutes()
-                         let remainderTime = currentMinutes % data.timeRound
-                         if(remainderTime != 0) {
-                             if(remainderTime <= data.timeRound / 2) {
-                                 currentTime.setMinutes(currentMinutes - remainderTime)
-                             }
-                             else {
-                                 currentTime.setMinutes(currentMinutes + data.timeRound - remainderTime)
-                             }
+                         if(xScale.invert(d3.event.x)>=new Date(data.rangeMin)&&xScale.invert(d3.event.x)<=new Date(data.rangeMax)){
+                            let focusText = svgNode.select(".focusText"),
+                                            focusLine = svgNode.select(".focusLine")
+                            let oldLineX = Number(focusLine.attr("x1")),
+                            oldTextX = Number(focusText.attr("x"))
+                            let currentTime = xScale.invert(d3.event.x)
+                            let currentMinutes = currentTime.getMinutes()
+                            let remainderTime = currentMinutes % data.timeRound
+                            if(remainderTime != 0) {
+                                if(remainderTime <= data.timeRound / 2) {
+                                    currentTime.setMinutes(currentMinutes - remainderTime)
+                                }
+                                else {
+                                    currentTime.setMinutes(currentMinutes + data.timeRound - remainderTime)
+                                }
+                            }
+                            self.currentTime = currentTime
+                            d3.select(this).attr("transform",`translate(${xScale(currentTime)-oldLineX}, 0)`)
+                            if(d3.event.x > Util.toPixel(self.config.style.width)/2)
+                                focusText.text(formatTime(currentTime)).attr("x",(xScale(currentTime) - Util.toPixel(data.lineTextPadding))).attr("class","focusText leftSide")
+                            else 
+                                focusText.text(formatTime(currentTime)).attr("x",(xScale(currentTime) + Util.toPixel(data.lineTextPadding))).attr("class","focusText rightSide")
+                            self.fire("draging",{dateTime:currentTime})
+                            svgNode.style("cursor","default")
+                            self.fire("dragend",{dateTime:self.currentTime})
                          }
-                         self.currentTime = currentTime
-                         d3.select(this).attr("transform",`translate(${xScale(currentTime)-oldLineX}, 0)`)
-                         if(d3.event.x > Util.toPixel(self.config.style.width)/2)
-                             focusText.text(formatTime(currentTime)).attr("x",(xScale(currentTime) - Util.toPixel(data.lineTextPadding))).attr("class","focusText leftSide")
-                         else 
-                             focusText.text(formatTime(currentTime)).attr("x",(xScale(currentTime) + Util.toPixel(data.lineTextPadding))).attr("class","focusText rightSide")
-                         self.fire("draging",{dateTime:currentTime})
-                         svgNode.style("cursor","default")
-                         self.fire("dragend",{dateTime:self.currentTime})
                      })
         
         svgNode.append("text")
