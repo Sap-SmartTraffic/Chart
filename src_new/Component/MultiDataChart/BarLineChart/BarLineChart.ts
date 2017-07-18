@@ -9,7 +9,7 @@ import {LegendLayer} from "../../MultiDataChart/LegendLayer"
 import {LineLayer} from "../../MultiDataChart/LineChart/LineChart"
 import {BarLayer} from "../../MultiDataChart/BarChart/BarChart"
 
-export class AssembleChart extends MultiDataChart {
+export class BarLineChart extends MultiDataChart {
     barLayer:BarLayer
     lineLayer:LineLayer
     axisLayer:AxisLayer
@@ -33,7 +33,7 @@ export class AssembleChart extends MultiDataChart {
             },
             type:"time"
         })
-        this.axisLayer.addTo(this)
+        
         this.barLayer = new BarLayer("bar",{
             style: {
                 top: this.axisLayer.config.padding.top,
@@ -42,7 +42,7 @@ export class AssembleChart extends MultiDataChart {
                 height: Util.toPixel(this.config.style.height)- Util.toPixel(this.axisLayer.config.padding.top)-Util.toPixel(this.axisLayer.config.padding.bottom)
             }
         })
-        this.barLayer.addTo(this)
+
         this.lineLayer = new LineLayer("line",{
             style: {
                 top: ()=>Util.toPixel(this.axisLayer.config.padding.top) - this.axisLayer.config.borderPadding,
@@ -51,7 +51,7 @@ export class AssembleChart extends MultiDataChart {
                 height: ()=>Util.toPixel(this.config.style.height)- Util.toPixel(this.axisLayer.config.padding.top)-Util.toPixel(this.axisLayer.config.padding.bottom) + this.axisLayer.config.borderPadding * 2
             }
         })
-        this.lineLayer.addTo(this)
+    
         this.tooltipLayer = new TooltipLayer("tooltip",{
             style: {
                 top: ()=>Util.toPixel(this.axisLayer.config.padding.top) - this.axisLayer.config.borderPadding,
@@ -60,7 +60,7 @@ export class AssembleChart extends MultiDataChart {
                 height: ()=>Util.toPixel(this.config.style.height)- Util.toPixel(this.axisLayer.config.padding.top)-Util.toPixel(this.axisLayer.config.padding.bottom) + this.axisLayer.config.borderPadding * 2
             }
         })
-        this.tooltipLayer.addTo(this)
+
         this.legendLayer = new LegendLayer("legend",{
             style: {
                 top: ()=>this.axisLayer.config.style.height,
@@ -68,6 +68,11 @@ export class AssembleChart extends MultiDataChart {
                 width: ()=>Util.toPixel(this.axisLayer.config.style.width) - Util.toPixel(this.axisLayer.config.padding.left) - Util.toPixel(this.axisLayer.config.padding.right)
             }
         })
+        this.axisLayer.addTo(this)
+        this.barLayer.addTo(this)
+        this.lineLayer.addTo(this)
+        this.tooltipLayer.addTo(this)
         this.legendLayer.addTo(this)
+    
     }
 }

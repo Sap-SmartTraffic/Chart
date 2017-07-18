@@ -25,14 +25,14 @@
 </body>
 <script>
     requirejs(["./Component/MultiDataChart/BarLineChart/BarLineChart"],function(c){
-        var assembleChart = new c.AssembleChart({style:{width:"40rem",height:"30rem"}})
+        var barLineChart = new c.BarLineChart({style:{width:"40rem",height:"30rem"}})
         let measures = [{id:1, data:[{x:"2017/07/01 06:00",y:0},{x:"2017/07/01 10:00",y:2},{x:"2017/07/01 13:00",y:8},{x:"2017/07/01 16:00",y:32}], type:"line"},
                         {id:2, data:[{x:"2017/07/01 06:00",y:32},{x:"2017/07/01 10:00",y:8},{x:"2017/07/01 13:00",y:2},{x:"2017/07/01 16:00",y:1}], type:"line"},
                         {id:3, data:[{x:"2017/07/01 06:00",y:4},{x:"2017/07/01 10:00",y:8},{x:"2017/07/01 13:00",y:6},{x:"2017/07/01 16:00",y:12}],type:"bar"},
                         {id:4, data:[{x:"2017/07/01 06:00",y:7},{x:"2017/07/01 10:00",y:2},{x:"2017/07/01 13:00",y:9},{x:"2017/07/01 16:00",y:3}],type:"bar"},
                         {id:5, data:[{x:"2017/07/01 06:00",y:3},{x:"2017/07/01 10:00",y:6},{x:"2017/07/01 13:00",y:5},{x:"2017/07/01 16:00",y:10}],type:"bar"}]
-        assembleChart.loadMeasures(measures)
-        assembleChart.renderAt("content")
+        barLineChart.loadMeasures(measures)
+        barLineChart.renderAt("content")
     })
 
 </script>

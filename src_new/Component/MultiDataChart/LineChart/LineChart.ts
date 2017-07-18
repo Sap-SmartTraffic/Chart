@@ -87,8 +87,8 @@ export class LineLayer extends BaseLayer {
                  .curve(this.curveTypeMap[this.config.curveType])               
         _.each(ds,(d,i)=>{
             let group = svgNode.append("svg:g")
-                               .attr("class","series")
-                               .attr("id","series"+i)
+                               .attr("class","lineSeries")
+                               .attr("id","lineSeries"+i)
             group.append("path")
                  .attr("d",line(d.data))
                  .attr("stroke",this.chart.getColor(d.id))

@@ -93,7 +93,7 @@ export interface RangeLayerConfig extends ILayerConfig {
 }
 
 export class RangeChart extends MultiDataChart {
-    barLayer:RangeLayer
+    rangeLayer:RangeLayer
     axisLayer:AxisLayer
 
     constructor(conf?) {
@@ -118,7 +118,7 @@ export class RangeChart extends MultiDataChart {
             type:"time",
             verticalGridLine:false
         })
-        this.barLayer = new RangeLayer("bar",{
+        this.rangeLayer = new RangeLayer("range",{
             style: {
                 top: this.axisLayer.config.padding.top,
                 left: this.axisLayer.config.padding.left,
@@ -127,11 +127,11 @@ export class RangeChart extends MultiDataChart {
             }
         })
         this.axisLayer.addTo(this)
-        this.barLayer.addTo(this)
+        this.rangeLayer.addTo(this)
     }
 
     setConfig(c:RangeLayerConfig){
-        this.barLayer.setConfig(_.pick(c,"key"))
+        this.rangeLayer.setConfig(_.pick(c,"key"))
         this.axisLayer.setConfig(_.pick(c,"key"))
     }
 }

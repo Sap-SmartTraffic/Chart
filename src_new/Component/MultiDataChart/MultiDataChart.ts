@@ -65,17 +65,11 @@ export class MultiDataChart extends BaseChart implements IMultiDataChart{
     getDomain(k:string){
         return [this.min(k),this.max(k)]
     }
-    strToTimeMeasure(type?:string) {
+    strToTimeMeasure() {
         let ms:MultiDataMeasure[]
         let temp = []
-        if(type == undefined) {
-            ms = this.measures
-            this.measures = [];
-        }
-        else {
-            ms = this.getMeasure(type)
-            this.measures = this.measures.filter((d)=>{d.type != type})
-        }
+        ms = this.measures
+        this.measures = [];
         _.each(ms,(d,i)=>{
             let tempData = []
             _.each(d.data,(v:{x:any,y:any},k)=>{

@@ -57,8 +57,8 @@ export class BarLayer extends BaseLayer {
                        .range([0,Util.toPixel(this.config.style.height)])
         _.each(ds,(d,i)=>{
             let group = svgNode.append("g")
-                               .attr("class","series")
-                               .attr("id","series"+i)
+                               .attr("class","barSeries")
+                               .attr("id","barSeries"+i)
                                .attr("transform","translate("+ (i * seriesScale.bandwidth()) +",0)")
             _.each(d.data, (v:BarData,k)=>{
                 group.append("rect")
@@ -81,6 +81,8 @@ export class BarLayer extends BaseLayer {
                      .attr("y",Util.toPixel(this.config.style.height) - yScale(v.y))
             })
         })
+
+        return this
     }
 
     render() {
