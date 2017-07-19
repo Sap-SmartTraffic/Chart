@@ -63,6 +63,9 @@ export class BaseChart extends Evented{
        this.isRender = true
     }
     toElement(){
+        if(this.isRender){
+             return this.rootView.el
+        }
         this.fire("rendered")
         this.isRender=true
         return this.rootView.el

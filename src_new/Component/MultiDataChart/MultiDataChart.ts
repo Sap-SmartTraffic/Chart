@@ -20,6 +20,8 @@ export interface IMeasureManager{
 export interface IMultiDataChart extends BaseChart,IMeasureManager,IGetDomain{}
 export class MultiDataChart extends BaseChart implements IMultiDataChart{
     measures:MultiDataMeasure[]=[]
+    colorManager={}
+    colorIndex=0
     addMeasure(m:MultiDataMeasure){
         let i=_.findIndex(this.measures,(mm)=>mm.id==m.id)
         if(i!=-1){
@@ -119,13 +121,13 @@ export class MultiDataChart extends BaseChart implements IMultiDataChart{
         return min
     }
 
-    getColor(color) {
-        if(color === undefined)
-            return d3.schemeCategory20[Math.round(Math.random()*20)]
-        else if(typeof(color) == "number")
-            return d3.schemeCategory20[color]
-        else 
-            return color
+    getColor(id) {
+        if(this.colorManager[id]){
+            return this.colorManager[id]
+        }else{
+            this.colorManager[id]=d3.schemeCategory20[this.colorIndex++%20]
+            return this.colorManager[id]
+        }
     }
     
 }
