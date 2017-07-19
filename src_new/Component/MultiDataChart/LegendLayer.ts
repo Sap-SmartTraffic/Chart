@@ -28,8 +28,8 @@ export class LegendLayer extends BaseLayer{
         let legendGroup = this.elD3.append("div").attr("class","legendGroup")
         _.each(ds,(d,i)=>{
             let legendUnit = legendGroup.append("div").attr("class","legendUnit legendUnit"+i)
-            legendUnit.append("span").style("background-color",this.chart.getColor(d.id))
-            legendUnit.append("span").text(d.id)
+            legendUnit.append("span").style("background-color",this.chart.getColor(d.id)).classed("iconSpan",true)
+            legendUnit.append("span").text(d.id).classed("textSpan",true)
         })
         return this
     }
