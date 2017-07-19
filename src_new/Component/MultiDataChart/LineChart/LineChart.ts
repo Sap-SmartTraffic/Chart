@@ -255,7 +255,7 @@ export class LineChart extends MultiDataChart {
                     left: "0px",
                     bottom: null,
                     right: null,
-                    position: "absolute",
+                    position: "relative",
                     zindex: 0,
                     width: "40rem",
                     height: "30rem"
