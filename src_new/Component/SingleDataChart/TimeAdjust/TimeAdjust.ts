@@ -43,7 +43,7 @@ export class TimeAdjustLayer extends BaseLayer{
 
         let xScale = d3.scaleTime()
                        .domain([new Date(data.rangeMin),new Date(data.rangeMax)])
-                       .range([5,width-5])
+                       .range([6,width-6])
         
         svgNode.append("rect")
                .attr("class","axisBackground")
@@ -104,9 +104,10 @@ export class TimeAdjustLayer extends BaseLayer{
                          }   
                      })
                      .on("end",function(){
-                         let currentTime
+                         let currentTime:Date
                          if(d3.event.x>=xScale(new Date(data.rangeMin))&&d3.event.x<=xScale(new Date(data.rangeMax))){
                             currentTime = xScale.invert(d3.event.x)
+                            currentTime.setSeconds(0,0)
                             let currentMinutes = currentTime.getMinutes()
                             let remainderTime = currentMinutes % data.timeRound
                             if(remainderTime != 0) {
