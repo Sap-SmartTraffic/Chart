@@ -7,6 +7,7 @@ import {BaseLayer,ILayerConfig,ILayerStyle} from "../../../Core/BaseLayer"
 import {AxisLayer,IAxisLayerConfig} from "../../MultiDataChart/AxisLayer"
 import {TooltipLayer,TooltipData,ITooltipLayerConfig} from "../../Layer/TooltipLayer"
 import {LegendLayer,ILegendLayerConfig} from "../../MultiDataChart/LegendLayer"
+import {TitleLayer,ITitleLayerConfig} from "../../../Component/Layer/TitleLayer"
 
 export class LineLayer extends BaseLayer {
     constructor(id?,conf?) {
@@ -32,13 +33,12 @@ export class LineLayer extends BaseLayer {
                 width: "400rem",
                 height: "200rem"
             },
-            borderPadding:10,
+            borderPadding:6,
             curveType: "linear",
             hasDot: true,
             hasArea: false,
             hasTooltip: true,
-            hasTimeAdjust: true,
-            defaultTimeAdjust: "2017/07/01 12:00"
+            hasTimeAdjust: true
         }
     }
 
@@ -88,6 +88,10 @@ export class LineLayer extends BaseLayer {
         if(!ds || typeof(ds) == undefined || ds.length==0 || !ds[0].data || ds[0].data.length==0) {
             return
         }
+        if(typeof(ds[0].data[0].x) == "string") {
+            this.chart.strToTimeMeasure()
+        }
+        ds = this.chart.getMeasure("line")
         let series = ds.length
         let maxX = this.chart.max("x"),
             minX = this.chart.min("x"),
@@ -99,7 +103,7 @@ export class LineLayer extends BaseLayer {
         let line = d3.line<{x:any,y:any}>()
                  .x(function(v){return xScale(v.x)})
                  .y(function(v){return yScale(v.y)})
-                 .curve(this.curveTypeMap[this.config.curveType])               
+                 .curve(this.curveTypeMap[this.config.curveType])             
         _.each(ds,(d,i)=>{
             let group = svgNode.append("svg:g")
                                .attr("class","lineSeries")
@@ -152,13 +156,19 @@ export class LineLayer extends BaseLayer {
             _.each(allRectX,(x)=>{
                 let data = []
                 _.each(ds,(d)=>{
-                    let value = _.filter(d.data,(dd:LineData)=>{return dd.x == x})[0]
-                    if(value != undefined)
-                        data.push({id:d.id, value:value.y})
+                    let value = _.filter(d.data,(dd:LineData)=>{return dd.x.toString() == x.toString()})[0]
+                    if(value != undefined) {
+                        if(maxY<=60)
+                            data.push({id:d.id, value:value.y+"s"})
+                        else if(maxY <= 3600)
+                            data.push({id:d.id, value:d3.format(".1f")(value.y/60)+"min"})
+                        else 
+                            data.push({id:d.id, value:d3.format(".1f")(value.y/3600)+"h"})
+                            
+                    }
                 })
                 allRect.push({xMark:x,data:data})
             })
-
             let focusLine = svgNode.append("line").attr("class","focusLine")
             let overlay = svgNode.append("g").attr("class","overlay")
             _.each(allRect,(d,i)=>{
@@ -190,9 +200,9 @@ export class LineLayer extends BaseLayer {
         if(this.config.hasTimeAdjust) {
             let adjustLine = svgNode.append("line")
                                     .attr("class","adjustLine")
-                                    .attr("x1",xScale(new Date(this.config.defaultTimeAdjust)))
+                                    .attr("x1",xScale(minX))
                                     .attr("y1",this.config.borderPadding)
-                                    .attr("x2",xScale(new Date(this.config.defaultTimeAdjust)))
+                                    .attr("x2",xScale(minX))
                                     .attr("y2",height-self.config.borderPadding)
         }
 
@@ -222,8 +232,7 @@ export interface ILineLayerConfig extends ILayerConfig {
     hasDot: boolean,
     hasArea: boolean,
     hasTooltip: boolean,
-    hasTimeAdjust: boolean,
-    defaultTimeAdjust: string
+    hasTimeAdjust: boolean
 }
 
 export interface LineData {
@@ -232,6 +241,7 @@ export interface LineData {
 }
 
 export class LineChart extends MultiDataChart {
+    chartTitleLayer:TitleLayer
     lineLayer:LineLayer
     axisLayer:AxisLayer
     tooltipLayer:TooltipLayer
@@ -260,13 +270,12 @@ export class LineChart extends MultiDataChart {
                     width: "40rem",
                     height: "30rem"
                 },
-                borderPadding:10,
+                borderPadding:6,
                 curveType: "linear",
                 hasDot: true,
                 hasArea: false,
                 hasTooltip: true,
-                hasTimeAdjust: true,
-                defaultTimeAdjust: "2017/07/01 12:00"
+                hasTimeAdjust: true
             },
             axis:{
                 tagName: "svg",
@@ -286,12 +295,12 @@ export class LineChart extends MultiDataChart {
                     key:{x:"x",y:"y"},
                     ticks:{x:null,y:null},
                 },
-                borderPadding:10,
+                borderPadding:6,
                 padding: {
                     top:"10px",
-                    right:"10px",
+                    right:"20px",
                     bottom:"40px",
-                    left:"40px"
+                    left:"50px"
                 },
                 type:"line",
                 verticalGridLine:false,
@@ -309,7 +318,7 @@ export class LineChart extends MultiDataChart {
                     zindex:0,
                     width: "40rem",
                     height: "30rem"
-            }
+                }
             },
             legend: {
                 tagName:"div",
@@ -324,22 +333,43 @@ export class LineChart extends MultiDataChart {
                     width: "40rem",
                     height: "2rem"
                 }
+            },
+            chartTitle: {
+                tagName:"div",
+                className:"title",
+                style:{
+                    top:"0px",
+                    left:"0px",
+                    bottom:null,
+                    right:null,
+                    position:"absolute",
+                    zindex:0,
+                    width:"40rem",
+                    height:"2rem",
+                },
+                value:""
             }
         }
     }
     constructor(conf?) {
         super(conf)
+        this.chartTitleLayer = new TitleLayer("chartTitle",{
+            className:"chartTitle",
+            style:{
+                width:()=>this.config.style.width,
+            },
+            value:"Line Chart"
+        })
+        this.chartTitleLayer.addTo(this)
         this.axisLayer = new AxisLayer("axis",{
             style: {
+                top: ()=>this.config.chartTitle.style.height,
                 width: ()=>this.config.style.width,
-                height: ()=>Util.toPixel(this.config.style.height) - Util.toPixel(this.config.legend.style.height)
+                height: ()=>Util.toPixel(this.config.style.height) - Util.toPixel(this.config.legend.style.height) - Util.toPixel(this.config.chartTitle.style.height)
             },
             axis:{
                 format:{
                     x:d3.timeFormat("%H:%M")
-                },
-                ticks:{
-                    x:6
                 }
             },
             type:"time"
@@ -347,20 +377,20 @@ export class LineChart extends MultiDataChart {
         this.axisLayer.addTo(this)
         this.lineLayer = new LineLayer("line",{
             style: {
-                top: ()=>Util.toPixel(this.config.axis.padding.top) - this.config.axis.borderPadding,
+                top: ()=>Util.toPixel(this.config.axis.padding.top) - this.config.axis.borderPadding + Util.toPixel(this.config.chartTitle.style.height),
                 left: ()=>Util.toPixel(this.config.axis.padding.left) - this.config.axis.borderPadding,
                 width: ()=>Util.toPixel(this.config.style.width) - Util.toPixel(this.config.axis.padding.left)-Util.toPixel(this.config.axis.padding.right) + this.config.axis.borderPadding * 2,
-                height: ()=>Util.toPixel(this.config.style.height)- Util.toPixel(this.config.axis.padding.top)-Util.toPixel(this.config.axis.padding.bottom) - Util.toPixel(this.config.legend.style.height) + this.config.axis.borderPadding * 2
+                height: ()=>Util.toPixel(this.config.style.height)- Util.toPixel(this.config.axis.padding.top)-Util.toPixel(this.config.axis.padding.bottom) - Util.toPixel(this.config.legend.style.height) - Util.toPixel(this.config.chartTitle.style.height) + this.config.axis.borderPadding * 2
             }
         })
         this.lineLayer.addTo(this)
         if(this.config.line.hasTooltip) {
             this.tooltipLayer = new TooltipLayer("tooltip",{
                 style: {
-                    top: ()=>Util.toPixel(this.config.axis.padding.top) - this.config.axis.borderPadding,
+                    top: ()=>Util.toPixel(this.config.axis.padding.top) - this.config.axis.borderPadding - Util.toPixel(this.config.chartTitle.style.height),
                     left: ()=>Util.toPixel(this.config.axis.padding.left) - this.config.axis.borderPadding,
                     width: ()=>Util.toPixel(this.config.style.width) - Util.toPixel(this.config.axis.padding.left)-Util.toPixel(this.config.axis.padding.right) + this.config.axis.borderPadding * 2,
-                    height: ()=>Util.toPixel(this.config.style.height)- Util.toPixel(this.config.axis.padding.top)-Util.toPixel(this.config.axis.padding.bottom) + this.config.axis.borderPadding * 2
+                    height: ()=>Util.toPixel(this.config.style.height)- Util.toPixel(this.config.axis.padding.top)-Util.toPixel(this.config.axis.padding.bottom) - Util.toPixel(this.config.legend.style.height) - Util.toPixel(this.config.chartTitle.style.height) + this.config.axis.borderPadding * 2
                 }
             })
             this.tooltipLayer.addTo(this)
@@ -391,6 +421,7 @@ export interface ILineChartConfig extends IChartConfig{
     line: ILineLayerConfig,
     axis: IAxisLayerConfig,
     tooltip: ITooltipLayerConfig,
-    legend: ILegendLayerConfig
+    legend: ILegendLayerConfig,
+    chartTitle: ITitleLayerConfig
 }
 
