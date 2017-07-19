@@ -33,12 +33,12 @@ export class AxisLayer extends BaseLayer{
                 key:{x:"x",y:"y"},
                 ticks:{x:null,y:null},
             },
-            borderPadding:10,
+            borderPadding:6,
             padding: {
                 top:"10px",
-                right:"10px",
+                right:"20px",
                 bottom:"40px",
-                left:"40px"
+                left:"50px"
             },
             type:"line",
             verticalGridLine:false,
@@ -51,9 +51,12 @@ export class AxisLayer extends BaseLayer{
 
     render(){
         this.el.innerHTML=""
+        let maxX = this.chart.max(this.config.axis.key.x),
+            maxY = this.chart.max(this.config.axis.key.y)
+            
         let xScale,
             yScale = d3.scaleLinear()
-                       .domain([0, this.chart.max(this.config.axis.key.y)])
+                       .domain([0,maxY])
                        .range([(Util.toPixel(this.config.style.height)-Util.toPixel(this.config.padding.bottom)), 
                                 Util.toPixel(this.config.padding.top)])
         
@@ -109,13 +112,42 @@ export class AxisLayer extends BaseLayer{
                  .call(xAxis)
                  .attr("transform",`translate(0,${Util.toPixel(this.config.style.height) - Util.toPixel(this.config.padding.bottom)})`)
         let yAxis = d3.axisLeft(yScale)
-                      .tickFormat(this.config.axis.format.y)
                       .ticks(this.config.axis.ticks.y)
+        
+        let yAxisTitle:string
+        if(maxY <= 60) {
+            yAxisTitle = "seconds"
+            yAxis.tickFormat((d:number)=>{
+                return d.toString()
+            })
+        }
+        else if(maxY <= 3600) {
+            yAxisTitle = "minutes"
+            yAxis.tickFormat((d:number)=>{
+                return d3.format(".1f")(d / 60)
+            })
+        }
+        else {
+            yAxisTitle = "hours"
+            yAxis.tickFormat((d:number)=>{
+                return d3.format(".1f")(d / 3600)
+            })
+        }
+
         this.elD3.append("g")
                  .classed("yAxis axis",true)
                  .call(yAxis)
                  .attr("transform",`translate(${Util.toPixel(this.config.padding.left)},0)`)
 
+        this.elD3.append("text")
+                 .classed("yAxisTitle",true)
+                 .attr("x",-70)
+                 .attr("y",0)
+                 .attr("transform","rotate(-90)")
+                 .attr("alignment-baseline","hanging")
+                 .text(yAxisTitle)
+        
+        
         return this
     }
 }

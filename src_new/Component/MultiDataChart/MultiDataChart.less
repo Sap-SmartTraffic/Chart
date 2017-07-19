@@ -1,12 +1,27 @@
 /* axisLayer */
-.grid-line {
-    path {
-        stroke-width: 0;
+.axis {
+    .grid-line {
+        path {
+            stroke-width: 0;
+        }
+        line {
+            fill: none;
+            stroke:#d6d6d6;
+            shape-rendering: crispEdges;
+        }
     }
-    line {
-        fill: none;
-        stroke:#d6d6d6;
-        shape-rendering: crispEdges;
+    .yAxisTitle {
+        font-size:0.8rem;
+    }
+}
+
+/* titleLayer */
+.chartTitle {
+    p {
+        font-size: 1rem;
+        font-weight: bold;
+        margin:0 0;
+        line-height: 2rem;
     }
 }
 
