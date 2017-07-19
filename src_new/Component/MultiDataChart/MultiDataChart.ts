@@ -15,6 +15,7 @@ export interface IMeasureManager{
     getAllMeasure:()=>MultiDataMeasure[]
     getMeasure:(type:string)=>MultiDataMeasure[]
     strToTimeMeasure:()=>this
+    clearMeasure():any
 }
 export interface IMultiDataChart extends BaseChart,IMeasureManager,IGetDomain{}
 export class MultiDataChart extends BaseChart implements IMultiDataChart{
@@ -28,6 +29,10 @@ export class MultiDataChart extends BaseChart implements IMultiDataChart{
         }
         this.fire("measure_change measure_add",{measure:m})
         return this
+    }
+    clearMeasure(){
+        this.measures=[]
+        this.fire("measure_change measure_clear")
     }
     loadMeasures(ms:any[]) {
         _.each(ms, (d)=>{

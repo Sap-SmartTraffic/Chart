@@ -34,7 +34,7 @@ export class TooltipLayer extends BaseLayer{
    
     getSingleTooltipContent(ds):string {
         let textStart = "<table class='tooltip'><tbody><tr><th colspan='2'>"+ ds.xMark +"</th></tr>"
-        let text = "<tr><td class='name'><span style='background-color:"+ this.chart.getColor(ds.series) +"'></span>" + "系列" + ds.series + "</td><td class='value'>"+ ds.value +"</td></tr>"
+        let text = "<tr><td class='name'><span style='background-color:"+ this.chart.getColor(ds.series) +"'></span>" +  ds.series + "</td><td class='value'>"+ ds.value +"</td></tr>"
         let textEnd = "</tbody></table>"
         return textStart + text + textEnd
     }
@@ -43,7 +43,7 @@ export class TooltipLayer extends BaseLayer{
         let textStart = "<table class='tooltip'><tbody><tr><th colspan='2'>"+ ds.xMark +"</th></tr>"
         let text = ""
         _.each(ds.data,(d)=>{
-            text += "<tr><td class='name'><span style='background-color:"+ this.chart.getColor(d.id) +"'></span>" + "系列" + d.id + "</td><td class='value'>"+ d.value +"</td></tr>"
+            text += "<tr><td class='name'><span style='background-color:"+ this.chart.getColor(d.id) +"'></span>" + d.id + "</td><td class='value'>"+ d.value +"</td></tr>"
         })
         let textEnd = "</tbody></table>"
         return textStart + text + textEnd

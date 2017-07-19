@@ -51,10 +51,10 @@ export class LineLayer extends BaseLayer {
         step: d3.curveStep
     }
 
-    getScale() {
+    getScale():any {
         let ds = this.chart.getMeasure("line")
         if(!ds || typeof(ds) == undefined || ds.length==0 || !ds[0].data || ds[0].data.length==0) {
-            return
+            return 
         }
         if(typeof(ds[0].data[0].x) == "string") {
             this.chart.strToTimeMeasure()
