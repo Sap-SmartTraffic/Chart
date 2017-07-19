@@ -50,6 +50,7 @@ export class TooltipLayer extends BaseLayer{
     }
 
     render(){
+        this.el.innerHTML = ""
         let tooltipBox = this.elD3.append("div")
         this.chart.on("showSingleTooltip",(d)=>{
             tooltipBox.style("display","block")

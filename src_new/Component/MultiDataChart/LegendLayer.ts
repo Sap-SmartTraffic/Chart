@@ -16,13 +16,14 @@ export class LegendLayer extends BaseLayer{
                     position:"absolute",
                     zindex:0,
                     width:"20rem",
-                    height:null
+                    height:"2rem"
                 }
             }
     }
     config:ILegendLayerConfig
     chart:MultiDataChart
     render(){
+        this.el.innerHTML = ""
         let ds = this.chart.getAllMeasure()
         let legendGroup = this.elD3.append("div").attr("class","legendGroup")
         _.each(ds,(d,i)=>{

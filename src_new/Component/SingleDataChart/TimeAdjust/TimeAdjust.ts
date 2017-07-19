@@ -91,27 +91,22 @@ export class TimeAdjustLayer extends BaseLayer{
                          svgNode.style("cursor","col-resize")
                      })
                      .on("drag",function(){ 
-                         if(xScale.invert(d3.event.x)>=new Date(data.rangeMin)&&xScale.invert(d3.event.x)<=new Date(data.rangeMax)){
-                             let focusText = svgNode.select(".focusText"),
-                                 focusLine = svgNode.select(".focusLine")
-                             let oldLineX = Number(focusLine.attr("x1")),
-                                 oldTextX = Number(focusText.attr("x"))
+                         if(d3.event.x>=xScale(new Date(data.rangeMin))&&d3.event.x<=xScale(new Date(data.rangeMax))){
                              let currentTime = xScale.invert(d3.event.x)
-                             d3.select(this).attr("transform",`translate(${xScale(currentTime)-oldLineX}, 0)`)
+                             svgNode.select(".focusLine").attr("x1",d3.event.x).attr("x2",d3.event.x)
+                             svgNode.select(".focusRect").attr("x",d3.event.x-6)
+                             svgNode.selectAll(".focusRectLine").attr("x1",d3.event.x-4).attr("x2",d3.event.x+4)
                              if(d3.event.x > Util.toPixel(self.config.style.width)/2)
-                                 focusText.text(formatTime(currentTime)).attr("x",(xScale(currentTime) - Util.toPixel(data.lineTextPadding))).attr("class","focusText leftSide")
+                                 svgNode.select(".focusText").text(formatTime(currentTime)).attr("x",(xScale(currentTime) - Util.toPixel(data.lineTextPadding))).attr("class","focusText leftSide")
                              else 
-                                 focusText.text(formatTime(currentTime)).attr("x",(xScale(currentTime) + Util.toPixel(data.lineTextPadding))).attr("class","focusText rightSide")
+                                 svgNode.select(".focusText").text(formatTime(currentTime)).attr("x",(xScale(currentTime) + Util.toPixel(data.lineTextPadding))).attr("class","focusText rightSide")
                              self.fire("draging",{dateTime:currentTime})
                          }   
                      })
                      .on("end",function(){
-                         if(xScale.invert(d3.event.x)>=new Date(data.rangeMin)&&xScale.invert(d3.event.x)<=new Date(data.rangeMax)){
-                            let focusText = svgNode.select(".focusText"),
-                                            focusLine = svgNode.select(".focusLine")
-                            let oldLineX = Number(focusLine.attr("x1")),
-                            oldTextX = Number(focusText.attr("x"))
-                            let currentTime = xScale.invert(d3.event.x)
+                         let currentTime
+                         if(d3.event.x>=xScale(new Date(data.rangeMin))&&d3.event.x<=xScale(new Date(data.rangeMax))){
+                            currentTime = xScale.invert(d3.event.x)
                             let currentMinutes = currentTime.getMinutes()
                             let remainderTime = currentMinutes % data.timeRound
                             if(remainderTime != 0) {
@@ -123,15 +118,32 @@ export class TimeAdjustLayer extends BaseLayer{
                                 }
                             }
                             self.currentTime = currentTime
-                            d3.select(this).attr("transform",`translate(${xScale(currentTime)-oldLineX}, 0)`)
+                            svgNode.select(".focusLine").attr("x1",xScale(currentTime)).attr("x2",xScale(currentTime))
+                            svgNode.select(".focusRect").attr("x",xScale(currentTime)-6)
+                            svgNode.selectAll(".focusRectLine").attr("x1",xScale(currentTime)-4).attr("x2",xScale(currentTime)+4)
                             if(d3.event.x > Util.toPixel(self.config.style.width)/2)
-                                focusText.text(formatTime(currentTime)).attr("x",(xScale(currentTime) - Util.toPixel(data.lineTextPadding))).attr("class","focusText leftSide")
+                                svgNode.select(".focusText").text(formatTime(currentTime)).attr("x",(xScale(currentTime) - Util.toPixel(data.lineTextPadding))).attr("class","focusText leftSide")
                             else 
-                                focusText.text(formatTime(currentTime)).attr("x",(xScale(currentTime) + Util.toPixel(data.lineTextPadding))).attr("class","focusText rightSide")
-                            self.fire("draging",{dateTime:currentTime})
-                            svgNode.style("cursor","default")
-                            self.fire("dragend",{dateTime:self.currentTime})
+                                svgNode.select(".focusText").text(formatTime(currentTime)).attr("x",(xScale(currentTime) + Util.toPixel(data.lineTextPadding))).attr("class","focusText rightSide") 
                          }
+                         else if(d3.event.x<xScale(new Date(data.rangeMin))){
+                             currentTime = new Date(data.rangeMin)
+                             self.currentTime = currentTime
+                             svgNode.select(".focusLine").attr("x1",xScale(currentTime)).attr("x2",xScale(currentTime))
+                             svgNode.select(".focusRect").attr("x",xScale(currentTime)-6)
+                             svgNode.selectAll(".focusRectLine").attr("x1",xScale(currentTime)-4).attr("x2",xScale(currentTime)+4)
+                             svgNode.select(".focusText").text(formatTime(currentTime)).attr("x",(xScale(currentTime) + Util.toPixel(data.lineTextPadding))).attr("class","focusText rightSide") 
+                         }
+                         else if(d3.event.x>xScale(new Date(data.rangeMax))){
+                             currentTime = new Date(data.rangeMax)
+                             self.currentTime = currentTime
+                             svgNode.select(".focusLine").attr("x1",xScale(currentTime)).attr("x2",xScale(currentTime))
+                             svgNode.select(".focusRect").attr("x",xScale(currentTime)-6)
+                             svgNode.selectAll(".focusRectLine").attr("x1",xScale(currentTime)-4).attr("x2",xScale(currentTime)+4)
+                             svgNode.select(".focusText").text(formatTime(currentTime)).attr("x",(xScale(currentTime) - Util.toPixel(data.lineTextPadding))).attr("class","focusText leftSide") 
+                         }
+                         svgNode.style("cursor","default")
+                         self.fire("dragend",{dateTime:self.currentTime})
                      })
         
         svgNode.append("text")

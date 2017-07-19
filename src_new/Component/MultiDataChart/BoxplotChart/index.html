@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Chart Test</title>
+</head>
+<script src="/lib/requirejs/require.js"></script>
+<script src="/dist_new/requireConfig.js"></script>
+<link rel="stylesheet" href="/dist_new/Component/MultiDataChart/BoxplotChart/BoxplotChart.css">
+<style>
+    .chart {
+        transform: translate(-50%,0);
+        left:50%;
+    }
+
+    section {
+        text-align: center;
+    }
+</style>
+<body>
+<section>
+    <h1>Boxplot Chart</h1>
+    <content></content>
+</section>
+</body>
+<script>
+    requirejs(["./Component/MultiDataChart/BoxplotChart/BoxplotChart"],function(c){
+        var boxplotChart = new c.BoxplotChart({style:{width:"40rem",height:"30rem"}})
+        let measures = [{id:1,data:[{"x":"04-10","y":4},{"x":"04-11","y":8},{"x":"04-12","y":6},{"x":"04-13","y":12},{"x":"04-14","y":15}],type:"bar"},
+                        {id:2,data:[{"x":"04-10","y":7},{"x":"04-11","y":2},{"x":"04-12","y":9},{"x":"04-13","y":3},{"x":"04-14","y":24}],type:"bar"},
+                        {id:3,data:[{"x":"04-10","y":3},{"x":"04-11","y":6},{"x":"04-12","y":5},{"x":"04-13","y":10},{"x":"04-14","y":18}],type:"bar"}]
+        boxplotChart.loadMeasures(measures)
+        boxplotChart.renderAt("content")
+    })
+
+</script>
+</html>

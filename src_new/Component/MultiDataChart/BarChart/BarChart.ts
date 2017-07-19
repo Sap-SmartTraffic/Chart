@@ -16,8 +16,8 @@ export class BarLayer extends BaseLayer {
             })
         })
     }
-    config: BarLayerConfig
-    defaultConfig(): BarLayerConfig {
+    config: IBarLayerConfig
+    defaultConfig(): IBarLayerConfig {
         return {
             tagName: "svg",
             className: "barChart",
@@ -92,7 +92,7 @@ export class BarLayer extends BaseLayer {
     }
 }
 
-export interface BarLayerConfig extends ILayerConfig {
+export interface IBarLayerConfig extends ILayerConfig {
 
 }
 
@@ -146,7 +146,7 @@ export class BarChart extends MultiDataChart {
         this.legendLayer.addTo(this)
     }
 
-    setConfig(c:BarLayerConfig){
+    setConfig(c:IBarLayerConfig){
         this.barLayer.setConfig(_.pick(c,"key"))
         this.axisLayer.setConfig(_.pick(c,"key"))
     }

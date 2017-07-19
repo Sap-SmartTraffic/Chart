@@ -73,7 +73,10 @@ export class MultiDataChart extends BaseChart implements IMultiDataChart{
         _.each(ms,(d,i)=>{
             let tempData = []
             _.each(d.data,(v:{x:any,y:any},k)=>{
-                tempData.push({x:new Date(v.x),y:v.y}) 
+                if(typeof(v.x) == "string")
+                    tempData.push({x:new Date(v.x),y:v.y})
+                else
+                    tempData.push({x:v.x,y:v.y})
             })
             temp.push(new MultiDataMeasure(d.id,tempData,d.type))
         })

@@ -33,7 +33,7 @@ export class AxisLayer extends BaseLayer{
                 key:{x:"x",y:"y"},
                 ticks:{x:null,y:null},
             },
-            borderPadding:6,
+            borderPadding:10,
             padding: {
                 top:"10px",
                 right:"10px",
