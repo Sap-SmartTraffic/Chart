@@ -304,7 +304,8 @@ export class LineChart extends MultiDataChart {
                 },
                 type:"line",
                 verticalGridLine:false,
-                horizontalGridLine:true
+                horizontalGridLine:true,
+                yAxisTitleType:"time"
             },
             tooltip: {
                 tagName:"div",

@@ -42,7 +42,8 @@ export class AxisLayer extends BaseLayer{
             },
             type:"line",
             verticalGridLine:false,
-            horizontalGridLine:true
+            horizontalGridLine:true,
+            yAxisTitleType:"time"
         }
     }
 
@@ -115,24 +116,34 @@ export class AxisLayer extends BaseLayer{
                       .ticks(this.config.axis.ticks.y)
         
         let yAxisTitle:string
-        if(maxY <= 60) {
-            yAxisTitle = "seconds"
+        if(this.config.yAxisTitleType == "time") {
+            if(maxY <= 60) {
+                yAxisTitle = "seconds"
+                yAxis.tickFormat((d:number)=>{
+                    return d.toString()
+                })
+            }
+            else if(maxY <= 3600) {
+                yAxisTitle = "minutes"
+                yAxis.tickFormat((d:number)=>{
+                    return d3.format(".1f")(d / 60)
+                })
+            }
+            else {
+                yAxisTitle = "hours"
+                yAxis.tickFormat((d:number)=>{
+                    return d3.format(".1f")(d / 3600)
+                })
+            }
+        }
+        else if(this.config.yAxisTitleType == "speed") {
+            yAxisTitle = "km/h"
             yAxis.tickFormat((d:number)=>{
-                return d.toString()
+                    return d3.format(".1f")(d)
             })
         }
-        else if(maxY <= 3600) {
-            yAxisTitle = "minutes"
-            yAxis.tickFormat((d:number)=>{
-                return d3.format(".1f")(d / 60)
-            })
-        }
-        else {
-            yAxisTitle = "hours"
-            yAxis.tickFormat((d:number)=>{
-                return d3.format(".1f")(d / 3600)
-            })
-        }
+        
+        
 
         this.elD3.append("g")
                  .classed("yAxis axis",true)
@@ -169,5 +180,6 @@ export interface IAxisLayerConfig extends ILayerConfig{
     }
     type:string
     verticalGridLine:boolean,
-    horizontalGridLine:boolean
+    horizontalGridLine:boolean,
+    yAxisTitleType:string
 }
