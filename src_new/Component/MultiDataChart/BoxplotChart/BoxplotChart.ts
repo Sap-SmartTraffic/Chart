@@ -46,7 +46,7 @@ export class BoxplotLayer extends BaseLayer {
     chart:MultiDataChart
 
     processData(data:number[]) {
-        let sortedData = data.sort()
+        let sortedData = _.sortBy(data,(num)=>{return num})
         let len = sortedData.length
         let min = sortedData[0], max = sortedData[len-1]
         let lowerQuartile, median, largerQuartile
@@ -145,7 +145,7 @@ export class BoxplotLayer extends BaseLayer {
                .attr("alignment-baseline","middle")
                .attr("text-anchor","end")
         })
-            
+
         return this
     }
 

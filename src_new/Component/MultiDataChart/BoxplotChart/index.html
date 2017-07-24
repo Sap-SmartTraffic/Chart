@@ -38,6 +38,19 @@
         ]
         boxplotChart.loadMeasures(measures)
         boxplotChart.renderAt("content")
+        setInterval(()=>{
+            boxplotChart.removeMeasure("boxplot")
+            tempMeasures = []
+            for(var i = 0; i < 8; i++) {
+                tempData = [];
+                for(var j = 0; j < 4; j++) {
+                    tempData.push(Math.round(20*Math.random())+10)
+                }
+                tempMeasures.push({id:i, data:tempData, type:"boxplot"})
+                tempData.splice(0,-1)
+            }
+            boxplotChart.loadMeasures(tempMeasures)
+        },3000)
     })
 
 </script>
