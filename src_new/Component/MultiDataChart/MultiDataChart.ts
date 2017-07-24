@@ -53,6 +53,10 @@ export class MultiDataChart extends BaseChart implements IMultiDataChart{
                     measure:rm
                 })
             }
+            else if(_.some(this.measures,(mm)=>mm.type == m)) {
+                this.measures=_.filter(this.measures,(mm)=>mm.type!=m)
+                this.fire("measure_change measure_remove")
+            }
         }else{
             if(_.some(this.measures,(mm)=>mm.id==m.id)){
                 this.measures=_.filter(this.measures,(mm)=>mm.id!=m.id)
