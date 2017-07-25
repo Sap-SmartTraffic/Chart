@@ -359,7 +359,7 @@ export class LineChart extends MultiDataChart {
             style:{
                 width:()=>this.config.style.width,
             },
-            value:"Line Chart"
+            value:conf.chartTitle.value||"Line Chart"
         })
         this.chartTitleLayer.addTo(this)
         this.axisLayer = new AxisLayer("axis",{
