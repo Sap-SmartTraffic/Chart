@@ -26,11 +26,31 @@
 <script>
     requirejs(["./Component/MultiDataChart/BoxplotChart/BoxplotChart"],function(c){
         var boxplotChart = new c.BoxplotChart({style:{width:"40rem",height:"30rem"}})
-        let measures = [{id:1,data:[{"x":"04-10","y":4},{"x":"04-11","y":8},{"x":"04-12","y":6},{"x":"04-13","y":12},{"x":"04-14","y":15}],type:"bar"},
-                        {id:2,data:[{"x":"04-10","y":7},{"x":"04-11","y":2},{"x":"04-12","y":9},{"x":"04-13","y":3},{"x":"04-14","y":24}],type:"bar"},
-                        {id:3,data:[{"x":"04-10","y":3},{"x":"04-11","y":6},{"x":"04-12","y":5},{"x":"04-13","y":10},{"x":"04-14","y":18}],type:"bar"}]
+        let measures = [
+            {id:'2011-12-18', data:[25, 24, 26, 27],type:"boxplot"},
+            {id:'2011-12-19', data:[22, 26, 30, 25],type:"boxplot"},
+            {id:'2011-12-20', data:[27, 29, 31, 23],type:"boxplot"},
+            {id:'2011-12-21', data:[27, 33, 20, 23],type:"boxplot"},
+            {id:'2011-12-22', data:[25, 31, 21, 26],type:"boxplot"},
+            {id:'2011-12-23', data:[26, 20, 29, 24],type:"boxplot"},
+            {id:'2011-12-24', data:[22, 28, 26, 24],type:"boxplot"},
+            {id:'2011-12-25', data:[31, 27, 26, 29],type:"boxplot"}
+        ]
         boxplotChart.loadMeasures(measures)
         boxplotChart.renderAt("content")
+        setInterval(()=>{
+            boxplotChart.removeMeasure("boxplot")
+            tempMeasures = []
+            for(var i = 0; i < 8; i++) {
+                tempData = [];
+                for(var j = 0; j < 4; j++) {
+                    tempData.push(Math.round(20*Math.random())+10)
+                }
+                tempMeasures.push({id:i, data:tempData, type:"boxplot"})
+                tempData.splice(0,-1)
+            }
+            boxplotChart.loadMeasures(tempMeasures)
+        },3000)
     })
 
 </script>
