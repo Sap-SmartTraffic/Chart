@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Chart Test</title>
+</head>
+<script src="/lib/requirejs/require.js"></script>
+<script src="/dist_new/requireConfig.js"></script>
+<link rel="stylesheet" href="/dist_new/Component/MultiDataChart/HeatChart/HeatChart.css">
+<style>
+    .chart {
+        transform: translate(-50%,0);
+        left:50%;
+    }
+
+    section {
+        text-align: center;
+    }
+</style>
+<body>
+<section>
+    <h1>Heat Chart</h1>
+    <content></content>
+</section>
+</body>
+<script>
+    requirejs(["./Component/MultiDataChart/HeatChart/HeatChart"],function(c){
+        var heatChart = new c.HeatChart({style:{width:"40rem",height:"30rem"}})
+        let measures = [
+            {id:"Paul",data:[{day:"Monday",value:10},{day:"Tuesday",value:20},{day:"Wednsday",value:30},{day:"Thursday",value:40},{day:"Friday",value:50}], type:"heat"},
+            {id:"Jack",data:[{day:"Monday",value:23},{day:"Tuesday",value:15},{day:"Wednsday",value:38},{day:"Thursday",value:9},{day:"Friday",value:42}], type:"heat"},
+            {id:"Mike",data:[{day:"Monday",value:35},{day:"Tuesday",value:9},{day:"Wednsday",value:45},{day:"Thursday",value:22},{day:"Friday",value:16}], type:"heat"},
+            {id:"Kate",data:[{day:"Monday",value:5},{day:"Tuesday",value:44},{day:"Wednsday",value:25},{day:"Thursday",value:18},{day:"Friday",value:32}], type:"heat"}
+        ]
+        heatChart.loadMeasures(measures)
+        heatChart.renderAt("content")
+    })
+
+</script>
+</html>
