@@ -7,6 +7,7 @@ var ts = require('gulp-typescript');
 var concat = require('gulp-concat');
 var merge = require('merge2')
 var clean = require('gulp-clean');
+var requirejsOptimize = require('gulp-requirejs-optimize');
 // var requirejsOptimize = require('gulp-requirejs-optimize')
 
 gulp.task('start', function () {
@@ -123,7 +124,7 @@ gulp.task("bundle", function () {
         .pipe(ts({
             declaration: true,
             outFile: "VicroadChart.js",
-            module: "AMD"
+            module: "amd"
         }));
     var css = gulp.src('src_new/CustomizedChart/Vicroad/VicroadChart.less');
     return merge([
@@ -132,3 +133,15 @@ gulp.task("bundle", function () {
         css.pipe(less()).pipe(gulp.dest('release/Vicroad'))
     ]);
 })
+//'./dist_new/CustomizedChart/Vicroad/VicroadChart.js',
+gulp.task("script",function(){
+   return gulp.src("./dist_new/CustomizedChart/Vicroad/VicroadChart.js").pipe(requirejsOptimize({
+     paths: {
+        d3: "empty:",
+        underscore:"empty:"
+    },
+     optimize: 'none',
+   }))
+    .pipe(gulp.dest('./release/')); 
+})
+ 

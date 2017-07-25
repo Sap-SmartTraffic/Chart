@@ -6,7 +6,7 @@ import {BaseLayer,ILayerConfig,ILayerStyle} from "../../../Core/BaseLayer"
 import {AxisLayer} from "../../MultiDataChart/AxisLayer"
 import {TooltipLayer,TooltipData} from "../../Layer/TooltipLayer"
 import {LegendLayer} from "../../MultiDataChart/LegendLayer"
-
+import {BarData} from "BarData"
 export class BarLayer extends BaseLayer {
     constructor(id?,conf?) {
         super(id,conf)
@@ -96,10 +96,7 @@ export interface IBarLayerConfig extends ILayerConfig {
 
 }
 
-export interface BarData {
-    x:string,
-    y:number
-}
+
 
 export class BarChart extends MultiDataChart {
     barLayer:BarLayer

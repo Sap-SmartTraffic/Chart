@@ -3,7 +3,7 @@ import _ =require("underscore")
 import { Util } from '../../Core/Util'
 import { BaseLayer, ILayerConfig } from '../../Core/BaseLayer'
 import {MultiDataChart} from '../MultiDataChart/MultiDataChart'
-import {BarData} from '../MultiDataChart/BarChart/BarChart'
+import {BarData} from '../MultiDataChart/BarChart/BarData'
 
 export class AxisLayer extends BaseLayer{
     constructor(id?,conf?) {

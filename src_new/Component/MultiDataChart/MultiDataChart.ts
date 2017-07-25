@@ -129,7 +129,7 @@ export class MultiDataChart extends BaseChart implements IMultiDataChart{
         if(this.colorManager[id]){
             return this.colorManager[id]
         }else{
-            this.colorManager[id]=d3.schemeCategory20[this.colorIndex++%20]
+            this.colorManager[id]=d3.schemeCategory10[this.colorIndex++%10]
             return this.colorManager[id]
         }
     }
