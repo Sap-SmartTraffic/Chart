@@ -7,7 +7,6 @@ var ts = require('gulp-typescript');
 var concat = require('gulp-concat');
 var merge = require('merge2')
 var clean = require('gulp-clean');
-var requirejsOptimize = require('gulp-requirejs-optimize');
 // var requirejsOptimize = require('gulp-requirejs-optimize')
 
 gulp.task('start', function () {
