@@ -104,18 +104,21 @@ export class LineLayer extends BaseLayer {
         let line = d3.line<{x:any,y:any}>()
                  .x(function(v){return xScale(v.x)})
                  .y(function(v){return yScale(v.y)})
-                 .curve(this.curveTypeMap[this.config.curveType])             
+                 .curve(this.curveTypeMap[this.config.curveType])
+        
         _.each(ds,(d,i)=>{
             let group = svgNode.append("svg:g")
                                .attr("class","lineSeries")
                                .attr("id","lineSeries"+i)
             group.append("path")
+                 .attr("class","line"+i)
                  .attr("d",line(d.data))
                  .attr("stroke",this.chart.getColor(d.id))
 
             if(this.config.hasDot) {
                 _.each(d.data,(v:LineData,k)=>{
                     group.append("circle")
+                         .attr("class","circle"+i+k)
                          .attr("cx",xScale(v.x))
                          .attr("cy",yScale(v.y))
                          .attr("r","4")
@@ -210,7 +213,24 @@ export class LineLayer extends BaseLayer {
                                     .attr("x2",xScale(minX))
                                     .attr("y2",height-self.config.borderPadding)
         }
-
+        
+        let zoomed = ()=>{
+            let zoomScale = d3.event.transform.rescaleY(yScale)
+            line = d3.line<{x:any,y:any}>()
+                 .x(function(v){return xScale(v.x)})
+                 .y(function(v){return zoomScale(v.y)})
+            _.each(ds,(d,i)=>{
+                svgNode.select(".line"+i)
+                       .attr("d",line(d.data))
+                _.each(d.data,(v:LineData,k)=>{
+                    svgNode.select(".circle"+i+k)
+                           .attr("cy",zoomScale(v.y))
+                })
+            })
+            this.chart.fire("lineZooming")
+        }
+        svgNode.call(d3.zoom().scaleExtent([1,5]).on("zoom",zoomed))
+        
         return this
     }
 
@@ -395,7 +415,7 @@ export class LineChart extends MultiDataChart {
         if(this.config.line.hasTooltip) {
             this.tooltipLayer = new TooltipLayer("tooltip",{
                 style: {
-                    top: ()=>Util.toPixel(this.config.axis.padding.top) - this.config.axis.borderPadding - Util.toPixel(this.config.chartTitle.style.height),
+                    top: ()=>Util.toPixel(this.config.axis.padding.top) - this.config.axis.borderPadding + Util.toPixel(this.config.chartTitle.style.height),
                     left: ()=>Util.toPixel(this.config.axis.padding.left) - this.config.axis.borderPadding,
                     width: ()=>Util.toPixel(this.config.style.width) - Util.toPixel(this.config.axis.padding.left)-Util.toPixel(this.config.axis.padding.right) + this.config.axis.borderPadding * 2,
                     height: ()=>Util.toPixel(this.config.style.height)- Util.toPixel(this.config.axis.padding.top)-Util.toPixel(this.config.axis.padding.bottom) - Util.toPixel(this.config.legend.style.height) - Util.toPixel(this.config.chartTitle.style.height) + this.config.axis.borderPadding * 2

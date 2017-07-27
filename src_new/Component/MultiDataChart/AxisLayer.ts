@@ -112,44 +112,44 @@ export class AxisLayer extends BaseLayer{
                  .classed("xAxis axis",true)
                  .call(xAxis)
                  .attr("transform",`translate(0,${Util.toPixel(this.config.style.height) - Util.toPixel(this.config.padding.bottom)})`)
-        let yAxis = d3.axisLeft(yScale)
-                      .ticks(this.config.axis.ticks.y)
         
-        let yAxisTitle:string
+        let yAxisTitle:string, yAxisTickFormat
         if(this.config.yAxisTitleType == "time") {
             if(maxY <= 60) {
                 yAxisTitle = "seconds"
-                yAxis.tickFormat((d:number)=>{
+                yAxisTickFormat = (d:number)=>{
                     return d.toString()
-                })
+                }
             }
             else if(maxY <= 3600) {
                 yAxisTitle = "minutes"
-                yAxis.tickFormat((d:number)=>{
+                yAxisTickFormat = (d:number)=>{
                     return d3.format(".1f")(d / 60)
-                })
+                }
             }
             else {
                 yAxisTitle = "hours"
-                yAxis.tickFormat((d:number)=>{
+                yAxisTickFormat = (d:number)=>{
                     return d3.format(".1f")(d / 3600)
-                })
+                }
             }
         }
         else if(this.config.yAxisTitleType == "speed") {
             yAxisTitle = "km/h"
-            yAxis.tickFormat((d:number)=>{
+            yAxisTickFormat = (d:number)=>{
                     return d3.format(".1f")(d)
-            })
+            }
         }
         
-        
+        let yAxis = d3.axisLeft(yScale)
+                      .ticks(this.config.axis.ticks.y)
+                      .tickFormat(yAxisTickFormat)
 
         this.elD3.append("g")
                  .classed("yAxis axis",true)
                  .call(yAxis)
                  .attr("transform",`translate(${Util.toPixel(this.config.padding.left)},0)`)
-
+          
         this.elD3.append("text")
                  .classed("yAxisTitle",true)
                  .attr("x",-70)
@@ -158,6 +158,14 @@ export class AxisLayer extends BaseLayer{
                  .attr("alignment-baseline","hanging")
                  .text(yAxisTitle)
         
+        let zoomed = ()=>{
+                         let zoomScale = d3.event.transform.rescaleY(yScale)
+                         yAxis = d3.axisLeft(zoomScale)
+                         yAxis.tickFormat(yAxisTickFormat)
+                         this.elD3.select(".yAxis").call(yAxis)
+                     }
+        this.chart.on("lineZooming",zoomed)
+        this.elD3.call(d3.zoom().scaleExtent([1,10]).on("zoom",zoomed))
         
         return this
     }
