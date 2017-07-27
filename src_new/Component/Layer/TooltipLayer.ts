@@ -82,7 +82,6 @@ export class TooltipLayer extends BaseLayer{
 }
 
 export interface ITooltipLayerConfig extends ILayerConfig{
-    
 }
 
 export interface TooltipData {
