@@ -228,7 +228,7 @@ export class LineLayer extends BaseLayer {
                                     .attr("x2",xScale(minX))
                                     .attr("y2",height-self.config.borderPadding)
         }
-    
+        
         let zoomed = ()=>{
             let zoomScale = d3.event.transform.rescaleY(yScale)
             line = d3.line<{x:any,y:any}>()
@@ -244,13 +244,12 @@ export class LineLayer extends BaseLayer {
             })
             this.chart.fire("lineZooming")
         }
-<<<<<<< HEAD
-        svgNode.call(d3.zoom().scaleExtent([1,5]).translateExtent([[0,0],[width,height]]).on("zoom",zoomed))
-=======
-        let zoomFunction=d3.zoom().scaleExtent([1,5]).on("zoom",zoomed)
-    
-        svgNode.call(zoomFunction)
->>>>>>> d3a3434273bb553650a642989c28a2a6898738e8
+        let zoom = d3.zoom()
+                     .scaleExtent([1,5])
+                     .translateExtent([[0,0],[width,height]])
+                     .on("zoom",zoomed)
+        
+        svgNode.call(zoom)
         return this
     }
 
