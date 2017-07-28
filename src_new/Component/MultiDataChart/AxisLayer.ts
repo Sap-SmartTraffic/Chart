@@ -165,7 +165,6 @@ export class AxisLayer extends BaseLayer{
                          this.elD3.select(".yAxis").call(yAxis)
                      }
         this.chart.on("lineZooming",zoomed)
-        this.elD3.call(d3.zoom().scaleExtent([1,10]).on("zoom",zoomed))
         
         return this
     }
