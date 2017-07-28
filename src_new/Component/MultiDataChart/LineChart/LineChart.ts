@@ -164,7 +164,7 @@ export class LineLayer extends BaseLayer {
                     if(value != undefined) {
                         
                         if(this.config.yAxisTitleType == "time") {
-                             data.push({id:d.id, value:d3.format(".1f")(value.y)+"s"})
+                            data.push({id:d.id, value:d3.format(".1f")(value.y)+"s"})
                             // if(maxY<=60)
                             //     data.push({id:d.id, value:d3.format(".1f")(value.y)+"s"})
                             // else if(maxY <= 3600)

@@ -38,8 +38,13 @@ export class MultiDataChart extends BaseChart implements IMultiDataChart{
     }
     loadMeasures(ms:any[]) {
         _.each(ms, (d)=>{
-            let mm = new MultiDataMeasure(d.id, d.data, d.type)
-            this.addMeasure(mm)
+            let m = new MultiDataMeasure(d.id, d.data, d.type)
+            let i=_.findIndex(this.measures,(mm)=>mm.id==m.id)
+            if(i!=-1){
+                this.measures[i]=m
+            }else{
+                this.measures.push(m)
+            }
         })
         this.fire("measure_change")
         return this
