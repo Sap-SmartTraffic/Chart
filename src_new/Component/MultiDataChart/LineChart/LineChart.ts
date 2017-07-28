@@ -8,7 +8,20 @@ import {AxisLayer,IAxisLayerConfig} from "../../MultiDataChart/AxisLayer"
 import {TooltipLayer,TooltipData,ITooltipLayerConfig} from "../../Layer/TooltipLayer"
 import {LegendLayer,ILegendLayerConfig} from "../../MultiDataChart/LegendLayer"
 import {TitleLayer,ITitleLayerConfig} from "../../../Component/Layer/TitleLayer"
-
+import { MultiDataMeasure } from "../MultiTypeMeasure";
+export class LineChartMeasure extends MultiDataMeasure {
+    constructor(id?,data?,type?,style?){
+        super(id,data,type,style)
+        this.parseMeasure()
+    }
+    parseMeasure(){
+        _.each(this.data,(v:{x:any,y:any},k)=>{
+                if(typeof(v.x) == "string")
+                    v.x=new Date(v.x)
+            })
+        return this
+    }
+}
 export class LineLayer extends BaseLayer {
     constructor(id?,conf?) {
         super(id,conf)
@@ -51,7 +64,7 @@ export class LineLayer extends BaseLayer {
         cardinal: d3.curveCardinal,
         step: d3.curveStep
     }
-
+    
     getScale():any {
         let ds = this.chart.getMeasure("line")
         if(!ds || typeof(ds) == undefined || ds.length==0 || !ds[0].data || ds[0].data.length==0) {
@@ -231,8 +244,9 @@ export class LineLayer extends BaseLayer {
             })
             this.chart.fire("lineZooming")
         }
-        svgNode.call(d3.zoom().scaleExtent([1,5]).on("zoom",zoomed))
-        
+        let zoomFunction=d3.zoom().scaleExtent([1,5]).on("zoom",zoomed)
+    
+        svgNode.call(zoomFunction)
         return this
     }
 
@@ -383,6 +397,7 @@ export class LineChart extends MultiDataChart {
     }
     constructor(conf?) {
         super(conf)
+        this.on("meaure_change",this.strToTimeMeasure)
         this.chartTitleLayer = new TitleLayer("chartTitle",{
             className:"chartTitle",
             style:{
@@ -434,12 +449,25 @@ export class LineChart extends MultiDataChart {
         })
         this.legendLayer.addTo(this)
     }
-
-    setConfig(c:ILineChartConfig){
+     loadMeasures(ms:any[]) {
+        _.each(ms, (d)=>{
+            let m = new LineChartMeasure(d.id, d.data, d.type)
+            let i=_.findIndex(this.measures,(mm)=>mm.id==m.id)
+            if(i!=-1){
+                this.measures[i]=m
+            }else{
+                this.measures.push(m)
+            }
+        })
+        this.fire("measure_change")
+        return this
+    }
+    setConfig(c){
         this.lineLayer.setConfig(_.toArray(_.pick(c,"line")))
         this.axisLayer.setConfig(_.toArray(_.pick(c,"axis")))
         this.legendLayer.setConfig(_.toArray(_.pick(c,"legend")))
         this.tooltipLayer.setConfig(_.toArray(_.pick(c,"tooltip")))
+        this.chartTitleLayer.setConfig(_.toArray(_.pick(c,"chartTitle")))
     }
 
     setTimeAdjust(time:Date|String) {
