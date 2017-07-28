@@ -141,7 +141,7 @@ export class AxisLayer extends BaseLayer{
             }
         }
         
-        let yAxis = d3.axisLeft(yScale)
+        let yAxis:any = d3.axisLeft(yScale)
                       .ticks(this.config.axis.ticks.y)
                       .tickFormat(yAxisTickFormat)
 

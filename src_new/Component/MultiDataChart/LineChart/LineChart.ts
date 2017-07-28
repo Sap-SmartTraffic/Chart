@@ -162,13 +162,15 @@ export class LineLayer extends BaseLayer {
                 _.each(ds,(d)=>{
                     let value = _.filter(d.data,(dd:LineData)=>{return dd.x.toString() == x.toString()})[0]
                     if(value != undefined) {
+                        
                         if(this.config.yAxisTitleType == "time") {
-                            if(maxY<=60)
-                                data.push({id:d.id, value:d3.format(".1f")(value.y)+"s"})
-                            else if(maxY <= 3600)
-                                data.push({id:d.id, value:d3.format(".1f")(value.y/60)+"min"})
-                            else 
-                                data.push({id:d.id, value:d3.format(".1f")(value.y/3600)+"h"})
+                             data.push({id:d.id, value:d3.format(".1f")(value.y)+"s"})
+                            // if(maxY<=60)
+                            //     data.push({id:d.id, value:d3.format(".1f")(value.y)+"s"})
+                            // else if(maxY <= 3600)
+                            //     data.push({id:d.id, value:d3.format(".1f")(value.y/60)+"min"})
+                            // else 
+                            //     data.push({id:d.id, value:d3.format(".1f")(value.y/3600)+"h"})
                         }
                         else if(this.config.yAxisTitleType == "speed") {
                             data.push({id:d.id, value:d3.format(".1f")(value.y)+"km/h"})

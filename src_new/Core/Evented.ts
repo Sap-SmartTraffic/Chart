@@ -59,9 +59,11 @@ export class Evented implements IEvented{
         return this;
     }
     fire(t: string, obj ? : any) {
-        if (this.events[t]) {
-            this.events[t].forEach((o) => o.fn.call(o.ctx, obj));
+        t.split(" ").forEach((tt)=>{
+            if (this.events[tt]) {
+            this.events[tt].forEach((o) => o.fn.call(o.ctx, obj));
         }
+        })
         let p = this.parent
         if(p){
             p.fire(t, obj)
