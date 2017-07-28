@@ -4,6 +4,14 @@ import {Util} from "../../Core/Util"
 import {BaseLayer,ILayerConfig} from "../../Core/BaseLayer"
 import {MultiDataChart} from "../MultiDataChart/MultiDataChart"
 export class LegendLayer extends BaseLayer{
+    constructor(id,conf?){
+        super(id,conf)
+        this.on("addToChart",()=>{
+            this.chart.on("style_change measure_change",()=>{
+                this.update()
+            })
+        })
+    }
     defaultConfig():ILegendLayerConfig{
         return {
                 tagName:"div",
