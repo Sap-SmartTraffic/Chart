@@ -244,9 +244,12 @@ export class LineLayer extends BaseLayer {
             })
             this.chart.fire("lineZooming")
         }
-        let zoomFunction=d3.zoom().scaleExtent([1,5]).on("zoom",zoomed)
-    
-        svgNode.call(zoomFunction)
+        let zoom = d3.zoom()
+                     .scaleExtent([1,5])
+                     .translateExtent([[0,0],[width,height]])
+                     .on("zoom",zoomed)
+        
+        svgNode.call(zoom)
         return this
     }
 
