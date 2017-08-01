@@ -4,3 +4,5 @@ tsconfig.json
 dist_new
 dist
 release
+.DS_Store
+distChartV2
