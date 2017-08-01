@@ -75,7 +75,7 @@ export class BaseLayer extends View{
     clear(){
         this.el.remove()
         this.el=null;
-        super.clear();
+        super.off("*")
     }
     getNode() {
         return this.el

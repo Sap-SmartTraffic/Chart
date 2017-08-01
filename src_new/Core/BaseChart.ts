@@ -1,7 +1,7 @@
 import d3 = require('d3');
 import _ = require('underscore');
 import { BaseLayer } from './BaseLayer';
-import { Evented, IEvented } from './Evented';
+import { Evented } from './Evented';
 import { Util } from './Util';
 import { View } from './View';
 export class BaseChart extends Evented{

@@ -113,6 +113,11 @@ export class Evented{
          Evented.eachEvent(Evented.triggerApi,this,keys,null,null,args)
          return this
     }
+    proxyEvents(e:Evented,...args){
+        _.each(args,arg=>e.on(arg,(...targs)=>{
+            this.fire.apply(this,[arg].concat(targs))
+        }))
+    }
 
 
 }

@@ -2,8 +2,7 @@
   "compilerOptions": {
     "target": "es5",
     "module": "amd",
-    "sourceMap": false,
-    "outDir": "dist_new"
+    "sourceMap": false
   },
   "exclude": [
     "./node_modules/*",
