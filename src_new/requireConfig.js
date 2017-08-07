@@ -2,22 +2,12 @@
         //By default load any module IDs from js/lib
         baseUrl: '/dist_new',
         paths:{
-                leaflet:"../lib/leaflet/dist/leaflet-src",
-                underscore:"../lib/underscore/underscore",
-                jquery:"../lib/jquery/dist/jquery",
-                bootstrap:"../lib/bootstrap/dist/js/bootstrap",
-                d3:"../lib/d3/d3",
-                text : "../lib/text/text"
+                lodash:"../node_modules/lodash/lodash",
+                d3:"../node_modules/d3/build/d3"
         },
-        shim:{
-                leaflet:{
-                        exports:"L"
-                },
-                "underscore": {
+        shim:{  
+                "lodash": {
                         exports: "_"
-                },
-                bootstrap:{
-                        deps:["jquery"]
                 }
         }
 });

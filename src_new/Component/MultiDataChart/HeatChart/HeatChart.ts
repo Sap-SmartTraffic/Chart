@@ -1,5 +1,5 @@
 import d3 =require("d3")
-import _ = require("underscore")
+import _ = require("lodash")
 import {Util} from "../../../Core/Util"
 import {MultiDataMeasure} from "../MultiTypeMeasure"
 import {MultiDataChart} from "../../MultiDataChart/MultiDataChart"
