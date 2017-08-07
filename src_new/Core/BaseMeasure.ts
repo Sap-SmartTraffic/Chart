@@ -1,4 +1,4 @@
-import _ =require("underscore")
+import _ = require('lodash');
 export interface IBaseMeasure{
     id:string,
     data:any,
@@ -7,7 +7,7 @@ export interface IBaseMeasure{
 }
 export class BaseMeasure implements IBaseMeasure{
     id:string
-    data:any
+    data:any[]
     type:string
     style:any
     constructor(id?,data?,type?,style?){

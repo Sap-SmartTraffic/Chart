@@ -1,11 +1,4 @@
 import _ = require("lodash")
-// export interface IEvented{
-//     on:(t:string ,fn:Function,ctx?:object)=>this
-//     off:(t:string ,fn:Function)=>this
-//     fire:(t: string, obj ? : any)=>this
-//     listen:(o:IEvented,estr:string,fn:Function)=>this
-//     clear:()=>void
-// }
 type EventsDataObj={
     [key:string]:{callback:Function,context:Object|null|undefined}[]
 }

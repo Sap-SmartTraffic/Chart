@@ -1,5 +1,5 @@
 import d3 = require('d3');
-import _ = require('underscore');
+import _ = require('lodash');
 import { BaseLayer } from './BaseLayer';
 import { Evented } from './Evented';
 import { Util } from './Util';

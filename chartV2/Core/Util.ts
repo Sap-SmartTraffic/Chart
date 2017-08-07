@@ -1,5 +1,16 @@
 import _ =require("lodash")
 export module Util{
+export function evalute(state,...args){
+    if(_.isFunction(state)){
+        return state.apply(null,args)
+    }
+        return state
+}
+export function evaluteObj(obj,...args){
+   return  _.mapValues(obj,(v)=>{
+        return evalute(v)
+    })
+}
 export function isEndWith(s:any,ed:string){
     let ss= s.toString();
     let matcher= new RegExp(ed+"$")

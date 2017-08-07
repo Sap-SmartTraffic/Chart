@@ -1,5 +1,5 @@
 import d3 =require("d3")
-import _ =require("underscore")
+import _ = require('lodash');
 import {BaseChart} from "./BaseChart"
 import {Util} from './Util'
 import {View,IViewConfig} from"./View"

@@ -21,9 +21,13 @@ module.exports = function (gulp) {
         let lessSteam=gulp.src(`./${basePath}/**/*.less`,{base:basePath})
             .pipe(less())
             .pipe(gulp.dest(baseDist))
-        let staticSteam=gulp.src([`./${basePath}/**/*.html`,`./${basePath}/**/*.js`,`./${basePath}/**/*.css`,`./${basePath}/**/*.svg`,`./${basePath}/**/*.jpg`,`./${basePath}/**/*.png`],{base:baseDist})
+        let staticSteam=gulp.src([`./${basePath}/**/*.html`,`./${basePath}/**/*.js`,`./${basePath}/**/*.css`,`./${basePath}/**/*.svg`,`./${basePath}/**/*.jpg`,`./${basePath}/**/*.png`],{base:basePath})
             .pipe(gulp.dest(baseDist))
         return merge([tsSteam,lessSteam,staticSteam])
+    })
+    gulp.task("copyV2",()=>{
+        gulp.src(`./chartV2/**/*.html`,{base:baseDist})
+            .pipe(gulp.dest("./distChartV2"))
     })
     gulp.task("chartV2InitServer",["chartV2InitFile"],()=>{
         chartV2server.init({
@@ -38,13 +42,16 @@ module.exports = function (gulp) {
     gulp.task("chartV2Watcher",['chartV2InitServer'],()=>{
         let basePath="chartV2"
         let baseDist="./distChartV2"
-        gulp.watch([`./${basePath}/**/*.html`,`./${basePath}/**/*.js`,`./${basePath}/**/*.css`,`./${basePath}/**/*.svg`,`./${basePath}/**/*.jpg`,`./${basePath}/**/*.png`],(e)=>{
+        gulp.watch([`**/*.html`,`**/*.js`,`**/*.css`,`**/*.svg`,`**/*.jpg`,`**/*.png`],{cwd:`./${basePath}/`},(e)=>{
+            console.log(e)
             gulp.src(e.path,{base:basePath}).pipe(gulp.dest(baseDist))
         })
-        gulp.watch(`./${basePath}/**/*.less`,(e)=>{
+        gulp.watch(`**/*.less`,{cwd:`./${basePath}/`},(e)=>{
+             console.log(e)
             gulp.src(e.path,{base:basePath}).pipe(less()).pipe(gulp.dest(baseDist))
         })
-        gulp.watch(`./${basePath}/**/*.ts`,{cwd:'./'},(e)=>{
+        gulp.watch(`**/*.ts`,{cwd:`./${basePath}/`},(e)=>{
+             console.log(e)
             gulp.src(e.path,{base:basePath})
                 .pipe(ts.createProject('tsconfig.json')())
                 .pipe(gulp.dest(baseDist))

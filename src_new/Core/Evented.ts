@@ -1,4 +1,4 @@
-import _ = require("underscore")
+import _ = require('lodash');
 // export interface IEvented{
 //     on:(t:string ,fn:Function,ctx?:object)=>this
 //     off:(t:string ,fn:Function)=>this
@@ -6,7 +6,7 @@ import _ = require("underscore")
 //     listen:(o:IEvented,estr:string,fn:Function)=>this
 //     clear:()=>void
 // }
-type EventsDataObj={
+export type EventsDataObj={
     [key:string]:{callback:Function,context:Object|null|undefined}[]
 }
 export class Evented{

@@ -1,5 +1,5 @@
 import d3 =require("d3")
-import _ = require("underscore")
+import _ = require('lodash');
 import {Util} from "../../../Core/Util"
 import {IChartConfig} from "../../../Core/BaseChart"
 import {MultiDataChart} from "../../MultiDataChart/MultiDataChart"
@@ -155,7 +155,7 @@ export class LineLayer extends BaseLayer {
         if(this.config.hasTooltip) {
             let allRect:TooltipData[] = [], allRectX = [], allRectInterval = []
             _.each(ds,(d,i)=>{
-                allRectX = _.union(allRectX, _.pluck(d.data,"x"))
+                allRectX = _.union(allRectX, _.map(d.data,"x"))
             })
             allRectX = allRectX.sort((a,b)=>{
                 return a > b ? 1 : -1

@@ -1,5 +1,5 @@
 import d3 =require("d3")
-import _ =require("underscore")
+import _ = require('lodash');
 import {Evented} from "./Evented"
 import {Util} from "./Util"
 let styles=Util.d3Invoke("style")

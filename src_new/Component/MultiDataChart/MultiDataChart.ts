@@ -1,5 +1,5 @@
 import d3 = require("d3")
-import _ = require('underscore');
+import _ = require('lodash');
 import { BaseChart } from '../../Core/BaseChart';
 import { MultiDataMeasure } from "./MultiTypeMeasure";
 export interface IGetDomain {
@@ -52,7 +52,7 @@ export class MultiDataChart extends BaseChart implements IMultiDataChart{
     removeMeasure(m:MultiDataMeasure|string){
         if(_.isString(m)){
             if(_.some(this.measures,(mm)=>mm.id==m)){
-                let rm=_.findWhere(this.measures,{id:m})
+                let rm=_.find(this.measures,{id:m})
                 this.measures=_.filter(this.measures,(mm)=>mm.id!=m)
                 this.fire("measure_change measure_remove",{
                     measure:rm
