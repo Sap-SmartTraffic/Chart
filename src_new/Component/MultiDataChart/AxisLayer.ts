@@ -15,19 +15,8 @@ export class AxisLayer extends BaseLayer{
         })
     }
     defaultConfig():IAxisLayerConfig {
-        return {
-            tagName: "svg",
+        return Util.deepExtend(super.defaultConfig(),{
             className: "axis",
-            style: {
-                top: "0px",
-                left: "0px",
-                bottom: null,
-                right: null,
-                position: "absolute",
-                zindex: 0,
-                width: "200rem",
-                height: "100rem"
-            },
             axis:{
                 format:{x:null,y:null},
                 key:{x:"x",y:"y"},
@@ -44,7 +33,7 @@ export class AxisLayer extends BaseLayer{
             verticalGridLine:false,
             horizontalGridLine:true,
             yAxisTitleType:"time"
-        }
+        })
     }
 
     config:IAxisLayerConfig
@@ -158,13 +147,13 @@ export class AxisLayer extends BaseLayer{
                  .attr("alignment-baseline","hanging")
                  .text(yAxisTitle)
         
-        let zoomed = ()=>{
-                         let zoomScale = d3.event.transform.rescaleY(yScale)
-                         yAxis = d3.axisLeft(zoomScale)
-                         yAxis.tickFormat(yAxisTickFormat)
-                         this.elD3.select(".yAxis").call(yAxis)
-                     }
-        this.chart.on("lineZooming",zoomed)
+        // let zoomed = ()=>{
+        //                  let zoomScale = d3.event.transform.rescaleY(yScale)
+        //                  yAxis = d3.axisLeft(zoomScale)
+        //                  yAxis.tickFormat(yAxisTickFormat)
+        //                  this.elD3.select(".yAxis").call(yAxis)
+        //              }
+        // this.chart.on("lineZooming",zoomed)
         
         return this
     }
@@ -177,16 +166,16 @@ export interface IXYAxisConfig{
 }
 
 export interface IAxisLayerConfig extends ILayerConfig{
-    axis:IXYAxisConfig,
-    borderPadding:number
-    padding: {
+    axis?:IXYAxisConfig,
+    borderPadding?:number
+    padding?: {
         top: string|undefined|null,
         right: string|undefined|null,
         bottom: string|undefined|null,
         left: string|undefined|null
     }
-    type:string
-    verticalGridLine:boolean,
-    horizontalGridLine:boolean,
-    yAxisTitleType:string
+    type?:string
+    verticalGridLine?:boolean,
+    horizontalGridLine?:boolean,
+    yAxisTitleType?:string
 }

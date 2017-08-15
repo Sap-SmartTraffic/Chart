@@ -20,19 +20,8 @@ export class BoxplotLayer extends BaseLayer {
     }
     config: BoxplotLayerConfig
     defaultConfig(): BoxplotLayerConfig {
-        return {
-            tagName: "svg",
-            className: "boxplotChart",
-            style: {
-                top: "0px",
-                left: "0px",
-                bottom: null,
-                right: null,
-                position: "absolute",
-                zindex: 0,
-                width: "400rem",
-                height: "200rem"
-            },
+        return Util.deepExtend(super.defaultConfig(),{
+            className:"boxplotChart",
             boxPadding:{
                 top:20,
                 right:50,
@@ -40,7 +29,7 @@ export class BoxplotLayer extends BaseLayer {
                 left:50
             },
             rectWidth:20
-        }
+        })
     }
 
     chart:MultiDataChart
@@ -155,13 +144,13 @@ export class BoxplotLayer extends BaseLayer {
 }
 
 export interface BoxplotLayerConfig extends ILayerConfig {
-    boxPadding:{
+    boxPadding?:{
         top:number,
         right:number,
         bottom:number,
         left:number
     },
-    rectWidth:number
+    rectWidth?:number
 }
 
 export interface BoxplotData {

@@ -33,19 +33,8 @@ export class LineLayer extends BaseLayer {
     }
     config: ILineLayerConfig
     defaultConfig(): ILineLayerConfig {
-        return {
-            tagName: "svg",
+        return Util.deepExtend(super.defaultConfig(),{
             className: "lineChart",
-            style: {
-                top: "0px",
-                left: "0px",
-                bottom: null,
-                right: null,
-                position: "absolute",
-                zindex: 0,
-                width: "400rem",
-                height: "200rem"
-            },
             borderPadding:6,
             curveType: "linear",
             hasDot: true,
@@ -53,7 +42,7 @@ export class LineLayer extends BaseLayer {
             hasTooltip: true,
             hasTimeAdjust: true,
             yAxisTitleType: "time"
-        }
+        })
     }
 
     chart:MultiDataChart
@@ -229,27 +218,27 @@ export class LineLayer extends BaseLayer {
                                     .attr("y2",height-self.config.borderPadding)
         }
         
-        let zoomed = ()=>{
-            let zoomScale = d3.event.transform.rescaleY(yScale)
-            line = d3.line<{x:any,y:any}>()
-                 .x(function(v){return xScale(v.x)})
-                 .y(function(v){return zoomScale(v.y)})
-            _.each(ds,(d,i)=>{
-                svgNode.select(".line"+i)
-                       .attr("d",line(d.data))
-                _.each(d.data,(v:LineData,k)=>{
-                    svgNode.select(".circle"+i+k)
-                           .attr("cy",zoomScale(v.y))
-                })
-            })
-            this.chart.fire("lineZooming")
-        }
-        let zoom = d3.zoom()
-                     .scaleExtent([1,5])
-                     .translateExtent([[0,0],[width,height]])
-                     .on("zoom",zoomed)
+        // let zoomed = ()=>{
+        //     let zoomScale = d3.event.transform.rescaleY(yScale)
+        //     line = d3.line<{x:any,y:any}>()
+        //          .x(function(v){return xScale(v.x)})
+        //          .y(function(v){return zoomScale(v.y)})
+        //     _.each(ds,(d,i)=>{
+        //         svgNode.select(".line"+i)
+        //                .attr("d",line(d.data))
+        //         _.each(d.data,(v:LineData,k)=>{
+        //             svgNode.select(".circle"+i+k)
+        //                    .attr("cy",zoomScale(v.y))
+        //         })
+        //     })
+        //     this.chart.fire("lineZooming")
+        // }
+        // let zoom = d3.zoom()
+        //              .scaleExtent([1,5])
+        //              .translateExtent([[0,0],[width,height]])
+        //              .on("zoom",zoomed)
         
-        svgNode.call(zoom)
+        // svgNode.call(zoom)
         return this
     }
 
@@ -271,13 +260,13 @@ export class LineLayer extends BaseLayer {
 }
 
 export interface ILineLayerConfig extends ILayerConfig {
-    borderPadding:number,
-    curveType: string,
-    hasDot: boolean,
-    hasArea: boolean,
-    hasTooltip: boolean,
-    hasTimeAdjust: boolean,
-    yAxisTitleType: string
+    borderPadding?:number,
+    curveType?:string,
+    hasDot?: boolean,
+    hasArea?: boolean,
+    hasTooltip?: boolean,
+    hasTimeAdjust?: boolean,
+    yAxisTitleType?: string
 }
 
 export interface LineData {

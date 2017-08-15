@@ -176,7 +176,7 @@ export function deepExtend(des,...source:any[]){
                 deepExtend.apply(this,args)
             }else{
                 _.each(s,(v,k)=>{
-                    if(_.isObject(v)&&!_.isElement(v)&&!_.isFunction(v)){
+                    if(_.isObject(v)&&!_.isElement(v)&&!_.isFunction(v)&&!_.isArray(v)){
                         if(_.isUndefined(des[k])){
                             des[k]={}
                         }

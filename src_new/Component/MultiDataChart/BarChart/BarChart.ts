@@ -18,20 +18,7 @@ export class BarLayer extends BaseLayer {
     }
     config: IBarLayerConfig
     defaultConfig(): IBarLayerConfig {
-        return {
-            tagName: "svg",
-            className: "barChart",
-            style: {
-                top: "0px",
-                left: "0px",
-                bottom: null,
-                right: null,
-                position: "absolute",
-                zindex: 0,
-                width: "400rem",
-                height: "200rem"
-            }
-        }
+        return Util.deepExtend(super.defaultConfig(),{className:"barChart"})
     }
 
     chart:MultiDataChart

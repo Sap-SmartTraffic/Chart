@@ -13,20 +13,14 @@ export class LegendLayer extends BaseLayer{
         })
     }
     defaultConfig():ILegendLayerConfig{
-        return {
-                tagName:"div",
-                className:"legend",
-                style:{
-                    top:"0px",
-                    left:"0px",
-                    bottom:null,
-                    right:null,
-                    position:"absolute",
-                    zindex:0,
-                    width:"20rem",
-                    height:"2rem"
-                }
+        return Util.deepExtend(super.defaultConfig(),{
+            tagName:"div",
+            className:"legend",
+            style:{
+                width:"20rem",
+                height:"2rem"
             }
+        })
     }
     config:ILegendLayerConfig
     chart:MultiDataChart

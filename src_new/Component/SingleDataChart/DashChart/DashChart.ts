@@ -15,19 +15,8 @@ export class DashLayer extends BaseLayer {
     }
     config:DashLayerConfig
     defaultConfig():DashLayerConfig{
-        return {
-            tagName:"svg",
+        return Util.deepExtend(super.defaultConfig(),{
             className:"dashpie",
-            style:{
-                top:"0px",
-                left:"0px",
-                bottom:null,
-                right:null,
-                position:"absolute",
-                zindex:0,
-                width:"300px",
-                height:"300px"
-            },
             padding:25,
             dataFomate(v){
                 return (+v).toFixed(1)+"Km/H"
@@ -36,7 +25,7 @@ export class DashLayer extends BaseLayer {
             oldData:0,
             colorDomain: [0,0.5,1],
             colorRange: ["red","yellow","green"]
-        }
+        })
     }
 
     chart:SingleDataChart
@@ -121,12 +110,12 @@ export class DashLayer extends BaseLayer {
 }
 
 export interface DashLayerConfig extends ILayerConfig{
-        rangeMax:number,
-        padding:number,
-        dataFomate(n:string|number):string,
-        oldData:number,
-        colorDomain:number[]
-        colorRange:any[]
+        rangeMax?:number,
+        padding?:number,
+        dataFomate?(n:string|number):string,
+        oldData?:number,
+        colorDomain?:number[]
+        colorRange?:any[]
 }
         
 

@@ -15,25 +15,14 @@ export class PieLayer extends BaseLayer {
     }
     config: PieLayerConfig
     defaultConfig(): PieLayerConfig {
-        return {
-            tagName: "svg",
+        return Util.deepExtend(super.defaultConfig(),{
             className: "pieChart",
-            style: {
-                top: "0px",
-                left: "0px",
-                bottom: null,
-                right: null,
-                position: "absolute",
-                zindex: 0,
-                width: "200rem",
-                height: "100rem"
-            },
             segmentCount: 12,
             segmentStart: 18,
             padding: 10,
             colorDomain: [0,50,100],
             colorRange: ["red","yellow","green"]
-        }
+        })
     }
 
     chart:SingleDataChart
@@ -138,11 +127,11 @@ export class PieLayer extends BaseLayer {
 }
 
 export interface PieLayerConfig extends ILayerConfig {
-    segmentCount: number,
-    segmentStart: number,
-    padding: number,
-    colorDomain: number[],
-    colorRange: any[]
+    segmentCount?: number,
+    segmentStart?: number,
+    padding?: number,
+    colorDomain?: number[],
+    colorRange?: any[]
 }
 
 export interface IPieData {

@@ -15,20 +15,7 @@ export class TooltipLayer extends BaseLayer{
 
     config:ITooltipLayerConfig
     defaultConfig():ITooltipLayerConfig{
-        return {
-            tagName:"div",
-            className:"tooltipContainer",
-            style:{
-                top:"0px",
-                left:"0px",
-                bottom:null,
-                right:null,
-                position:"absolute",
-                zindex:0,
-                width:"150px",
-                height:"100px"
-            }
-        }
+        return Util.deepExtend(super.defaultConfig(),{tagName:"div",className:"tooltipContainer",style:{width:"150px", height:"100px"}})
     }
     chart: MultiDataChart
    

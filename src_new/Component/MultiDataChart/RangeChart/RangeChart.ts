@@ -16,20 +16,9 @@ export class RangeLayer extends BaseLayer {
     }
     config: RangeLayerConfig
     defaultConfig(): RangeLayerConfig {
-        return {
-            tagName: "svg",
+        return Util.deepExtend(super.defaultConfig(),{
             className: "rangeChart",
-            style: {
-                top: "0px",
-                left: "0px",
-                bottom: null,
-                right: null,
-                position: "absolute",
-                zindex: 0,
-                width: "400rem",
-                height: "200rem"
-            }
-        }
+        })
     }
 
     chart:MultiDataChart
