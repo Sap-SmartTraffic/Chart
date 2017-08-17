@@ -27,16 +27,16 @@
     requirejs(["./Component/MultiDataChart/BoxplotChart/BoxplotChart"],function(c){
         var boxplotChart = new c.BoxplotChart({style:{width:"40rem",height:"30rem"}})
         let measures = [
-            {id:'2011-12-18', data:[25, 24, 26, 27],type:"boxplot"},
-            {id:'2011-12-19', data:[22, 26, 30, 25],type:"boxplot"},
-            {id:'2011-12-20', data:[27, 29, 31, 23],type:"boxplot"},
-            {id:'2011-12-21', data:[27, 33, 20, 23],type:"boxplot"},
-            {id:'2011-12-22', data:[25, 31, 21, 26],type:"boxplot"},
-            {id:'2011-12-23', data:[26, 20, 29, 24],type:"boxplot"},
-            {id:'2011-12-24', data:[22, 28, 26, 24],type:"boxplot"},
-            {id:'2011-12-25', data:[31, 27, 26, 29],type:"boxplot"}
+            {id:'2011-12-18', data:[25, 24, 26, 27]},
+            {id:'2011-12-19', data:[22, 26, 30, 25]},
+            {id:'2011-12-20', data:[27, 29, 31, 23]},
+            {id:'2011-12-21', data:[27, 33, 20, 23]},
+            {id:'2011-12-22', data:[25, 31, 21, 26]},
+            {id:'2011-12-23', data:[26, 20, 29, 24]},
+            {id:'2011-12-24', data:[22, 28, 26, 24]},
+            {id:'2011-12-25', data:[31, 27, 26, 29]}
         ]
-        boxplotChart.loadMeasures(measures)
+        boxplotChart.loadMeasures(measures,"boxplot")
         boxplotChart.renderAt("content")
         setInterval(()=>{
             boxplotChart.removeMeasure("boxplot")
@@ -46,10 +46,10 @@
                 for(var j = 0; j < 4; j++) {
                     tempData.push(Math.round(20*Math.random())+10)
                 }
-                tempMeasures.push({id:i, data:tempData, type:"boxplot"})
+                tempMeasures.push({id:i, data:tempData})
                 tempData.splice(0,-1)
             }
-            boxplotChart.loadMeasures(tempMeasures)
+            boxplotChart.loadMeasures(tempMeasures,"boxplot")
         },3000)
     })
 

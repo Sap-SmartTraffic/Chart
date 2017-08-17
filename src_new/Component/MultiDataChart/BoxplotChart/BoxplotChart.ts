@@ -8,6 +8,7 @@ import {AxisLayer} from "../../MultiDataChart/AxisLayer"
 import {TooltipLayer,TooltipData} from "../../Layer/TooltipLayer"
 import {LegendLayer} from "../../MultiDataChart/LegendLayer"
 import {TitleLayer} from "../../Layer/TitleLayer"
+import {BoxplotData} from "../../../Core/DataFilter"
 
 export class BoxplotLayer extends BaseLayer {
     constructor(id?,conf?) {
@@ -151,14 +152,6 @@ export interface BoxplotLayerConfig extends ILayerConfig {
         left:number
     },
     rectWidth?:number
-}
-
-export interface BoxplotData {
-    min:number,
-    lowerQuartile:number,
-    median:number,
-    largerQuartile:number,
-    max:number
 }
 
 export class BoxplotChart extends MultiDataChart {

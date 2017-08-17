@@ -8,20 +8,8 @@ import {AxisLayer,IAxisLayerConfig} from "../../MultiDataChart/AxisLayer"
 import {TooltipLayer,TooltipData,ITooltipLayerConfig} from "../../Layer/TooltipLayer"
 import {LegendLayer,ILegendLayerConfig} from "../../MultiDataChart/LegendLayer"
 import {TitleLayer,ITitleLayerConfig} from "../../../Component/Layer/TitleLayer"
-import { MultiDataMeasure } from "../MultiTypeMeasure";
-export class LineChartMeasure extends MultiDataMeasure {
-    constructor(id?,data?,type?,style?){
-        super(id,data,type,style)
-        this.parseMeasure()
-    }
-    parseMeasure(){
-        _.each(this.data,(v:{x:any,y:any},k)=>{
-                if(typeof(v.x) == "string")
-                    v.x=new Date(v.x)
-            })
-        return this
-    }
-}
+import {LineData} from "../../../Core/DataFilter"
+
 export class LineLayer extends BaseLayer {
     constructor(id?,conf?) {
         super(id,conf)
@@ -59,9 +47,6 @@ export class LineLayer extends BaseLayer {
         if(!ds || typeof(ds) == undefined || ds.length==0 || !ds[0].data || ds[0].data.length==0) {
             return 
         }
-        if(typeof(ds[0].data[0].x) == "string") {
-            this.chart.strToTimeMeasure()
-        }
         let maxX = this.chart.max("x"),
             minX = this.chart.min("x"),
             maxY = this.chart.max("y")
@@ -91,10 +76,6 @@ export class LineLayer extends BaseLayer {
         if(!ds || typeof(ds) == undefined || ds.length==0 || !ds[0].data || ds[0].data.length==0) {
             return
         }
-        if(typeof(ds[0].data[0].x) == "string") {
-            this.chart.strToTimeMeasure()
-        }
-        ds = this.chart.getMeasure("line")
         let series = ds.length
         let maxX = this.chart.max("x"),
             minX = this.chart.min("x"),
@@ -116,7 +97,7 @@ export class LineLayer extends BaseLayer {
                  .attr("class","line"+i)
                  .attr("d",line(d.data))
                  .attr("stroke",this.chart.getColor(d.id))
-
+                 
             if(this.config.hasDot) {
                 _.each(d.data,(v:LineData,k)=>{
                     group.append("circle")
@@ -163,16 +144,9 @@ export class LineLayer extends BaseLayer {
                 let data = []
                 _.each(ds,(d)=>{
                     let value = _.filter(d.data,(dd:LineData)=>{return dd.x.toString() == x.toString()})[0]
-                    if(value != undefined) {
-                        
+                    if(value != undefined) {  
                         if(this.config.yAxisTitleType == "time") {
                             data.push({id:d.id, value:d3.format(".1f")(value.y)+"s"})
-                            // if(maxY<=60)
-                            //     data.push({id:d.id, value:d3.format(".1f")(value.y)+"s"})
-                            // else if(maxY <= 3600)
-                            //     data.push({id:d.id, value:d3.format(".1f")(value.y/60)+"min"})
-                            // else 
-                            //     data.push({id:d.id, value:d3.format(".1f")(value.y/3600)+"h"})
                         }
                         else if(this.config.yAxisTitleType == "speed") {
                             data.push({id:d.id, value:d3.format(".1f")(value.y)+"km/h"})
@@ -217,28 +191,6 @@ export class LineLayer extends BaseLayer {
                                     .attr("x2",xScale(minX))
                                     .attr("y2",height-self.config.borderPadding)
         }
-        
-        // let zoomed = ()=>{
-        //     let zoomScale = d3.event.transform.rescaleY(yScale)
-        //     line = d3.line<{x:any,y:any}>()
-        //          .x(function(v){return xScale(v.x)})
-        //          .y(function(v){return zoomScale(v.y)})
-        //     _.each(ds,(d,i)=>{
-        //         svgNode.select(".line"+i)
-        //                .attr("d",line(d.data))
-        //         _.each(d.data,(v:LineData,k)=>{
-        //             svgNode.select(".circle"+i+k)
-        //                    .attr("cy",zoomScale(v.y))
-        //         })
-        //     })
-        //     this.chart.fire("lineZooming")
-        // }
-        // let zoom = d3.zoom()
-        //              .scaleExtent([1,5])
-        //              .translateExtent([[0,0],[width,height]])
-        //              .on("zoom",zoomed)
-        
-        // svgNode.call(zoom)
         return this
     }
 
@@ -269,11 +221,6 @@ export interface ILineLayerConfig extends ILayerConfig {
     yAxisTitleType?: string
 }
 
-export interface LineData {
-    x:any,
-    y:any
-}
-
 export class LineChart extends MultiDataChart {
     chartTitleLayer:TitleLayer
     lineLayer:LineLayer
@@ -292,18 +239,6 @@ export class LineChart extends MultiDataChart {
             },
             el:null,
             line:{
-                tagName: "svg",
-                className: "lineChart",
-                style: {
-                    top: "0px",
-                    left: "0px",
-                    bottom: null,
-                    right: null,
-                    position: "absolute",
-                    zindex: 0,
-                    width: "40rem",
-                    height: "30rem"
-                },
                 borderPadding:6,
                 curveType: "linear",
                 hasDot: true,
@@ -313,22 +248,9 @@ export class LineChart extends MultiDataChart {
                 yAxisTitleType: "time"
             },
             axis:{
-                tagName: "svg",
-                className: "axis",
                 style: {
-                    top: "0px",
-                    left: "0px",
-                    bottom: null,
-                    right: null,
-                    position: "absolute",
-                    zindex: 0,
                     width: "40rem",
                     height: "30rem"
-                },
-                axis:{
-                    format:{x:null,y:null},
-                    key:{x:"x",y:"y"},
-                    ticks:{x:null,y:null},
                 },
                 borderPadding:6,
                 padding: {
@@ -336,66 +258,36 @@ export class LineChart extends MultiDataChart {
                     right:"20px",
                     bottom:"40px",
                     left:"50px"
-                },
-                type:"line",
-                verticalGridLine:false,
-                horizontalGridLine:true,
-                yAxisTitleType:"time"
+                }
             },
             tooltip: {
-                tagName:"div",
-                className:"tooltipContainer",
                 style:{
-                    top:"0px",
-                    left:"0px",
-                    bottom:null,
-                    right:null,
-                    position:"absolute",
-                    zindex:0,
                     width: "40rem",
                     height: "30rem"
                 }
             },
             legend: {
-                tagName:"div",
-                className:"legend",
                 style:{
-                    top:"0px",
-                    left:"0px",
-                    bottom:null,
-                    right:null,
-                    position:"absolute",
-                    zindex:0,
                     width: "40rem",
                     height: "2rem"
                 }
             },
             chartTitle: {
-                tagName:"div",
-                className:"title",
                 style:{
-                    top:"0px",
-                    left:"0px",
-                    bottom:null,
-                    right:null,
-                    position:"absolute",
-                    zindex:0,
                     width:"40rem",
                     height:"2rem",
-                },
-                value:""
+                }
             }
         }
     }
     constructor(conf?) {
         super(conf)
-        this.on("meaure_change",this.strToTimeMeasure)
         this.chartTitleLayer = new TitleLayer("chartTitle",{
             className:"chartTitle",
             style:{
                 width:()=>this.config.style.width,
             },
-            value:"Line Chart"//conf.chartTitle.value||"Line Chart"
+            value:"Line Chart"
         })
         this.chartTitleLayer.addTo(this)
         this.axisLayer = new AxisLayer("axis",{
@@ -441,19 +333,7 @@ export class LineChart extends MultiDataChart {
         })
         this.legendLayer.addTo(this)
     }
-     loadMeasures(ms:any[]) {
-        _.each(ms, (d)=>{
-            let m = new LineChartMeasure(d.id, d.data, d.type)
-            let i=_.findIndex(this.measures,(mm)=>mm.id==m.id)
-            if(i!=-1){
-                this.measures[i]=m
-            }else{
-                this.measures.push(m)
-            }
-        })
-        this.fire("measure_change")
-        return this
-    }
+
     setConfig(c){
         this.lineLayer.setConfig(_.toArray(_.pick(c,"line")))
         this.axisLayer.setConfig(_.toArray(_.pick(c,"axis")))

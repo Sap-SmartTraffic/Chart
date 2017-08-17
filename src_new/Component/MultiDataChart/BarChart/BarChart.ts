@@ -1,12 +1,14 @@
 import d3 =require("d3")
 import _ = require("lodash")
 import {Util} from "../../../Core/Util"
+import {IChartConfig} from "../../../Core/BaseChart"
 import {MultiDataChart} from "../../MultiDataChart/MultiDataChart"
 import {BaseLayer,ILayerConfig,ILayerStyle} from "../../../Core/BaseLayer"
-import {AxisLayer} from "../../MultiDataChart/AxisLayer"
-import {TooltipLayer,TooltipData} from "../../Layer/TooltipLayer"
-import {LegendLayer} from "../../MultiDataChart/LegendLayer"
-import {BarData} from "BarData"
+import {AxisLayer,IAxisLayerConfig} from "../../MultiDataChart/AxisLayer"
+import {TooltipLayer,TooltipData,ITooltipLayerConfig} from "../../Layer/TooltipLayer"
+import {LegendLayer,ILegendLayerConfig} from "../../MultiDataChart/LegendLayer"
+import {TitleLayer,ITitleLayerConfig} from "../../../Component/Layer/TitleLayer"
+import {BarData} from "../../../Core/DataFilter"
 export class BarLayer extends BaseLayer {
     constructor(id?,conf?) {
         super(id,conf)
@@ -86,53 +88,118 @@ export interface IBarLayerConfig extends ILayerConfig {
 
 
 export class BarChart extends MultiDataChart {
+    chartTitleLayer:TitleLayer
     barLayer:BarLayer
     axisLayer:AxisLayer
     tooltipLayer:TooltipLayer
     legendLayer:LegendLayer
 
+    config:IBarChartConfig
+    defaultConfig():IBarChartConfig{
+        return {
+            className:"chart",
+            style:{
+                width:"40rem",
+                height:"30rem",
+                position:"relative"
+            },
+            el:null,
+            bar:{},
+            axis:{
+                style: {
+                    width: "40rem",
+                    height: "30rem"
+                },
+                borderPadding:6,
+                padding: {
+                    top:"10px",
+                    right:"20px",
+                    bottom:"40px",
+                    left:"50px"
+                }
+            },
+            tooltip: {
+                style:{
+                    width: "40rem",
+                    height: "30rem"
+                }
+            },
+            legend: {
+                style:{
+                    width: "40rem",
+                    height: "2rem"
+                }
+            },
+            chartTitle: {
+                style:{
+                    width:"40rem",
+                    height:"2rem",
+                }
+            }
+        }
+    }
     constructor(conf?) {
         super(conf)
+        this.chartTitleLayer = new TitleLayer("chartTitle",{
+            className:"chartTitle",
+            style:{
+                width:()=>this.config.style.width,
+            },
+            value:"Bar Chart"
+        })
         this.axisLayer = new AxisLayer("axis",{
             style: {
-                width: this.config.style.width,
-                height: this.config.style.height
+                top: ()=>this.config.chartTitle.style.height,
+                width: ()=>this.config.style.width,
+                height: ()=>Util.toPixel(this.config.style.height) - Util.toPixel(this.config.legend.style.height) - Util.toPixel(this.config.chartTitle.style.height)
             },
             type:"ordinal",
             verticalGridLine:false
         })
         this.barLayer = new BarLayer("bar",{
             style: {
-                top: ()=>this.axisLayer.config.padding.top,
-                left: ()=>this.axisLayer.config.padding.left,
-                width: ()=>Util.toPixel(this.config.style.width) - Util.toPixel(this.axisLayer.config.padding.left)-Util.toPixel(this.axisLayer.config.padding.right),
-                height: ()=>Util.toPixel(this.config.style.height)- Util.toPixel(this.axisLayer.config.padding.top)-Util.toPixel(this.axisLayer.config.padding.bottom)
+                top: ()=>Util.toPixel(this.config.axis.padding.top) + Util.toPixel(this.config.chartTitle.style.height),
+                left: ()=>Util.toPixel(this.config.axis.padding.left),
+                width: ()=>Util.toPixel(this.config.style.width) - Util.toPixel(this.config.axis.padding.left)-Util.toPixel(this.config.axis.padding.right),
+                height: ()=>Util.toPixel(this.config.style.height)- Util.toPixel(this.config.axis.padding.top)-Util.toPixel(this.config.axis.padding.bottom) - Util.toPixel(this.config.legend.style.height) - Util.toPixel(this.config.chartTitle.style.height)
             }
         })
         this.tooltipLayer = new TooltipLayer("tooltip",{
             style: {
-                top: ()=>this.axisLayer.config.padding.top,
-                left: ()=>this.axisLayer.config.padding.left,
-                width: ()=>Util.toPixel(this.config.style.width) - Util.toPixel(this.axisLayer.config.padding.left)-Util.toPixel(this.axisLayer.config.padding.right),
-                height: ()=>Util.toPixel(this.config.style.height)- Util.toPixel(this.axisLayer.config.padding.top)-Util.toPixel(this.axisLayer.config.padding.bottom)
+                top: ()=>Util.toPixel(this.config.axis.padding.top) + Util.toPixel(this.config.chartTitle.style.height),
+                left: ()=>Util.toPixel(this.config.axis.padding.left),
+                width: ()=>Util.toPixel(this.config.style.width) - Util.toPixel(this.config.axis.padding.left)-Util.toPixel(this.config.axis.padding.right),
+                height: ()=>Util.toPixel(this.config.style.height)- Util.toPixel(this.config.axis.padding.top)-Util.toPixel(this.config.axis.padding.bottom) - Util.toPixel(this.config.legend.style.height) - Util.toPixel(this.config.chartTitle.style.height)
             }
         })
         this.legendLayer = new LegendLayer("legend",{
             style: {
-                top: ()=>this.axisLayer.config.style.height,
-                left: ()=>this.axisLayer.config.padding.left,
-                width: ()=>Util.toPixel(this.axisLayer.config.style.width) - Util.toPixel(this.axisLayer.config.padding.left) - Util.toPixel(this.axisLayer.config.padding.right)
+                top: ()=>Util.toPixel(this.config.style.height) - Util.toPixel(this.config.legend.style.height),
+                left: ()=>this.config.axis.padding.left,
+                width: ()=>Util.toPixel(this.config.style.width) - Util.toPixel(this.config.axis.padding.left) - Util.toPixel(this.config.axis.padding.right)
             }
         })
+        this.chartTitleLayer.addTo(this)
         this.axisLayer.addTo(this)
         this.barLayer.addTo(this)
         this.tooltipLayer.addTo(this)
         this.legendLayer.addTo(this)
     }
 
-    setConfig(c:IBarLayerConfig){
-        this.barLayer.setConfig(_.pick(c,"key"))
-        this.axisLayer.setConfig(_.pick(c,"key"))
+    setConfig(c){
+        this.barLayer.setConfig(_.toArray(_.pick(c,"bar")))
+        this.axisLayer.setConfig(_.toArray(_.pick(c,"axis")))
+        this.legendLayer.setConfig(_.toArray(_.pick(c,"legend")))
+        this.tooltipLayer.setConfig(_.toArray(_.pick(c,"tooltip")))
+        this.chartTitleLayer.setConfig(_.toArray(_.pick(c,"chartTitle")))
     }
+}
+
+export interface IBarChartConfig extends IChartConfig{
+    bar: IBarLayerConfig,
+    axis: IAxisLayerConfig,
+    tooltip: ITooltipLayerConfig,
+    legend: ILegendLayerConfig,
+    chartTitle: ITitleLayerConfig
 }
 

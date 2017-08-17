@@ -4,6 +4,7 @@ import {Util} from "../../../Core/Util"
 import {MultiDataChart} from "../../MultiDataChart/MultiDataChart"
 import {BaseLayer,ILayerConfig,ILayerStyle} from "../../../Core/BaseLayer"
 import {AxisLayer} from "../../MultiDataChart/AxisLayer"
+import {RangeData} from "../../../Core/DataFilter"
 
 export class RangeLayer extends BaseLayer {
     constructor(id?,conf?) {

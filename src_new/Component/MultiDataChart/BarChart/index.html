@@ -19,19 +19,49 @@
 </style>
 <body>
 <section>
-    <h1>Bar Chart</h1>
     <content></content>
+    <button onclick="reload()">reload measures</button>
+    <button onclick="addOne()">add a measure</button>
+    <button onclick="removeOne()">remove a measure</button>
 </section>
 </body>
 <script>
+    var barChart
     requirejs(["./Component/MultiDataChart/BarChart/BarChart"],function(c){
-        var barChart = new c.BarChart({style:{width:"40rem",height:"30rem"}})
-        let measures = [{id:1,data:[{"x":"04-10","y":4},{"x":"04-11","y":8},{"x":"04-12","y":6},{"x":"04-13","y":12},{"x":"04-14","y":15}],type:"bar"},
-                        {id:2,data:[{"x":"04-10","y":7},{"x":"04-11","y":2},{"x":"04-12","y":9},{"x":"04-13","y":3},{"x":"04-14","y":24}],type:"bar"},
-                        {id:3,data:[{"x":"04-10","y":3},{"x":"04-11","y":6},{"x":"04-12","y":5},{"x":"04-13","y":10},{"x":"04-14","y":18}],type:"bar"}]
-        barChart.loadMeasures(measures)
+        barChart = new c.BarChart({style:{width:"40rem",height:"30rem"}})
+        let dataset = [{id:1,data:[{"x":"04-10","y":4},{"x":"04-11","y":8},{"x":"04-12","y":6},{"x":"04-13","y":12},{"x":"04-14","y":15}]},
+                        {id:2,data:[{"x":"04-10","y":7},{"x":"04-11","y":2},{"x":"04-12","y":9},{"x":"04-13","y":3},{"x":"04-14","y":24}]},
+                        {id:3,data:[{"x":"04-10","y":3},{"x":"04-11","y":6},{"x":"04-12","y":5},{"x":"04-13","y":10},{"x":"04-14","y":18}]}]
+        barChart.loadMeasures(dataset,"bar")
         barChart.renderAt("content")
     })
+
+    function randomData() {
+        let data = []
+        for (let i = 0; i < 4; i++) {
+            let x = "04-1"+i
+            let y = Math.round(Math.random()*50)
+            data.push({x:x, y:y})
+        }
+        return data
+    }
+
+    function reload() {
+        let ds = []
+        for(let i = 0; i<3; i++) {
+            let data = randomData()
+            ds.push({id:i+1, data:data})
+        }
+        barChart.loadMeasures(ds,"bar")
+    }
+
+    function addOne() {
+        barChart.addMeasure({id:_.uniqueId(),data:randomData()},"bar")
+    }
+
+    function removeOne() {
+        barChart.removeMeasure()
+    }
 
 </script>
 </html>

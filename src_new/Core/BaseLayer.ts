@@ -87,18 +87,18 @@ export class BaseLayer extends View{
 }
 
 export interface ILayerConfig extends IViewConfig{
-        className:string,
-        tagName:string,
-        style:ILayerStyle   
+        className?:string,
+        tagName?:string,
+        style?:ILayerStyle   
 }
 
 export interface ILayerStyle {
-    top:string|undefined|null,
-    right:string|undefined|null,	
-    bottom:string|undefined|null,
-    left:string|undefined|null,	
-    width:string,
-    height:string,
-    zindex:number,
-    position:string	              
+    top?:string|undefined|null,
+    right?:string|undefined|null,	
+    bottom?:string|undefined|null,
+    left?:string|undefined|null,	
+    width?:string,
+    height?:string,
+    zindex?:number,
+    position?:string	              
 }

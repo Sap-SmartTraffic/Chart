@@ -3,7 +3,7 @@ import _ =require("lodash")
 import { Util } from '../../Core/Util'
 import { BaseLayer, ILayerConfig } from '../../Core/BaseLayer'
 import {MultiDataChart} from '../MultiDataChart/MultiDataChart'
-import {BarData} from '../MultiDataChart/BarChart/BarData'
+import {BarData,DataFilter} from '../../Core/DataFilter'
 
 export class AxisLayer extends BaseLayer{
     constructor(id?,conf?) {
@@ -146,14 +146,6 @@ export class AxisLayer extends BaseLayer{
                  .attr("transform","rotate(-90)")
                  .attr("alignment-baseline","hanging")
                  .text(yAxisTitle)
-        
-        // let zoomed = ()=>{
-        //                  let zoomScale = d3.event.transform.rescaleY(yScale)
-        //                  yAxis = d3.axisLeft(zoomScale)
-        //                  yAxis.tickFormat(yAxisTickFormat)
-        //                  this.elD3.select(".yAxis").call(yAxis)
-        //              }
-        // this.chart.on("lineZooming",zoomed)
         
         return this
     }

@@ -63,6 +63,6 @@ export class View extends Evented{
     }
 }
 export interface IViewConfig{
-        tagName:string |null|undefined,
-        className:string |null|undefined,
+        tagName?:string |null|undefined,
+        className?:string |null|undefined,
     }

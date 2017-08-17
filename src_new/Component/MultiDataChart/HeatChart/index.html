@@ -27,12 +27,12 @@
     requirejs(["./Component/MultiDataChart/HeatChart/HeatChart"],function(c){
         var heatChart = new c.HeatChart({style:{width:"40rem",height:"30rem"}})
         let measures = [
-            {id:"Paul",data:[{day:"Monday",value:10},{day:"Tuesday",value:20},{day:"Wednsday",value:30},{day:"Thursday",value:40},{day:"Friday",value:50}], type:"heat"},
-            {id:"Jack",data:[{day:"Monday",value:23},{day:"Tuesday",value:15},{day:"Wednsday",value:38},{day:"Thursday",value:9},{day:"Friday",value:42}], type:"heat"},
-            {id:"Mike",data:[{day:"Monday",value:35},{day:"Tuesday",value:9},{day:"Wednsday",value:45},{day:"Thursday",value:22},{day:"Friday",value:16}], type:"heat"},
-            {id:"Kate",data:[{day:"Monday",value:5},{day:"Tuesday",value:44},{day:"Wednsday",value:25},{day:"Thursday",value:18},{day:"Friday",value:32}], type:"heat"}
+            {id:"Paul",data:[{day:"Monday",value:10},{day:"Tuesday",value:20},{day:"Wednsday",value:30},{day:"Thursday",value:40},{day:"Friday",value:50}]},
+            {id:"Jack",data:[{day:"Monday",value:23},{day:"Tuesday",value:15},{day:"Wednsday",value:38},{day:"Thursday",value:9},{day:"Friday",value:42}]},
+            {id:"Mike",data:[{day:"Monday",value:35},{day:"Tuesday",value:9},{day:"Wednsday",value:45},{day:"Thursday",value:22},{day:"Friday",value:16}]},
+            {id:"Kate",data:[{day:"Monday",value:5},{day:"Tuesday",value:44},{day:"Wednsday",value:25},{day:"Thursday",value:18},{day:"Friday",value:32}]}
         ]
-        heatChart.loadMeasures(measures)
+        heatChart.loadMeasures(measures,"heat")
         heatChart.renderAt("content")
     })
 

@@ -2,6 +2,7 @@ import d3 = require("d3")
 import _ = require('lodash');
 import { BaseChart } from '../../Core/BaseChart';
 import { MultiDataMeasure } from "./MultiTypeMeasure";
+import { DataFilter } from "../../Core/DataFilter"
 export interface IGetDomain {
     getDomain:(key?:string)=>number[]
     max:(key?:string)=>number
@@ -9,12 +10,12 @@ export interface IGetDomain {
 }
 export interface IMeasureManager{
     measures:MultiDataMeasure[]
-    addMeasure:(m:MultiDataMeasure)=>this
-    loadMeasures:(ms:MultiDataMeasure[])=>this
+    addMeasure:(d:any,type?:string)=>this
+    addMeasures:(ds:any,type?:string)=>this
+    loadMeasures:(ds:any[],type?:string)=>this
     removeMeasure:(m:MultiDataMeasure|string)=>this
     getAllMeasure:()=>MultiDataMeasure[]
     getMeasure:(type:string)=>MultiDataMeasure[]
-    strToTimeMeasure:()=>this
     clearMeasure():any
 }
 export interface IMultiDataChart extends BaseChart,IMeasureManager,IGetDomain{}
@@ -22,7 +23,9 @@ export class MultiDataChart extends BaseChart implements IMultiDataChart{
     measures:MultiDataMeasure[]=[]
     colorManager={}
     colorIndex=0
-    addMeasure(m:MultiDataMeasure){
+    addMeasure(d:any, type?:string){
+        d = DataFilter.dataFilter(d, type)
+        let m = new MultiDataMeasure(d.id, d.data, type)
         let i=_.findIndex(this.measures,(mm)=>mm.id==m.id)
         if(i!=-1){
             this.measures[i]=m
@@ -32,13 +35,10 @@ export class MultiDataChart extends BaseChart implements IMultiDataChart{
         this.fire("measure_change measure_add",{measure:m})
         return this
     }
-    clearMeasure(){
-        this.measures=[]
-        this.fire("measure_change measure_clear")
-    }
-    loadMeasures(ms:any[]) {
-        _.each(ms, (d)=>{
-            let m = new MultiDataMeasure(d.id, d.data, d.type)
+    addMeasures(ds:any[],type?:string) {
+        _.each(ds,(d)=>{
+            d = DataFilter.dataFilter(d,type)
+            let m = new MultiDataMeasure(d.id, d.data, type)
             let i=_.findIndex(this.measures,(mm)=>mm.id==m.id)
             if(i!=-1){
                 this.measures[i]=m
@@ -46,30 +46,45 @@ export class MultiDataChart extends BaseChart implements IMultiDataChart{
                 this.measures.push(m)
             }
         })
-        this.fire("measure_change")
+        this.fire("measure_change measure_add")
         return this
     }
-    removeMeasure(m:MultiDataMeasure|string){
-        if(_.isString(m)){
-            if(_.some(this.measures,(mm)=>mm.id==m)){
-                let rm=_.find(this.measures,{id:m})
-                this.measures=_.filter(this.measures,(mm)=>mm.id!=m)
-                this.fire("measure_change measure_remove",{
-                    measure:rm
-                })
-            }
-            else if(_.some(this.measures,(mm)=>mm.type == m)) {
-                this.measures=_.filter(this.measures,(mm)=>mm.type!=m)
-                this.fire("measure_change measure_remove")
-            }
-        }else{
-            if(_.some(this.measures,(mm)=>mm.id==m.id)){
-                this.measures=_.filter(this.measures,(mm)=>mm.id!=m.id)
-                this.fire("measure_change measure_remove",{
-                    measure:m
-                })
-            }
+    clearMeasure(){
+        this.measures=[]
+        this.fire("measure_change measure_clear")
+    }
+    loadMeasures(ds:any[],type?:string) {
+        let measures:MultiDataMeasure[] = []
+        if(ds == null || ds == undefined || !_.isArray(ds))
+            console.log("Data wrong!")
+        else {
+            _.each(ds, (d)=>{
+                d = DataFilter.dataFilter(d,type)
+                let measure = new MultiDataMeasure(d.id, d.data, type)
+                measures.push(measure)
+            }) 
+            this.measures = measures
+            this.fire("measure_change")
         }
+    
+        return this
+    }
+    removeMeasure(m?:string){
+        if(_.some(this.measures,(mm)=>mm.id==m)){
+            let rm=_.find(this.measures,{id:m})
+            this.measures=_.filter(this.measures,(mm)=>mm.id!=m)
+            this.fire("measure_change measure_remove",{measure:rm})
+        }
+        else if(_.some(this.measures,(mm)=>mm.type == m)) {
+            this.measures=_.filter(this.measures,(mm)=>mm.type!=m)
+            this.fire("measure_change measure_remove")
+        }
+        else {
+            let rm = _.last(this.measures)
+            this.measures = _.initial(this.measures)
+            this.fire("measure_change measure_remove",{measure:rm})
+        }
+        
         return this
     }
     getMeasure(type:string){
@@ -80,24 +95,6 @@ export class MultiDataChart extends BaseChart implements IMultiDataChart{
     }
     getDomain(k:string){
         return [this.min(k),this.max(k)]
-    }
-    strToTimeMeasure() {
-        let ms:MultiDataMeasure[]
-        let temp = []
-        ms = this.measures
-        this.measures = [];
-        _.each(ms,(d,i)=>{
-            let tempData = []
-            _.each(d.data,(v:{x:any,y:any},k)=>{
-                if(typeof(v.x) == "string")
-                    tempData.push({x:new Date(v.x),y:v.y})
-                else
-                    tempData.push({x:v.x,y:v.y})
-            })
-            temp.push(new MultiDataMeasure(d.id,tempData,d.type))
-        })
-        this.measures = temp
-        return this
     }
     max(k:string){
         let max

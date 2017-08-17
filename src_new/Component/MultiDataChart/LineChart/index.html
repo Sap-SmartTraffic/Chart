@@ -20,15 +20,51 @@
 <body>
 <section>
     <content></content>
+    <button onclick="reload()">reload measures</button>
+    <button onclick="addOne()">add a measure</button>
+    <button onclick="removeOne()">remove a measure</button>
+    <button onclick="removeAll()">remove all measures</button>
 </section>
 </body>
 <script>
+    var lineChart
     requirejs(["./Component/MultiDataChart/LineChart/LineChart"],function(l){
-        var lineChart = new l.LineChart()
-        let measures = [{id:1, data:[{x:"2017/07/01 06:00",y:0},{x:"2017/07/01 10:00",y:200},{x:"2017/07/01 13:00",y:800},{x:"2017/07/01 15:00",y:390}], type:"line"},
-                        {id:2, data:[{x:"2017/07/01 08:00",y:320},{x:"2017/07/01 10:00",y:800},{x:"2017/07/01 13:00",y:200},{x:"2017/07/01 16:00",y:1000}], type:"line"}]
-        lineChart.loadMeasures(measures)
+        lineChart = new l.LineChart()
+        let ds = [{id:1, data:[{x:"2017/07/01 06:00",y:0},{x:"2017/07/01 10:00",y:200},{x:"2017/07/01 13:00",y:800},{x:"2017/07/01 15:00",y:390}]},
+                  {id:2, data:[{x:"2017/07/01 08:00",y:320},{x:"2017/07/01 10:00",y:800},{x:"2017/07/01 13:00",y:200},{x:"2017/07/01 16:00",y:1000}]}]
+        lineChart.loadMeasures(ds,"line")
         lineChart.renderAt("content") 
     })
+
+    function randomData() {
+        let data = []
+        for (let i = 0; i < 4; i++) {
+            let x = Math.round(Math.random()*24)
+            let y = Math.round(Math.random()*1000)
+            data.push({x:"2017/07/01 "+(x<10?("0"+x):x) +":00", y:y})
+        }
+        return data
+    }
+
+    function reload() {
+        let ds = []
+        for(let i = 0; i<2; i++) {
+            let data = randomData()
+            ds.push({id:i+1, data:data})
+        }
+        lineChart.loadMeasures(ds,"line")
+    }
+
+    function addOne() {
+        lineChart.addMeasure({id:_.uniqueId(),data:randomData()},"line")
+    }
+
+    function removeOne() {
+        lineChart.removeMeasure()
+    }
+
+    function removeAll() {
+        lineChart.removeMeasure("line")
+    }
 </script>
 </html>

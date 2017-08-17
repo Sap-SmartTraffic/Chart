@@ -4,7 +4,12 @@ import { Util } from "../../Core/Util"
 import {BaseLayer,ILayerConfig} from "../../Core/BaseLayer"
 export class TitleLayer extends BaseLayer{
     defaultConfig():ITitleLayerConfig{
-        return Util.deepExtend(super.defaultConfig(),{className:"title", style:{height:"2rem"}, value:""})
+        return Util.deepExtend(super.defaultConfig(),{
+            tagName:"div", 
+            className:"title", 
+            style:{height:"2rem"}, 
+            value:""
+        })
     }
     config:ITitleLayerConfig
     setTitle(t){

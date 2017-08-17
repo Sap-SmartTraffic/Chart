@@ -8,6 +8,7 @@ import {AxisLayer} from "../../MultiDataChart/AxisLayer"
 import {TooltipLayer,TooltipData} from "../../Layer/TooltipLayer"
 import {LegendLayer} from "../../MultiDataChart/LegendLayer"
 import {TitleLayer} from "../../Layer/TitleLayer"
+import {HeatData} from "../../../Core/DataFilter"
 
 export class HeatLayer extends BaseLayer {
     constructor(id?,conf?) {
@@ -171,11 +172,6 @@ export interface HeatLayerConfig extends ILayerConfig {
         bottom:number,
         left:number
     }
-}
-
-export interface HeatData {
-    day:string,
-    value:number
 }
 
 export class HeatChart extends MultiDataChart {
