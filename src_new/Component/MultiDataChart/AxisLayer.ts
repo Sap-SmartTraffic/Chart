@@ -41,6 +41,7 @@ export class AxisLayer extends BaseLayer{
 
     render(){
         this.el.innerHTML=""
+        if(this.chart.measures.length != 0) {
         let maxX = this.chart.max(this.config.axis.key.x),
             maxY = this.chart.max(this.config.axis.key.y)
             
@@ -146,7 +147,7 @@ export class AxisLayer extends BaseLayer{
                  .attr("transform","rotate(-90)")
                  .attr("alignment-baseline","hanging")
                  .text(yAxisTitle)
-        
+        }
         return this
     }
 }
