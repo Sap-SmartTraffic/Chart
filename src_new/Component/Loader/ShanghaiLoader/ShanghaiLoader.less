@@ -1,0 +1,44 @@
+.shanghaiLoaderContainer {
+    background: #1c4587;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    left: 0px;
+    transition: transform 1s linear;
+
+    svg {
+        transform: translate3d(-50%, -50%, 0);
+        position: absolute;
+        top: 50%;
+        left: 50%;
+
+        path {
+            stroke-width: 2px;
+            stroke: #ffffff;
+            fill: none;
+            stroke-dasharray: 2997;
+            stroke-dashoffset: 2997;
+            animation: dash 3s 1s linear infinite;
+        }
+
+        @keyframes dash {
+            33% {
+                stroke-dashoffset: 1997;
+            }
+            66% {
+                stroke-dashoffset: 997;
+            }
+            100% {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        text {
+            font-family: "Times New Roman";
+            text-anchor: middle;
+            stroke-width: 0;
+            fill: #ffffff;
+        }
+    }
+}

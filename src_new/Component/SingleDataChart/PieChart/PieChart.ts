@@ -96,14 +96,18 @@ export class PieLayer extends BaseLayer {
                          .attr("stroke-width","0px")
                          .attr("stroke",d.value==null?"#d6d6d6":colorScale(d.value))
                          .on("mouseenter",function(e){
-                             svgNode.selectAll(".doughnut").style("opacity","0.3")
-                             svgNode.select(".doughnut"+i).transition().duration(200).style("opacity","1")
+                             svgNode.select(".doughnut"+i)
+                                    .transition().duration(100)
+                                    .attr("d",smartArcGen(startAngle,endAngle,innerRadius,(outerRadius+20)))
                          })
                          .on("mousemove",function(e){
                             
                          })
                          .on("mouseleave",function(){
-                             svgNode.selectAll(".doughnut").style("opacity","1")
+                             svgNode.select(".doughnut"+i)
+                                    .transition().duration(100)
+                                    .attr("d",smartArcGen(startAngle,endAngle,innerRadius,outerRadius))
+                                    
                          })
                          .transition().duration(100).ease(d3.easeLinear).delay(100*i)
                          .tween("pieTran", function(){

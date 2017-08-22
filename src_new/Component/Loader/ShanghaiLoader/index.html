@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Chart Test</title>
+</head>
+<script src="/node_modules/requirejs/require.js"></script>
+<script src="/dist_new/requireConfig.js"></script>
+<link rel="stylesheet" href="/dist_new/Component/Loader/ShanghaiLoader/ShanghaiLoader.css">
+<body>
+</body>
+<script>
+    requirejs(["Component/Loader/ShanghaiLoader/ShanghaiLoader"],function(c){
+        var shanghaiLoader = new c.ShanghaiLoader(550,360)
+        shanghaiLoader.toElement()
+        shanghaiLoader.addTo(document.body)
+        shanghaiLoader.show()
+        // setTimeout(()=>{
+        //     shanghaiLoader.remove()
+        // },6000)
+        // var path = document.querySelector("path")
+        // var length = path.getTotalLength()
+        // console.log(length)
+    })
+</script>
+</html>
